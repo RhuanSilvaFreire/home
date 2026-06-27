@@ -1,6 +1,17 @@
+# Claude
 .claude
 .claude.json
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
 *.log
+
+# Node
 node_modules/
+
+# Docs (não servidos pela Vercel)
+PERFORMANCE_REPORT.md
+README.md
