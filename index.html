@@ -38,7 +38,40 @@
       "lead-flow":  { hero: "images/case6-leads.jpg", gridLeft: "images/case6-grid-left.jpg", gridRight: "images/case6-grid-right.jpg" }
     };
 
-    // 4) Patch hero + grid images
+    // 4) Redirect case clicks to standalone pages
+    window.__caseSlugs = {
+      "agente-wpp": "/whatsapp",
+      "rag-fiscal": "/fiscal",
+      "n8n-sync":   "/sync",
+      "voz-ivr":    "/ura",
+      "dash-ops":   "/dashboard",
+      "lead-flow":  "/leads"
+    };
+    setInterval(function() {
+      if (!window.PROJECTS) return;
+      var rows = document.querySelectorAll('#trabalhos a, section a');
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        if (row.dataset.slugPatched) continue;
+        var text = row.textContent.trim();
+        for (var j = 0; j < window.PROJECTS.length; j++) {
+          var p = window.PROJECTS[j];
+          if (text.indexOf(p.title) !== -1 && window.__caseSlugs[p.id]) {
+            row.dataset.slugPatched = '1';
+            row.setAttribute('href', window.__caseSlugs[p.id]);
+            (function(slug) {
+              row.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = slug;
+              }, true);
+            })(window.__caseSlugs[p.id]);
+          }
+        }
+      }
+    }, 500);
+
+    // 5) Patch hero + grid images
     setInterval(function() {
       try {
         if (!window.PROJECTS) return;
