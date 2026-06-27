@@ -3,6 +3,31 @@
 <head>
   <meta charset="utf-8">
   <title>Rhuan Freire — Portfólio</title>
+  <!-- SEO Meta Tags (pre-bundler, also re-injected post-bundler) -->
+  <meta name="description" content="Rhuan Freire — Designer e Desenvolvedor. Portfólio de projetos de automação, IA, design de interfaces e engenharia de software.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://rhuanfreire.com/">
+  <meta property="og:title" content="Rhuan Freire — Portfólio">
+  <meta property="og:description" content="Designer e Desenvolvedor. Projetos de automação, IA, design de interfaces e engenharia de software.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rhuanfreire.com/">
+  <meta property="og:image" content="https://rhuanfreire.com/og-image.jpg">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rhuan Freire — Portfólio">
+  <meta name="twitter:description" content="Designer e Desenvolvedor. Projetos de automação, IA, design de interfaces e engenharia de software.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Rhuan Freire",
+    "url": "https://rhuanfreire.com",
+    "jobTitle": "Designer & Desenvolvedor",
+    "sameAs": []
+  }
+  </script>
+
   <script>
     // 1) Suppress error overlay for CDN 404s (not real app errors)
     window.addEventListener('error', function(e) {
@@ -14,21 +39,30 @@
       }
     }, true);
 
-    // 2) Icons missing from bundle
-    setInterval(function() {
-      if (!window.__resources) return;
+    // 2) Icons missing from bundle — ONE-SHOT, no polling
+    (function() {
       var icons = {
         si_openai: "icons/openai.svg", si_twilio: "icons/twilio.svg",
         si_slack: "icons/slack.svg", si_amazonwebservices: "icons/amazonwebservices.svg",
         si_llamaindex: "icons/llamaindex.svg", si_amazons3: "icons/amazons3.svg",
         si_hotmart: "icons/hotmart.svg", si_visualstudiocode: "icons/visualstudiocode.svg"
       };
-      for (var k in icons) if (!window.__resources[k]) window.__resources[k] = icons[k];
-      var errEl = document.getElementById('__bundler_err');
-      if (errEl) errEl.remove();
-    }, 150);
+      function patchIcons() {
+        if (!window.__resources) return false;
+        for (var k in icons) if (!window.__resources[k]) window.__resources[k] = icons[k];
+        var errEl = document.getElementById('__bundler_err');
+        if (errEl) errEl.remove();
+        return true;
+      }
+      // Try once immediately, then observe if not ready
+      if (!patchIcons()) {
+        var timer = setInterval(function() {
+          if (patchIcons()) clearInterval(timer);
+        }, 300);
+      }
+    })();
 
-    // 3) Case images: hero + grid
+    // 3) Case images: hero + grid (static data, no CPU cost)
     window.__caseImages = {
       "agente-wpp": { hero: "images/case1-whatsapp.jpg", gridLeft: "images/case1-grid-left.jpg", gridRight: "images/case1-grid-right.jpg" },
       "rag-fiscal": { hero: "images/case2-fiscal.jpg", gridLeft: "images/case2-grid-left.jpg", gridRight: "images/case2-grid-right.jpg" },
@@ -38,7 +72,7 @@
       "lead-flow":  { hero: "images/case6-leads.jpg", gridLeft: "images/case6-grid-left.jpg", gridRight: "images/case6-grid-right.jpg" }
     };
 
-    // 4) Redirect case clicks to standalone pages
+    // 4) Redirect case clicks — EVENT DELEGATION instead of polling
     window.__caseSlugs = {
       "agente-wpp": "/whatsapp",
       "rag-fiscal": "/fiscal",
@@ -47,33 +81,36 @@
       "dash-ops":   "/dashboard",
       "lead-flow":  "/leads"
     };
-    setInterval(function() {
-      if (!window.PROJECTS) return;
-      var rows = document.querySelectorAll('#trabalhos a, section a');
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        if (row.dataset.slugPatched) continue;
-        var text = row.textContent.trim();
+    (function() {
+      // Single delegated click handler on document — zero polling
+      document.addEventListener('click', function(e) {
+        if (!window.PROJECTS) return;
+        var link = e.target.closest('a');
+        if (!link) return;
+        // Only intercept links inside #trabalhos or section
+        if (!link.closest('#trabalhos') && !link.closest('section')) return;
+        if (link.dataset.slugPatched) return;
+        var text = link.textContent.trim();
         for (var j = 0; j < window.PROJECTS.length; j++) {
           var p = window.PROJECTS[j];
           if (text.indexOf(p.title) !== -1 && window.__caseSlugs[p.id]) {
-            row.dataset.slugPatched = '1';
-            row.setAttribute('href', window.__caseSlugs[p.id]);
-            (function(slug) {
-              row.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                window.location.href = slug;
-              }, true);
-            })(window.__caseSlugs[p.id]);
+            link.dataset.slugPatched = '1';
+            link.setAttribute('href', window.__caseSlugs[p.id]);
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = window.__caseSlugs[p.id];
+            return;
           }
         }
-      }
-    }, 500);
+      }, true);
+    })();
 
-    // 5) Patch hero + grid images
-    setInterval(function() {
-      try {
+    // 5) Patch hero + grid images — MutationObserver instead of setInterval
+    (function() {
+      var patched = false;
+
+      function patchArticle() {
+        if (patched) return;
         if (!window.PROJECTS) return;
         var article = document.querySelector('article');
         if (!article) return;
@@ -91,11 +128,10 @@
         for (var j = 0; j < divs.length; j++) {
           var d = divs[j];
           if (d.dataset.patched) continue;
-          var cs = window.getComputedStyle(d);
-          var h = parseInt(cs.height);
 
-          // Hero: height ~540, has linear-gradient
-          if (h >= 500 && h <= 600 && (cs.backgroundImage || '').indexOf('linear-gradient') !== -1) {
+          // Hero: use offsetHeight instead of getComputedStyle (much cheaper)
+          var h = d.offsetHeight;
+          if (h >= 500 && h <= 600 && (d.style.backgroundImage || '').indexOf('linear-gradient') !== -1) {
             d.dataset.patched = 'hero';
             d.style.backgroundImage = 'url(' + imgs.hero + ')';
             d.style.backgroundSize = 'cover';
@@ -103,36 +139,111 @@
             continue;
           }
 
-          // Grid cells: aspect-ratio 4/5, background #161616
+          // Grid cells: check inline style instead of getComputedStyle
           var ar = d.style.aspectRatio || '';
-          var bg = cs.backgroundColor || '';
-          if (ar.indexOf('4') !== -1 && ar.indexOf('5') !== -1 && bg.indexOf('22, 22, 22') !== -1) {
-            // Find the img inside (code-mark-circle) — that's the left cell
-            var existingImg = d.querySelector('img');
-            if (existingImg && imgs.gridLeft) {
-              d.dataset.patched = 'grid-left';
-              existingImg.src = imgs.gridLeft;
-              existingImg.style.height = '100%';
-              existingImg.style.width = '100%';
-              existingImg.style.objectFit = 'cover';
-              existingImg.style.borderRadius = '0';
-              continue;
+          if (ar.indexOf('4') !== -1 && ar.indexOf('5') !== -1) {
+            var bg = d.style.backgroundColor || '';
+            // Check inline bg or fall back to single getComputedStyle call
+            var isBg = bg.indexOf('22, 22, 22') !== -1 || bg === '#161616';
+            if (!isBg) {
+              var cs = window.getComputedStyle(d);
+              isBg = (cs.backgroundColor || '').indexOf('22, 22, 22') !== -1;
             }
-            // The right cell has a span with the title
-            var span = d.querySelector('span');
-            if (span && imgs.gridRight) {
-              d.dataset.patched = 'grid-right';
-              d.style.backgroundImage = 'url(' + imgs.gridRight + ')';
-              d.style.backgroundSize = 'cover';
-              d.style.backgroundPosition = 'center';
-              span.style.position = 'relative';
-              span.style.zIndex = '1';
-              span.style.textShadow = '0 2px 12px rgba(0,0,0,0.7)';
+            if (isBg) {
+              var existingImg = d.querySelector('img');
+              if (existingImg && imgs.gridLeft) {
+                d.dataset.patched = 'grid-left';
+                existingImg.src = imgs.gridLeft;
+                existingImg.style.cssText = 'height:100%;width:100%;object-fit:cover;border-radius:0';
+                continue;
+              }
+              var span = d.querySelector('span');
+              if (span && imgs.gridRight) {
+                d.dataset.patched = 'grid-right';
+                d.style.backgroundImage = 'url(' + imgs.gridRight + ')';
+                d.style.backgroundSize = 'cover';
+                d.style.backgroundPosition = 'center';
+                span.style.cssText = 'position:relative;z-index:1;text-shadow:0 2px 12px rgba(0,0,0,0.7)';
+              }
             }
           }
         }
-      } catch(e) {}
-    }, 300);
+        patched = true;
+      }
+
+      // Use MutationObserver to detect when the bundler finishes and article appears
+      var observer = new MutationObserver(function(mutations) {
+        // Use requestIdleCallback to avoid blocking main thread
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(function() { patchArticle(); if (patched) observer.disconnect(); });
+        } else {
+          setTimeout(function() { patchArticle(); if (patched) observer.disconnect(); }, 50);
+        }
+      });
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+
+      // Also try once after bundler completes (replaceWith fires no mutation on the old observer)
+      // Re-attach observer after a delay to catch the new DOM
+      setTimeout(function() {
+        if (patched) return;
+        patchArticle();
+        if (!patched) {
+          var obs2 = new MutationObserver(function() {
+            if (window.requestIdleCallback) {
+              window.requestIdleCallback(function() { patchArticle(); if (patched) obs2.disconnect(); });
+            } else {
+              setTimeout(function() { patchArticle(); if (patched) obs2.disconnect(); }, 50);
+            }
+          });
+          obs2.observe(document.documentElement, { childList: true, subtree: true });
+          // Safety: disconnect after 30s regardless
+          setTimeout(function() { obs2.disconnect(); }, 30000);
+        }
+      }, 3000);
+    })();
+
+    // 6) Re-inject SEO meta tags after bundler replaceWith destroys the head
+    (function() {
+      var seoHTML = '<meta name="description" content="Rhuan Freire — Designer e Desenvolvedor. Portfólio de projetos de automação, IA, design de interfaces e engenharia de software.">' +
+        '<meta name="robots" content="index, follow">' +
+        '<link rel="canonical" href="https://rhuanfreire.com/">' +
+        '<meta property="og:title" content="Rhuan Freire — Portfólio">' +
+        '<meta property="og:description" content="Designer e Desenvolvedor. Projetos de automação, IA, design de interfaces e engenharia de software.">' +
+        '<meta property="og:type" content="website">' +
+        '<meta property="og:url" content="https://rhuanfreire.com/">' +
+        '<meta property="og:image" content="https://rhuanfreire.com/og-image.jpg">' +
+        '<meta property="og:locale" content="pt_BR">' +
+        '<meta name="twitter:card" content="summary_large_image">' +
+        '<meta name="twitter:title" content="Rhuan Freire — Portfólio">' +
+        '<meta name="twitter:description" content="Designer e Desenvolvedor. Projetos de automação, IA, design de interfaces e engenharia de software.">';
+      var schemaJSON = '{"@context":"https://schema.org","@type":"Person","name":"Rhuan Freire","url":"https://rhuanfreire.com","jobTitle":"Designer & Desenvolvedor","sameAs":[]}';
+
+      function injectSEO() {
+        var head = document.head;
+        if (!head) return;
+        // Only inject if missing
+        if (head.querySelector('meta[property="og:title"]')) return;
+        var div = document.createElement('div');
+        div.innerHTML = seoHTML;
+        while (div.firstChild) head.appendChild(div.firstChild);
+        var script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = schemaJSON;
+        head.appendChild(script);
+      }
+
+      // Watch for the replaceWith (new documentElement)
+      var seoObs = new MutationObserver(function() {
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(injectSEO);
+        } else {
+          setTimeout(injectSEO, 100);
+        }
+      });
+      seoObs.observe(document.documentElement, { childList: true, subtree: true });
+      // Disconnect after 15s
+      setTimeout(function() { seoObs.disconnect(); injectSEO(); }, 15000);
+    })();
   </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
