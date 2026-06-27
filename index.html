@@ -4,39 +4,102 @@
   <meta charset="utf-8">
   <title>Rhuan Freire — Portfólio</title>
   <script>
-    // Pre-populate __resources for icons missing from the bundle
-    window.__earlyResources = {
-      si_openai: "icons/openai.svg",
-      si_twilio: "icons/twilio.svg",
-      si_slack: "icons/slack.svg",
-      si_amazonwebservices: "icons/amazonwebservices.svg",
-      si_llamaindex: "icons/llamaindex.svg",
-      si_amazons3: "icons/amazons3.svg",
-      si_hotmart: "icons/hotmart.svg",
-      si_visualstudiocode: "icons/visualstudiocode.svg"
-    };
-    // Patch __resources after bundler creates it
-    var _origDefProp = Object.defineProperty;
-    Object.defineProperty = function(obj, prop, desc) {
-      var result = _origDefProp.call(Object, obj, prop, desc);
-      if (prop === '__resources' && obj === window) {
-        var res = window.__resources || {};
-        for (var k in window.__earlyResources) {
-          if (!res[k]) res[k] = window.__earlyResources[k];
-        }
+    // 1) Suppress error overlay for CDN 404s (not real app errors)
+    window.addEventListener('error', function(e) {
+      var msg = (e.message || '') + (e.filename || '');
+      if (msg.indexOf('simpleicons') !== -1 || msg.indexOf('cdn-cgi') !== -1) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        return true;
       }
-      return result;
+    }, true);
+
+    // 2) Icons missing from bundle
+    setInterval(function() {
+      if (!window.__resources) return;
+      var icons = {
+        si_openai: "icons/openai.svg", si_twilio: "icons/twilio.svg",
+        si_slack: "icons/slack.svg", si_amazonwebservices: "icons/amazonwebservices.svg",
+        si_llamaindex: "icons/llamaindex.svg", si_amazons3: "icons/amazons3.svg",
+        si_hotmart: "icons/hotmart.svg", si_visualstudiocode: "icons/visualstudiocode.svg"
+      };
+      for (var k in icons) if (!window.__resources[k]) window.__resources[k] = icons[k];
+      var errEl = document.getElementById('__bundler_err');
+      if (errEl) errEl.remove();
+    }, 150);
+
+    // 3) Case images: hero + grid
+    window.__caseImages = {
+      "agente-wpp": { hero: "images/case1-whatsapp.jpg", gridLeft: "images/case1-grid-left.jpg", gridRight: "images/case1-grid-right.jpg" },
+      "rag-fiscal": { hero: "images/case2-fiscal.jpg", gridLeft: "images/case2-grid-left.jpg", gridRight: "images/case2-grid-right.jpg" },
+      "n8n-sync":   { hero: "images/case3-sync.jpg", gridLeft: "images/case3-grid-left.jpg", gridRight: "images/case3-grid-right.jpg" },
+      "voz-ivr":    { hero: "images/case4-ura.jpg", gridLeft: "images/case4-grid-left.jpg", gridRight: "images/case4-grid-right.jpg" },
+      "dash-ops":   { hero: "images/case5-dashboard.jpg", gridLeft: "images/case5-grid-left.jpg", gridRight: "images/case5-grid-right.jpg" },
+      "lead-flow":  { hero: "images/case6-leads.jpg", gridLeft: "images/case6-grid-left.jpg", gridRight: "images/case6-grid-right.jpg" }
     };
-    // Also handle direct assignment
-    var _resInterval = setInterval(function() {
-      if (window.__resources) {
-        for (var k in window.__earlyResources) {
-          if (!window.__resources[k]) window.__resources[k] = window.__earlyResources[k];
+
+    // 4) Patch hero + grid images
+    setInterval(function() {
+      try {
+        if (!window.PROJECTS) return;
+        var article = document.querySelector('article');
+        if (!article) return;
+        var h1 = article.querySelector('h1');
+        if (!h1) return;
+        var title = h1.textContent.trim();
+        var caseId = null;
+        for (var i = 0; i < window.PROJECTS.length; i++) {
+          if (window.PROJECTS[i].title === title) { caseId = window.PROJECTS[i].id; break; }
         }
-        clearInterval(_resInterval);
-      }
-    }, 10);
-    setTimeout(function() { clearInterval(_resInterval); }, 5000);
+        var imgs = caseId && window.__caseImages[caseId];
+        if (!imgs) return;
+
+        var divs = article.getElementsByTagName('div');
+        for (var j = 0; j < divs.length; j++) {
+          var d = divs[j];
+          if (d.dataset.patched) continue;
+          var cs = window.getComputedStyle(d);
+          var h = parseInt(cs.height);
+
+          // Hero: height ~540, has linear-gradient
+          if (h >= 500 && h <= 600 && (cs.backgroundImage || '').indexOf('linear-gradient') !== -1) {
+            d.dataset.patched = 'hero';
+            d.style.backgroundImage = 'url(' + imgs.hero + ')';
+            d.style.backgroundSize = 'cover';
+            d.style.backgroundPosition = 'center';
+            continue;
+          }
+
+          // Grid cells: aspect-ratio 4/5, background #161616
+          var ar = d.style.aspectRatio || '';
+          var bg = cs.backgroundColor || '';
+          if (ar.indexOf('4') !== -1 && ar.indexOf('5') !== -1 && bg.indexOf('22, 22, 22') !== -1) {
+            // Find the img inside (code-mark-circle) — that's the left cell
+            var existingImg = d.querySelector('img');
+            if (existingImg && imgs.gridLeft) {
+              d.dataset.patched = 'grid-left';
+              existingImg.src = imgs.gridLeft;
+              existingImg.style.height = '100%';
+              existingImg.style.width = '100%';
+              existingImg.style.objectFit = 'cover';
+              existingImg.style.borderRadius = '0';
+              continue;
+            }
+            // The right cell has a span with the title
+            var span = d.querySelector('span');
+            if (span && imgs.gridRight) {
+              d.dataset.patched = 'grid-right';
+              d.style.backgroundImage = 'url(' + imgs.gridRight + ')';
+              d.style.backgroundSize = 'cover';
+              d.style.backgroundPosition = 'center';
+              span.style.position = 'relative';
+              span.style.zIndex = '1';
+              span.style.textShadow = '0 2px 12px rgba(0,0,0,0.7)';
+            }
+          }
+        }
+      } catch(e) {}
+    }, 300);
   </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
