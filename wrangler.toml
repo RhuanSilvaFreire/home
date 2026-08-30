@@ -1,6 +1,5 @@
-name = "home"
+name = "rhuansite-home"
 compatibility_date = "2026-08-28"
 
 [assets]
-directory = "."
-exclude = [".git/**", "node_modules/**", "*.pack", "auditoria-seo-rhuanfreire-2026.md"]
+directory = "./dist"
