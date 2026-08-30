@@ -35,4 +35,39 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/agente-whatsapp-handoff-humano/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/rag-base-fiscal/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/sync-marketplaces-n8n/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/ura-conversacional-sem-menu/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/dashboard-monitoramento-ia/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dev.rhuanfreire.com.br/blog/pipeline-qualificacao-leads/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

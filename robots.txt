@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rhuanfreire.com/sitemap.xml
+Sitemap: https://dev.rhuanfreire.com.br/sitemap.xml
