@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -20,7 +20,7 @@
   gtag('js', new Date());
   gtag('config', 'G-TFWN2SL819');
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Como construí um agente de WhatsApp que sabe quando parar de responder","description":"O handoff humano é o ponto onde a maioria dos agentes falha. Como resolvi isso com memória por contato, fila de prioridade e contexto persistente.","author":{"@type":"Person","name":"Rhuan Freire","url":"https://dev.rhuanfreire.com.br"},"datePublished":"2025-08-01","url":"https://dev.rhuanfreire.com.br/blog/agente-whatsapp-handoff-humano/","keywords":"agente WhatsApp, handoff humano, WhatsApp Business API, Gozap, IA atendimento"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Como construí um agente de WhatsApp que sabe quando parar de responder","description":"O handoff humano é o ponto onde a maioria dos agentes falha. Como resolvi isso com memória por contato, fila de prioridade e contexto persistente.","author":{"@type":"Person","name":"Rhuan Freire","url":"https://dev.rhuanfreire.com.br"},"datePublished":"2025-08-01","url":"https://dev.rhuanfreire.com.br/blog/agente-whatsapp-handoff-humano/","keywords":"agente WhatsApp, handoff humano, WhatsApp Business API, GoZap, IA atendimento"}</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2')}
@@ -107,7 +107,7 @@ footer{padding:40px 24px;flex-direction:column}
   <h2>O problema real</h2>
   <p>Quando um cliente começa a mandar mensagens com ponto de exclamação, ou escreve "quero falar com um ser humano", o agente precisa parar. Mas isso é óbvio. O caso difícil é o cliente que está frustrado e ainda não disse isso — mas o contexto da conversa deixa claro que mais uma resposta automática vai piorar a situação.</p>
   <p>Na construção desse projeto, eu precisava criar um agente de atendimento via WhatsApp para uma empresa de médio porte. O volume era de ~300 conversas por dia, com um time de 4 atendentes humanos disponíveis das 8h às 18h.</p>
-  <p>A arquitetura base foi construída sobre a <a href="https://gozap.dev/" target="_blank" rel="noopener">Gozap</a>, que resolve a camada de infraestrutura do WhatsApp Business API — gestão de sessões, filas de mensagens e webhooks. Com isso, eu pude focar no que realmente importava: a lógica do agente.</p>
+  <p>A arquitetura base foi construída sobre a <a href="https://GoZap.dev/" target="_blank" rel="noopener">GoZap</a>, que resolve a camada de infraestrutura do WhatsApp Business API — gestão de sessões, filas de mensagens e webhooks. Com isso, eu pude focar no que realmente importava: a lógica do agente.</p>
 
   <h2>Memória por contato: o que não pode faltar</h2>
   <p>A primeira versão do agente não tinha memória entre conversas. Cada webhook chegava como uma mensagem nova, sem histórico. O resultado: o cliente explicava o problema, o agente respondia, a conversa acabava, o cliente voltava um dia depois e tinha que explicar tudo de novo.</p>
