@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rhuan Freire — DevOps, Automação & IA · Engenheiro Freelance São Paulo</title>
+<meta name="description" content="Rhuan Freire — engenheiro freelance em DevOps, automação com n8n e agentes de IA. Infraestrutura Docker Swarm, Traefik, pipelines e WhatsApp API. São Paulo.">
+<meta name="author" content="Rhuan Freire">
+<link rel="canonical" href="https://dev.rhuanfreire.com.br/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rhuan Freire — DevOps, Automação & IA · Freelance São Paulo">
+<meta property="og:description" content="Infraestrutura Docker Swarm, automação com n8n e agentes de IA aplicada. Engenheiro freelance baseado em São Paulo.">
+<meta property="og:url" content="https://dev.rhuanfreire.com.br/">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rhuan Freire — DevOps, Automação & IA">
+<meta name="twitter:description" content="Engenheiro freelance: Docker Swarm, n8n, agentes de IA e automação de atendimento WhatsApp. São Paulo.">
+<!-- Google Analytics 4 — substitua G-TFWN2SL819 pelo seu Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFWN2SL819"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TFWN2SL819');
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:600;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter Tight';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSyv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter Tight';font-style:italic;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSyv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rhuan Freire","jobTitle":"Engenheiro Freelance — DevOps, Automação e IA","description":"Engenheiro independente especializado em infraestrutura DevOps (Docker Swarm, Traefik), automação com n8n e agentes de IA aplicada. Baseado em São Paulo, Brasil.","url":"https://dev.rhuanfreire.com.br","address":{"@type":"PostalAddress","addressLocality":"São Paulo","addressCountry":"BR"},"knowsAbout":["Docker Swarm","Traefik","n8n","Agentes de IA","WhatsApp Business API","Prometheus","Grafana","RabbitMQ","PostgreSQL","Python","Node.js"],"sameAs":["https://www.linkedin.com/in/rhuan-silva-freire-25b103218/"]}</script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--carbon:#0D0D0D;--bone:#F5F3EE;--terracotta:#C45E3A;--slate:#496A89;--ease:cubic-bezier(.22,1,.36,1)}
+html{scroll-behavior:smooth}
+body{background:var(--carbon);color:var(--bone);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+ul{list-style:none;padding:0}
+img{display:block;max-width:100%}
+
+/* Reveal */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.revealed{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.12s}.rv-d2{transition-delay:.24s}.rv-d3{transition-delay:.32s}.rv-d4{transition-delay:.4s}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,13,13,.72);border-bottom:1px solid rgba(245,243,238,.12);padding:18px 96px;display:flex;align-items:center;gap:40}
+.nav-brand{display:flex;align-items:center;gap:12;cursor:pointer}
+.nav-brand-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:17px;letter-spacing:-.02em}
+.nav-links{display:flex;gap:40px;margin-left:auto}
+.nav-link{position:relative;font-size:14px;padding-bottom:4px;cursor:pointer;transition:color .24s var(--ease)}
+.nav-link::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--terracotta);transition:width .32s var(--ease)}
+.nav-link:hover::after,.nav-link.active::after{width:100%}
+
+/* Hero */
+.hero{position:relative;padding:140px 96px 120px;min-height:92vh;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:85% center;filter:contrast(1.05) brightness(.85)}
+.hero-grad1{position:absolute;inset:0;background:linear-gradient(90deg,var(--carbon) 0%,rgba(13,13,13,.96) 35%,rgba(13,13,13,.7) 55%,rgba(13,13,13,.25) 80%,rgba(13,13,13,.05) 100%)}
+.hero-grad2{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,13,13,.4) 0%,rgba(13,13,13,0) 30%,rgba(13,13,13,0) 70%,rgba(13,13,13,.6) 100%)}
+.hero-content{position:relative;z-index:1;max-width:62%}
+.hero-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,243,238,.6);margin-bottom:32px}
+.hero h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(56px,8vw,124px);line-height:.92;letter-spacing:-.03em;text-wrap:pretty}
+.hero h1 em{color:var(--terracotta);font-style:italic}
+.hero-desc{font-size:22px;line-height:1.45;color:rgba(245,243,238,.6);max-width:54ch;margin-top:48px}
+.hero-ctas{display:flex;gap:14px;margin-top:56px}
+.btn-primary{background:var(--terracotta);color:var(--bone);border:0;padding:16px 28px;border-radius:8px;font-size:15px;font-weight:500;font-family:Inter,sans-serif;cursor:pointer;transition:transform .24s var(--ease),filter .24s var(--ease);display:inline-flex;align-items:center}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-primary:focus-visible{outline:2px solid var(--terracotta);outline-offset:3px}
+.btn-ghost{background:transparent;color:var(--bone);border:1px solid rgba(245,243,238,.4);padding:16px 28px;border-radius:8px;font-size:15px;font-weight:500;font-family:Inter,sans-serif;cursor:pointer;display:inline-flex;align-items:center;transition:border-color .24s var(--ease)}
+.btn-ghost:hover{border-color:rgba(245,243,238,.7)}
+.btn-ghost:focus-visible{outline:2px solid var(--bone);outline-offset:3px}
+
+/* Manifesto */
+.manifesto{padding:96px;border-top:1px solid rgba(245,243,238,.12);display:grid;grid-template-columns:240px 1fr;gap:64px}
+.section-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,243,238,.6)}
+.manifesto-text{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:32px;line-height:1.3;letter-spacing:-.018em;max-width:44ch}
+
+/* Marquee */
+.marquee-section{border-top:1px solid rgba(245,243,238,.12);border-bottom:1px solid rgba(245,243,238,.12);padding:44px 0;overflow:hidden;position:relative;background:rgba(245,243,238,.015)}
+.marquee-fade{position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(90deg,var(--carbon) 0%,transparent 8%,transparent 92%,var(--carbon) 100%)}
+.marquee-track{display:flex;gap:80px;white-space:nowrap;align-items:center;animation:rf-marquee 28s linear infinite;will-change:transform}
+.marquee-item{display:inline-flex;align-items:center;gap:16px;color:rgba(245,243,238,.7);font-family:"Inter Tight",sans-serif;font-size:22px;letter-spacing:-.01em}
+.marquee-item img{width:28px;height:28px;opacity:.85}
+.marquee-dot{width:4px;height:4px;border-radius:50%;background:var(--terracotta);margin-left:24px;flex-shrink:0}
+@keyframes rf-marquee{from{transform:translateX(0)}to{transform:translateX(-33.333%)}}
+
+/* Editorial Divider */
+.editorial-divider{position:relative;overflow:hidden;height:220px}
+.editorial-divider-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--slate) 0%,var(--terracotta) 50%,var(--carbon) 100%);filter:brightness(.5)}
+.editorial-divider-overlay{position:absolute;inset:0;background:linear-gradient(90deg,var(--carbon) 0%,rgba(13,13,13,.55) 30%,rgba(13,13,13,.55) 70%,var(--carbon) 100%)}
+.editorial-divider-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"Inter Tight",sans-serif;font-weight:400;font-size:20px;letter-spacing:.32em;text-transform:uppercase;color:rgba(245,243,238,.85)}
+
+/* Stack */
+.stack-section{position:relative;padding:96px;border-top:1px solid rgba(245,243,238,.12);overflow:hidden}
+.stack-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.stack-bg-grad1{position:absolute;inset:0;background:linear-gradient(90deg,var(--carbon) 0%,rgba(13,13,13,.96) 35%,rgba(13,13,13,.7) 60%,rgba(13,13,13,.2) 85%,rgba(13,13,13,.05) 100%)}
+.stack-bg-grad2{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,13,13,.4) 0%,rgba(13,13,13,0) 30%,rgba(13,13,13,0) 70%,rgba(13,13,13,.6) 100%)}
+.stack-inner{position:relative;z-index:1;display:grid;grid-template-columns:240px 1fr;gap:64px;align-items:flex-start}
+.stack-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:56px;letter-spacing:-.025em;line-height:1;max-width:22ch}
+.stack-grid{margin-top:64px;display:grid;grid-template-columns:1fr 1fr;gap:48px 64px}
+.stack-group-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--terracotta);margin-bottom:14px}
+.stack-item{padding:10px 0;border-bottom:1px solid rgba(245,243,238,.1);font-family:"Inter Tight",sans-serif;font-weight:400;font-size:18px;display:flex;align-items:center;gap:12px}
+.stack-item-dot{width:4px;height:4px;border-radius:50%;background:rgba(245,243,238,.4);flex-shrink:0}
+
+/* WorkIndex */
+.work-section{padding:96px 96px 64px}
+.work-header{display:flex;align-items:baseline;gap:32px;margin-bottom:56px;border-bottom:1px solid rgba(245,243,238,.2);padding-bottom:18px}
+.work-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:64px;letter-spacing:-.025em;line-height:1}
+.work-meta{font-size:13px;color:rgba(245,243,238,.6);font-family:ui-monospace,monospace;margin-left:auto}
+.work-row{display:grid;grid-template-columns:80px 160px 1fr 80px 24px;gap:32px;align-items:baseline;padding:28px 0;border-bottom:1px solid rgba(245,243,238,.12);color:var(--bone);transition:color .24s var(--ease)}
+.work-row:hover{color:var(--terracotta)}
+.work-num{font-family:ui-monospace,monospace;font-size:13px;opacity:.55}
+.work-kind{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.work-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:32px;letter-spacing:-.02em;line-height:1.1;transition:transform .32s var(--ease)}
+.work-row:hover .work-name{transform:translateX(8px)}
+.work-year{font-family:ui-monospace,monospace;font-size:13px;opacity:.6;text-align:right}
+.work-arrow{font-family:ui-monospace,monospace;font-size:14px;opacity:.4;transform:translateX(-6px);transition:transform .32s var(--ease),opacity .32s var(--ease)}
+.work-row:hover .work-arrow{opacity:1;transform:translateX(0)}
+.work-row:focus-visible{outline:2px solid var(--terracotta);outline-offset:2px;border-radius:2px}
+
+/* About */
+.about-section{position:relative;padding:96px;border-top:1px solid rgba(245,243,238,.12);overflow:hidden}
+.about-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.about-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.12;filter:blur(2px);transform:scaleY(-1)}
+.about-bg-grad{position:absolute;inset:0;background:radial-gradient(100% 80% at 20% 80%,rgba(13,13,13,.5) 0%,rgba(13,13,13,.94) 60%,var(--carbon) 100%)}
+.about-grid{display:grid;grid-template-columns:440px 1fr;gap:64px;align-items:flex-start;position:relative;z-index:1}
+.about-heading{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:64px;letter-spacing:-.025em;line-height:1}
+.about-body{font-size:18px;line-height:1.6;color:rgba(245,243,238,.7);margin-top:32px;max-width:60ch}
+.about-link{color:var(--terracotta);border-bottom:1px solid var(--terracotta);transition:opacity .24s var(--ease)}
+.about-link:hover{opacity:.8}
+.about-stats{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:540px}
+.about-stat{border-top:1px solid rgba(245,243,238,.2);padding-top:12px}
+.about-stat-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,243,238,.5);margin-bottom:6px}
+.about-stat-value{font-size:15px}
+
+/* LogoWall */
+.logo-wall{width:100%}
+.logo-wall-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px 28px}
+.logo-group-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(245,243,238,.12)}
+.logo-item{display:flex;align-items:center;gap:12px;padding:8px 0}
+.logo-item img{width:22px;height:22px;object-fit:contain}
+.logo-item-icon{width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-item-name{font-family:"Inter Tight",sans-serif;font-weight:400;font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo-item-initial{width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-family:"Inter Tight",sans-serif;font-weight:600;font-size:13px;letter-spacing:-.04em;border:1px solid rgba(245,243,238,.35);border-radius:4px}
+.logo-item-link{display:flex;align-items:center;gap:12px;color:inherit;width:100%;transition:opacity .2s var(--ease)}
+.logo-item-link:hover{opacity:.7}
+.logo-item-link:hover .logo-item-name{color:var(--terracotta)}
+
+/* Footer */
+.footer{padding:96px 96px 64px;border-top:1px solid rgba(245,243,238,.12);display:grid;grid-template-columns:1fr 1fr 1fr 96px;gap:48px;align-items:flex-end}
+.footer-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,243,238,.5);margin-bottom:14px}
+.footer-desc{font-size:14px;color:rgba(245,243,238,.7);line-height:1.55;max-width:26ch}
+.footer-link{font-size:14px;color:var(--bone);position:relative;display:inline-block;transition:color .24s var(--ease)}
+.footer-link::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:0;background:var(--terracotta);transition:width .36s var(--ease)}
+.footer-link:hover::after{width:100%}
+.footer-link:focus-visible{outline:2px solid var(--terracotta);outline-offset:3px}
+.footer-muted{color:rgba(245,243,238,.4);font-size:13px}
+.footer-links-col{display:flex;flex-direction:column;gap:10px;font-size:14px}
+
+/* Áreas de atuação */
+.areas-section{padding:96px;border-top:1px solid rgba(245,243,238,.12)}
+.areas-header{display:flex;align-items:baseline;gap:32px;margin-bottom:64px}
+.areas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.area-card{padding:40px 36px;border:1px solid rgba(245,243,238,.1);position:relative;overflow:hidden;transition:border-color .32s var(--ease)}
+.area-card:hover{border-color:rgba(245,243,238,.25)}
+.area-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--terracotta);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.area-card:hover::before{transform:scaleX(1)}
+.area-num{font-family:ui-monospace,monospace;font-size:11px;color:rgba(245,243,238,.35);margin-bottom:28px;display:block}
+.area-icon{width:48px;height:48px;margin-bottom:24px;opacity:.85}
+.area-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;line-height:1.1;margin-bottom:16px}
+.area-desc{font-size:14px;line-height:1.65;color:rgba(245,243,238,.6);max-width:32ch}
+.area-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px}
+.area-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border:1px solid rgba(245,243,238,.15);color:rgba(245,243,238,.5)}
+@media(max-width:1024px){.areas-section{padding:64px 32px}.areas-grid{grid-template-columns:repeat(2,1fr);gap:2px}}
+@media(max-width:600px){.areas-section{padding:48px 16px}.areas-grid{grid-template-columns:1fr;gap:0}}
+@media(max-width:600px){.areas-section{padding:48px 16px}.area-card{padding:28px 20px}}
+
+/* Spine */
+.spine{position:fixed;top:0;height:100vh;width:56px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+.spine-left{left:0}
+.spine-text{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,243,238,.5);transform:rotate(-90deg);white-space:nowrap}
+
+/* Responsive */
+@media(max-width:1024px){
+.nav{padding:14px 32px;gap:24px}
+.hero{padding:100px 32px 80px}
+.hero-content{max-width:90%}
+.hero h1{font-size:clamp(36px,7vw,72px)}
+.hero-desc{font-size:18px}
+.manifesto{padding:64px 32px;grid-template-columns:1fr;gap:24px}
+.stack-section{padding:64px 32px}
+.stack-inner{grid-template-columns:1fr;gap:32px}
+.stack-grid{grid-template-columns:1fr}
+.work-section{padding:64px 32px}
+.work-header{flex-wrap:wrap}
+.work-title{font-size:40px}
+.work-row{grid-template-columns:40px 100px 1fr 60px 20px;gap:16px;padding:20px 0}
+.work-name{font-size:22px}
+.about-section{padding:64px 32px}
+.about-grid{grid-template-columns:1fr;gap:48px}
+.about-heading{font-size:40px}
+.about-stats{grid-template-columns:1fr}
+.footer{padding:64px 32px;grid-template-columns:1fr;gap:32px}
+.spine{display:none}
+.logo-wall-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+.nav{padding:12px 16px;gap:16px}
+.nav-links{gap:20px}
+.hero{padding:80px 16px 60px;min-height:80vh}
+.hero-content{max-width:100%}
+.hero-video{object-position:65% center}
+.hero-grad1{background:linear-gradient(180deg,var(--carbon) 0%,rgba(13,13,13,.85) 30%,rgba(13,13,13,.6) 60%,rgba(13,13,13,.3) 100%)}
+.hero-ctas{flex-direction:column;gap:12px}
+.manifesto{padding:48px 16px}
+.manifesto-text{font-size:24px}
+.stack-section{padding:48px 16px}
+.work-section{padding:48px 16px}
+.work-row{grid-template-columns:1fr;gap:8px}
+.work-num,.work-year,.work-arrow{display:none}
+.work-kind{margin-bottom:4px}
+.about-section{padding:48px 16px}
+.footer{padding:48px 16px}
+}
+</style>
+
+<meta property="og:image" content="https://rhuanfreire.com/images/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.png">
+</head>
+<body>
+
+<!-- Vertical Spine -->
+<div class="spine spine-left" aria-hidden="true"><div class="spine-text">Rhuan Freire</div></div>
+
+<!-- Nav -->
+<nav class="nav" role="navigation" aria-label="Navegação principal">
+  <a href="#inicio" class="nav-brand" aria-label="Rhuan Freire — Início">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <div class="nav-links">
+    <a href="#inicio" class="nav-link active">início</a>
+    <a href="#areas" class="nav-link">serviços</a>
+    <a href="#trabalhos" class="nav-link">trabalhos</a>
+    <a href="#sobre" class="nav-link">sobre</a>
+    <a href="/blog/" class="nav-link">blog</a>
+    <a href="#contato" class="nav-link">contato</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="inicio" class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <video class="hero-video" autoplay muted playsinline preload="metadata" width="1920" height="1080">
+      <source src="hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-grad1"></div>
+    <div class="hero-grad2"></div>
+  </div>
+  <div class="hero-content">
+    <div class="rv hero-eyebrow">DevOps · Automação · IA aplicada — São Paulo, BR</div>
+    <div class="rv rv-d1">
+      <h1>Infraestrutura, <em>automação</em><br>e IA que funcionam.</h1>
+    </div>
+    <div class="rv rv-d2">
+      <p class="hero-desc">Engenheiro freelance especializado em DevOps com Docker Swarm e Traefik, automação de processos com n8n, e agentes de IA para atendimento e operações. Sistemas que rodam em produção sem precisar de supervisão constante.</p>
+    </div>
+    <div class="rv rv-d3 hero-ctas">
+      <a href="#trabalhos" class="btn-primary">Ver trabalhos →</a>
+      <a href="#sobre" class="btn-ghost">Sobre</a>
+    </div>
+  </div>
+</section>
+
+<!-- Manifesto -->
+<section class="manifesto">
+  <div class="rv section-label">Manifesto</div>
+  <div class="rv rv-d1">
+    <p class="manifesto-text">Boa infraestrutura não acorda ninguém às 3h. Construo ambientes DevOps, automações com n8n e agentes de IA com a mesma lógica de uma <em style="font-style:italic">tipografia</em> bem desenhada — peças discretas, bem ajustadas, feitas para durar.</p>
+  </div>
+</section>
+
+<!-- Marquee -->
+<section class="marquee-section" aria-label="Tecnologias utilizadas">
+  <div class="marquee-fade" aria-hidden="true"></div>
+  <div class="marquee-track">
+    <div class="marquee-item"><img src="/icons/docker.svg" alt="" width="28" height="28" loading="lazy"><span>Docker</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/traefik.svg" alt="" width="28" height="28" loading="lazy"><span>Traefik</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/portainer.svg" alt="" width="28" height="28" loading="lazy"><span>Portainer</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/cloudflare.svg" alt="" width="28" height="28" loading="lazy"><span>Cloudflare</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/n8n.svg" alt="" width="28" height="28" loading="lazy"><span>n8n</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/rabbitmq.svg" alt="" width="28" height="28" loading="lazy"><span>RabbitMQ</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/postgresql.svg" alt="" width="28" height="28" loading="lazy"><span>PostgreSQL</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/redis.svg" alt="" width="28" height="28" loading="lazy"><span>Redis</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/prometheus.svg" alt="" width="28" height="28" loading="lazy"><span>Prometheus</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/grafana.svg" alt="" width="28" height="28" loading="lazy"><span>Grafana</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/claude.svg" alt="" width="28" height="28" loading="lazy"><span>Claude</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/openai.svg" alt="" width="28" height="28" loading="lazy"><span>OpenAI</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/langchain.svg" alt="" width="28" height="28" loading="lazy"><span>LangChain</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/whatsapp.svg" alt="" width="28" height="28" loading="lazy"><span>WhatsApp</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/chatwoot.svg" alt="" width="28" height="28" loading="lazy"><span>Chatwoot</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/python.svg" alt="" width="28" height="28" loading="lazy"><span>Python</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/nodedotjs.svg" alt="" width="28" height="28" loading="lazy"><span>Node.js</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/typescript.svg" alt="" width="28" height="28" loading="lazy"><span>TypeScript</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/github.svg" alt="" width="28" height="28" loading="lazy"><span>GitHub</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/supabase.svg" alt="" width="28" height="28" loading="lazy"><span>Supabase</span><span class="marquee-dot"></span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="marquee-item"><img src="/icons/docker.svg" alt="" width="28" height="28" loading="lazy"><span>Docker</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/traefik.svg" alt="" width="28" height="28" loading="lazy"><span>Traefik</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/portainer.svg" alt="" width="28" height="28" loading="lazy"><span>Portainer</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/cloudflare.svg" alt="" width="28" height="28" loading="lazy"><span>Cloudflare</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/n8n.svg" alt="" width="28" height="28" loading="lazy"><span>n8n</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/rabbitmq.svg" alt="" width="28" height="28" loading="lazy"><span>RabbitMQ</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/postgresql.svg" alt="" width="28" height="28" loading="lazy"><span>PostgreSQL</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/redis.svg" alt="" width="28" height="28" loading="lazy"><span>Redis</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/prometheus.svg" alt="" width="28" height="28" loading="lazy"><span>Prometheus</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/grafana.svg" alt="" width="28" height="28" loading="lazy"><span>Grafana</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/claude.svg" alt="" width="28" height="28" loading="lazy"><span>Claude</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/openai.svg" alt="" width="28" height="28" loading="lazy"><span>OpenAI</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/langchain.svg" alt="" width="28" height="28" loading="lazy"><span>LangChain</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/whatsapp.svg" alt="" width="28" height="28" loading="lazy"><span>WhatsApp</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/chatwoot.svg" alt="" width="28" height="28" loading="lazy"><span>Chatwoot</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/python.svg" alt="" width="28" height="28" loading="lazy"><span>Python</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/nodedotjs.svg" alt="" width="28" height="28" loading="lazy"><span>Node.js</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/typescript.svg" alt="" width="28" height="28" loading="lazy"><span>TypeScript</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/github.svg" alt="" width="28" height="28" loading="lazy"><span>GitHub</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><img src="/icons/supabase.svg" alt="" width="28" height="28" loading="lazy"><span>Supabase</span><span class="marquee-dot"></span></div>
+  </div>
+</section>
+
+<!-- Editorial Divider -->
+<section class="editorial-divider" aria-hidden="true">
+  <div class="editorial-divider-bg"></div>
+  <div class="editorial-divider-overlay"></div>
+  <div class="editorial-divider-label">Engenharia · Automação · IA</div>
+</section>
+
+<!-- Áreas de atuação -->
+<section id="areas" class="areas-section">
+  <div class="rv areas-header">
+    <div class="section-label">Áreas de atuação</div>
+  </div>
+  <div class="areas-grid">
+    <!-- DevOps -->
+    <div class="rv area-card">
+      <span class="area-num">01</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="4" y="10" width="40" height="28" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M4 18h40" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
+        <circle cx="11" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
+        <circle cx="17" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
+        <circle cx="23" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
+        <path d="M12 28l4-4-4-4M20 28h8" stroke="rgba(245,243,238,.7)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">DevOps &amp; Infraestrutura</h3>
+      <p class="area-desc">Clusters Docker Swarm com Traefik v3 e Portainer EE. Roteamento, SSL, zero-downtime deploy e observabilidade completa com Prometheus e Grafana.</p>
+      <div class="area-tags">
+        <span class="area-tag">Docker Swarm</span>
+        <span class="area-tag">Traefik</span>
+        <span class="area-tag">Portainer</span>
+        <span class="area-tag">Prometheus</span>
+        <span class="area-tag">Grafana</span>
+      </div>
+    </div>
+    <!-- Automação -->
+    <div class="rv rv-d1 area-card">
+      <span class="area-num">02</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="10" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <circle cx="38" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <circle cx="24" cy="10" r="5" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
+        <circle cx="24" cy="38" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M15 24h9M24 15v9M24 28v5M29 24h4" stroke="rgba(245,243,238,.4)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">Automação de processos</h3>
+      <p class="area-desc">Pipelines com n8n e RabbitMQ: sync de marketplaces, qualificação de leads, notificações e integrações entre sistemas com idempotência e retry garantidos.</p>
+      <div class="area-tags">
+        <span class="area-tag">n8n</span>
+        <span class="area-tag">RabbitMQ</span>
+        <span class="area-tag">PostgreSQL</span>
+        <span class="area-tag">Pipelines</span>
+      </div>
+    </div>
+    <!-- Agentes de IA -->
+    <div class="rv rv-d2 area-card">
+      <span class="area-num">03</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="8" y="14" width="32" height="22" rx="4" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M16 26c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="26" r="2.5" fill="rgba(245,243,238,.7)"/>
+        <path d="M16 38v-2M32 38v-2M20 38v-2M28 38v-2M24 38v-2" stroke="rgba(245,243,238,.4)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">Agentes de IA aplicada</h3>
+      <p class="area-desc">Agentes de atendimento no WhatsApp com handoff humano, RAG sobre documentos fiscais e contratos, URA conversacional com Whisper e Claude. IA que opera em produção.</p>
+      <div class="area-tags">
+        <span class="area-tag">Claude API</span>
+        <span class="area-tag">RAG</span>
+        <span class="area-tag">WhatsApp</span>
+        <span class="area-tag">Whisper</span>
+        <span class="area-tag">pgvector</span>
+      </div>
+    </div>
+    <!-- Produto & Integração -->
+    <div class="rv rv-d3 area-card">
+      <span class="area-num">04</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="6" y="8" width="36" height="26" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M16 34v6M32 34v6M11 40h26" stroke="rgba(245,243,238,.5)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 20h6M14 25h10" stroke="rgba(245,243,238,.4)" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="28" y="17" width="10" height="10" rx="2" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
+        <path d="M31 22h4M31 19.5v5" stroke="rgba(196,94,58,.6)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">Produto &amp; Integração</h3>
+      <p class="area-desc">Sites, landing pages e CRMs integrados com automação — do deploy no Docker até o funil de atendimento no WhatsApp. Entrega completa, do front ao pipeline.</p>
+      <div class="area-tags">
+        <span class="area-tag">Sites</span>
+        <span class="area-tag">CRM</span>
+        <span class="area-tag">Chatwoot</span>
+        <span class="area-tag">n8n</span>
+        <span class="area-tag">WhatsApp</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stack -->
+<section id="stack" class="stack-section">
+  <div class="stack-bg" aria-hidden="true">
+    <img src="robo-2.jpg" alt="" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:85% center;filter:contrast(1.05) brightness(.85)" loading="lazy">
+    <div class="stack-bg-grad1"></div>
+    <div class="stack-bg-grad2"></div>
+  </div>
+  <div class="stack-inner">
+    <div class="rv section-label">Stack</div>
+    <div>
+      <div class="rv">
+        <h2 class="stack-title">DevOps, automação e IA — o stack que uso em produção de verdade.</h2>
+      </div>
+      <div class="stack-grid">
+        <div class="rv">
+          <div class="stack-group-label">Agentes & LLMs</div>
+          <ul>
+            <li class="stack-item"><span class="stack-item-dot"></span>Claude</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>OpenAI</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Gemini</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>LangChain</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Ollama</li>
+          </ul>
+        </div>
+        <div class="rv rv-d1">
+          <div class="stack-group-label">Orquestração & Infra</div>
+          <ul>
+            <li class="stack-item"><span class="stack-item-dot"></span>Docker Swarm</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Portainer</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Traefik</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Cloudflare</li>
+          </ul>
+        </div>
+        <div class="rv rv-d2">
+          <div class="stack-group-label">Banco de Dados</div>
+          <ul>
+            <li class="stack-item"><span class="stack-item-dot"></span>PostgreSQL HA</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>PgBouncer</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>pgvector</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Redis Sentinel</li>
+          </ul>
+        </div>
+        <div class="rv rv-d3">
+          <div class="stack-group-label">Mensageria & Automação</div>
+          <ul>
+            <li class="stack-item"><span class="stack-item-dot"></span>RabbitMQ</li>
+            <li class="stack-item"><span class="stack-item-dot"></span>n8n</li>
+            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://gozap.dev/" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid rgba(245,243,238,.3)">Gozap</a></li>
+            <li class="stack-item"><span class="stack-item-dot"></span>Chatwoot</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WorkIndex -->
+<section id="trabalhos" class="work-section">
+  <div class="rv work-header">
+    <h2 class="work-title">Trabalhos selecionados</h2>
+    <div class="work-meta">2023 — 2025 · 6 casos</div>
+  </div>
+  <ul>
+    <li class="rv"><a href="/whatsapp" class="work-row" aria-label="Atendimento no WhatsApp — Agente, 2025">
+      <span class="work-num">01</span><span class="work-kind">Agente</span><span class="work-name">Atendimento no WhatsApp</span><span class="work-year">2025</span><span class="work-arrow">→</span>
+    </a></li>
+    <li class="rv rv-d1"><a href="/fiscal" class="work-row" aria-label="Busca em base fiscal — RAG, 2025">
+      <span class="work-num">02</span><span class="work-kind">RAG</span><span class="work-name">Busca em base fiscal</span><span class="work-year">2025</span><span class="work-arrow">→</span>
+    </a></li>
+    <li class="rv rv-d2"><a href="/sync" class="work-row" aria-label="Sync entre marketplaces — Pipeline, 2024">
+      <span class="work-num">03</span><span class="work-kind">Pipeline</span><span class="work-name">Sync entre marketplaces</span><span class="work-year">2024</span><span class="work-arrow">→</span>
+    </a></li>
+    <li class="rv rv-d3"><a href="/ura" class="work-row" aria-label="URA conversacional — Voz, 2024">
+      <span class="work-num">04</span><span class="work-kind">Voz</span><span class="work-name">URA conversacional</span><span class="work-year">2024</span><span class="work-arrow">→</span>
+    </a></li>
+    <li class="rv rv-d4"><a href="/dashboard" class="work-row" aria-label="Painel de operação — Dashboard, 2023">
+      <span class="work-num">05</span><span class="work-kind">Dashboard</span><span class="work-name">Painel de operação</span><span class="work-year">2023</span><span class="work-arrow">→</span>
+    </a></li>
+    <li class="rv"><a href="/leads" class="work-row" aria-label="Qualificação de leads — Automação, 2023">
+      <span class="work-num">06</span><span class="work-kind">Automação</span><span class="work-name">Qualificação de leads</span><span class="work-year">2023</span><span class="work-arrow">→</span>
+    </a></li>
+  </ul>
+</section>
+
+<!-- About -->
+<section id="sobre" class="about-section">
+  <div class="about-bg" aria-hidden="true">
+    <img src="gradient-slate-terracotta.png" alt="" class="about-bg-img" width="1920" height="1080" loading="lazy">
+    <div class="about-bg-grad"></div>
+  </div>
+  <div class="about-grid">
+    <!-- Logo Wall -->
+    <div class="rv">
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,243,238,.5);margin-bottom:18px;display:flex;justify-content:space-between">
+        <span>Ferramental — o que uso</span><span>{rf} · 2025</span>
+      </div>
+      <div class="logo-wall">
+        <div class="logo-wall-grid">
+          <div>
+            <div class="logo-group-label">Agentes & LLMs</div>
+            <ul>
+              <li class="logo-item"><a href="https://claude.ai" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/claude.svg" alt="Claude" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Claude</span></a></li>
+              <li class="logo-item"><a href="https://openai.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/openai.svg" alt="OpenAI" width="22" height="22" loading="lazy"></span><span class="logo-item-name">OpenAI</span></a></li>
+              <li class="logo-item"><a href="https://gemini.google.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/googlegemini.svg" alt="Gemini" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Gemini</span></a></li>
+              <li class="logo-item"><a href="https://www.langchain.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/langchain.svg" alt="LangChain" width="22" height="22" loading="lazy"></span><span class="logo-item-name">LangChain</span></a></li>
+              <li class="logo-item"><a href="https://www.llamaindex.ai" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/llamaindex.svg" alt="LlamaIndex" width="22" height="22" loading="lazy"></span><span class="logo-item-name">LlamaIndex</span></a></li>
+              <li class="logo-item"><a href="https://ollama.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/ollama.svg" alt="Ollama" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Ollama</span></a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="logo-group-label">Orquestração & Infra</div>
+            <ul>
+              <li class="logo-item"><a href="https://www.docker.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/docker.svg" alt="Docker" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Docker</span></a></li>
+              <li class="logo-item"><a href="https://docs.docker.com/engine/swarm/" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/dockerswarm.svg" alt="Docker Swarm" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Docker Swarm</span></a></li>
+              <li class="logo-item"><a href="https://www.portainer.io" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/portainer.svg" alt="Portainer" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Portainer EE</span></a></li>
+              <li class="logo-item"><a href="https://traefik.io/traefik/" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/traefik.svg" alt="Traefik" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Traefik v3</span></a></li>
+              <li class="logo-item"><a href="https://www.cloudflare.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/cloudflare.svg" alt="Cloudflare" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Cloudflare</span></a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="logo-group-label">Banco de Dados</div>
+            <ul>
+              <li class="logo-item"><a href="https://www.postgresql.org" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/postgresql.svg" alt="PostgreSQL" width="22" height="22" loading="lazy"></span><span class="logo-item-name">PostgreSQL HA</span></a></li>
+              <li class="logo-item"><a href="https://www.pgbouncer.org" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/pgbouncer.svg" alt="PgBouncer" width="22" height="22" loading="lazy"></span><span class="logo-item-name">PgBouncer</span></a></li>
+              <li class="logo-item"><a href="https://github.com/pgvector/pgvector" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/postgresql.svg" alt="pgvector" width="22" height="22" loading="lazy"></span><span class="logo-item-name">pgvector</span></a></li>
+              <li class="logo-item"><a href="https://redis.io/topics/sentinel" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/redis.svg" alt="Redis Sentinel" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Redis Sentinel</span></a></li>
+              <li class="logo-item"><a href="https://supabase.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/supabase.svg" alt="Supabase" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Supabase</span></a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="logo-group-label">Mensageria & Automação</div>
+            <ul>
+              <li class="logo-item"><a href="https://www.rabbitmq.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/rabbitmq.svg" alt="RabbitMQ" width="22" height="22" loading="lazy"></span><span class="logo-item-name">RabbitMQ</span></a></li>
+              <li class="logo-item"><a href="https://n8n.io" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/n8n.svg" alt="n8n" width="22" height="22" loading="lazy"></span><span class="logo-item-name">n8n</span></a></li>
+              <li class="logo-item"><a href="https://gozap.dev/" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/gozap.svg" alt="Gozap" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Gozap</span></a></li>
+              <li class="logo-item"><a href="https://www.chatwoot.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/chatwoot.svg" alt="Chatwoot" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Chatwoot</span></a></li>
+              <li class="logo-item"><a href="https://business.whatsapp.com/developers" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/whatsapp.svg" alt="WhatsApp" width="22" height="22" loading="lazy"></span><span class="logo-item-name">WhatsApp API</span></a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="logo-group-label">Observabilidade</div>
+            <ul>
+              <li class="logo-item"><a href="https://prometheus.io" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/prometheus.svg" alt="Prometheus" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Prometheus</span></a></li>
+              <li class="logo-item"><a href="https://grafana.com/oss/grafana/" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/grafana.svg" alt="Grafana" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Grafana OSS</span></a></li>
+              <li class="logo-item"><a href="https://prometheus.io/docs/guides/node-exporter/" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/nodeexporter.svg" alt="Node Exporter" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Node Exporter</span></a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="logo-group-label">Code & Deploy</div>
+            <ul>
+              <li class="logo-item"><a href="https://github.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/github.svg" alt="GitHub" width="22" height="22" loading="lazy"></span><span class="logo-item-name">GitHub</span></a></li>
+              <li class="logo-item"><a href="https://www.python.org" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/python.svg" alt="Python" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Python</span></a></li>
+              <li class="logo-item"><a href="https://nodejs.org" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/nodedotjs.svg" alt="Node.js" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Node.js</span></a></li>
+              <li class="logo-item"><a href="https://www.typescriptlang.org" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/typescript.svg" alt="TypeScript" width="22" height="22" loading="lazy"></span><span class="logo-item-name">TypeScript</span></a></li>
+              <li class="logo-item"><a href="https://fastapi.tiangolo.com" target="_blank" rel="noopener" class="logo-item-link"><span class="logo-item-icon"><img src="/icons/fastapi.svg" alt="FastAPI" width="22" height="22" loading="lazy"></span><span class="logo-item-name">FastAPI</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- About text -->
+    <div>
+      <div class="rv section-label" style="margin-bottom:18px">Sobre</div>
+      <div class="rv rv-d1">
+        <h2 class="about-heading">DevOps, automação e IA. Produção real.</h2>
+      </div>
+      <div class="rv rv-d2">
+        <p class="about-body">Comecei em sistemas financeiros — APIs, integrações, pipelines que precisavam fechar o dia certinho. Com o tempo, fui ampliando o escopo: hoje cuido de toda a camada de infra (Docker Swarm, Traefik, Portainer), automação de processos com n8n e RabbitMQ, e agentes de IA para atendimento e operações.</p>
+        <p class="about-body" style="margin-top:18px">Me interessa o que dura sem precisar de supervisão constante. Um cluster que se recupera sozinho. Um pipeline de automação que processa 300 pedidos por hora sem intervenção. Um agente de WhatsApp que sabe quando passar para o humano. Trabalho como engenheiro freelance contratado por contrato, próximo de times de produto, operações e tecnologia.</p>
+      </div>
+      <div class="rv rv-d3">
+        <p class="about-body" style="margin-top:18px">Baseado em São Paulo. Aceitando projetos selecionados em 2025. <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="about-link">LinkedIn ↗</a></p>
+      </div>
+      <div class="rv rv-d4">
+        <div class="about-stats">
+          <div class="about-stat"><div class="about-stat-label">Foco</div><div class="about-stat-value">DevOps · Automação · IA</div></div>
+          <div class="about-stat"><div class="about-stat-label">Stack</div><div class="about-stat-value">Docker · n8n · Python</div></div>
+          <div class="about-stat"><div class="about-stat-label">Formato</div><div class="about-stat-value">Freelance · remoto · contrato</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="contato" class="footer">
+  <div>
+    <div class="footer-label">Estúdio — RF</div>
+    <p class="footer-desc">Rhuan Freire — prática independente, baseada em São Paulo.</p>
+  </div>
+  <div>
+    <div class="footer-label">Contato</div>
+    <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn — Rhuan Silva Freire</a>
+  </div>
+  <div>
+    <div class="footer-label">Em outros lugares</div>
+    <div class="footer-links-col">
+      <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn ↗</a>
+      <span class="footer-muted">GitHub — em breve</span>
+      <span class="footer-muted">Instagram — em breve</span>
+      <a href="/privacidade" class="footer-link">Política de Privacidade</a>
+    </div>
+  </div>
+  <div style="justify-self:end">
+    <svg width="72" height="36" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-label="rf monogram">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+  </div>
+</footer>
+
+<script>
+// Scroll Reveal via IntersectionObserver
+(function(){
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){for(var i=0;i<els.length;i++)els[i].classList.add('revealed');return}
+  var io=new IntersectionObserver(function(entries){
+    for(var j=0;j<entries.length;j++){
+      if(entries[j].isIntersecting){entries[j].target.classList.add('revealed');io.unobserve(entries[j].target)}
+    }
+  },{threshold:0.15,rootMargin:'0px 0px -8% 0px'});
+  for(var k=0;k<els.length;k++)io.observe(els[k]);
+})();
+
+// Scrollspy nav
+(function(){
+  var sections=document.querySelectorAll('section[id],footer[id]');
+  var links=document.querySelectorAll('.nav-link');
+  if(!sections.length)return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id=e.target.id;
+        links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+id)});
+      }
+    });
+  },{threshold:0,rootMargin:'-40% 0px -55% 0px'});
+  sections.forEach(function(s){io.observe(s)});
+})();
+
+// Ensure hero video plays (some mobile browsers need explicit play after load)
+(function(){
+  var v=document.querySelector('.hero-video');
+  if(!v)return;
+  v.play().catch(function(){});
+})();
+
+// GA4 — rastreia cliques nos trabalhos e CTAs
+(function(){
+  document.querySelectorAll('.work-row').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        gtag('event','click_trabalho',{project_name:el.querySelector('.work-name').textContent,project_url:el.getAttribute('href')});
+      }
+    });
+  });
+  document.querySelectorAll('.btn-primary,.btn-ghost').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        gtag('event','click_cta',{label:el.textContent.trim(),href:el.getAttribute('href')});
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>URA sem menu de teclas: como detectar intenção em 2 segundos de áudio — Rhuan Freire</title>
+<meta name="description" content="A promessa da URA conversacional com IA é bonita. A realidade é barulho de fundo, sotaques e o mesmo pedido dito de 40 formas diferentes. Como resolvi isso com Whisper e Claude.">
+<link rel="canonical" href="https://dev.rhuanfreire.com.br/blog/ura-conversacional-sem-menu/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="URA sem menu de teclas: como detectar intenção em 2 segundos de áudio">
+<meta property="og:url" content="https://dev.rhuanfreire.com.br/blog/ura-conversacional-sem-menu/">
+<meta property="og:image" content="https://dev.rhuanfreire.com.br/images/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFWN2SL819"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TFWN2SL819');</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"URA sem menu de teclas: como detectar intenção em 2 segundos de áudio","description":"Como construí uma URA conversacional com Whisper e Claude para detectar intenção e rotear chamadas sem menu de teclas.","author":{"@type":"Person","name":"Rhuan Freire","url":"https://dev.rhuanfreire.com.br"},"datePublished":"2025-05-01","url":"https://dev.rhuanfreire.com.br/blog/ura-conversacional-sem-menu/","keywords":"URA conversacional, Whisper, detecção de intenção, IA voz, roteamento automático"}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2')}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--carbon:#0D0D0D;--bone:#F5F3EE;--terracotta:#C45E3A;--ease:cubic-bezier(.22,1,.36,1)}
+body{background:var(--carbon);color:var(--bone);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7}
+a{color:var(--terracotta);text-decoration:none;border-bottom:1px solid rgba(196,94,58,.4);transition:border-color .2s}
+a:hover{border-color:var(--terracotta)}
+.nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,13,13,.72);border-bottom:1px solid rgba(245,243,238,.12);padding:18px 96px;display:flex;align-items:center;gap:40px}
+.nav-brand{display:flex;align-items:center;gap:12px;color:var(--bone);border:none}
+.nav-brand-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:17px;letter-spacing:-.02em}
+.nav-links{display:flex;gap:40px;margin-left:auto}
+.nav-link{font-size:14px;color:rgba(245,243,238,.65);border:none;transition:color .2s}
+.nav-link:hover{color:var(--bone)}
+.article-wrap{max-width:720px;margin:0 auto;padding:72px 32px 120px}
+.article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,243,238,.45);border:none;margin-bottom:48px;transition:color .2s}
+.article-back:hover{color:rgba(245,243,238,.75)}
+.article-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px}
+h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(32px,5vw,52px);letter-spacing:-.025em;line-height:1.08;margin-bottom:20px}
+.article-meta{font-size:13px;color:rgba(245,243,238,.4);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(245,243,238,.1)}
+.article-lead{font-size:20px;color:rgba(245,243,238,.7);line-height:1.6;margin-bottom:48px}
+h2{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;margin:56px 0 16px}
+p{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:20px}
+ul,ol{padding-left:24px;margin-bottom:20px}
+li{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:8px}
+strong{color:rgba(245,243,238,.9);font-weight:500}
+code{font-family:monospace;font-size:14px;background:rgba(245,243,238,.08);padding:2px 6px;border-radius:4px;color:rgba(245,243,238,.85)}
+pre{background:rgba(245,243,238,.05);border:1px solid rgba(245,243,238,.1);border-radius:8px;padding:24px;overflow-x:auto;margin:32px 0}
+pre code{background:none;padding:0;font-size:13px;line-height:1.65}
+blockquote{border-left:3px solid var(--terracotta);padding:16px 24px;margin:32px 0;background:rgba(196,94,58,.06);border-radius:0 6px 6px 0}
+blockquote p{margin:0;color:rgba(245,243,238,.8);font-style:italic}
+.case-link{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;padding:10px 18px;border:1px solid rgba(196,94,58,.4);border-radius:6px;color:var(--terracotta);transition:background .2s,border-color .2s}
+.case-link:hover{background:rgba(196,94,58,.08);border-color:var(--terracotta)}
+footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
+footer a{color:rgba(245,243,238,.6);border:none}
+@media(max-width:768px){.nav{padding:14px 24px}.nav-links{display:none}.article-wrap{padding:48px 24px 80px}footer{padding:40px 24px;flex-direction:column}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/blog/" class="article-back">← Blog</a>
+
+  <div class="article-tag">Voz · URA</div>
+  <h1>URA sem menu de teclas: como detectar intenção em 2 segundos de áudio</h1>
+  <div class="article-meta">Rhuan Freire · Maio 2025 · 9 min de leitura</div>
+
+  <p class="article-lead">A promessa é bonita: o usuário fala e o sistema entende. A realidade é barulho de fundo, sotaques, e "quero falar com um atendente" dito de 40 formas diferentes.</p>
+
+  <h2>Por que URA conversacional e não o menu tradicional</h2>
+  <p>Menu de teclas é previsível, mas é um atrito imenso para o usuário. Quem liga já está querendo resolver algo — colocar ele numa árvore de "aperte 1 para X, aperte 2 para Y" aumenta o tempo de atendimento e gera abandono. O NPS de atendimento por voz está diretamente correlacionado ao tempo que o usuário leva para chegar no atendente ou na solução certa.</p>
+  <p>O cliente nesse projeto era uma empresa de utilities com ~500 chamadas por dia. A URA tradicional tinha 4 níveis de menu. O objetivo era: o usuário fala qualquer coisa, o sistema detecta a intenção e roteia para a fila correta — sem menu.</p>
+
+  <h2>A stack de transcrição</h2>
+  <p>O Whisper da OpenAI foi a escolha para transcrição, rodando local (modelo <code>medium</code>) para evitar latência de rede e custo por minuto. A instalação via servidor Python com FastAPI e uma fila de áudio permitiu processar chunks de 2 segundos em tempo quase real.</p>
+  <p>O fluxo de áudio chegava via Twilio Media Streams — WebSocket que envia chunks de áudio mu-law de 160 bytes a cada 20ms. Esses chunks eram acumulados em buffer até completar 2 segundos de áudio, então enviados ao Whisper para transcrição:</p>
+  <pre><code>CHUNK_DURATION_SEC = 2.0
+SAMPLE_RATE = 8000
+CHUNK_SIZE = SAMPLE_RATE * CHUNK_DURATION_SEC  # 16000 samples
+
+async def process_audio_chunk(audio_bytes: bytes) -> str:
+    # Convert mu-law to PCM float32
+    pcm = audioop.ulaw2lin(audio_bytes, 2)
+    audio_np = np.frombuffer(pcm, dtype=np.int16).astype(np.float32) / 32768.0
+
+    result = whisper_model.transcribe(audio_np, language="pt", fp16=False)
+    return result["text"].strip()</code></pre>
+
+  <h2>Detecção de intenção: por que não usar só palavras-chave</h2>
+  <p>A primeira versão usava uma lista de palavras-chave para detectar intenção. "segunda via" → fila de cobrança, "vazamento" → fila de emergência, "atendente" → fila geral.</p>
+  <p>O problema: "quero cancelar meu plano" não tem nenhuma palavra-chave, mas é uma intenção clara. "minha conta está estranha" também. A lista de keywords não escala para todas as formas como as pessoas falam.</p>
+  <p>A solução foi usar um modelo de linguagem pequeno para classificação de intenção, com um prompt estruturado que lista as filas disponíveis e pede para o modelo retornar JSON:</p>
+  <pre><code>{
+  "intent": "cobrança",
+  "confidence": 0.91,
+  "reasoning": "usuário menciona 'segunda via de boleto'",
+  "route_to": "queue_billing"
+}</code></pre>
+  <p>O campo <code>confidence</code> é usado para decidir se o sistema pede confirmação ("você quer falar sobre sua fatura, correto?") ou roteia direto.</p>
+
+  <h2>O problema de barulho e sotaque</h2>
+  <p>Em ambiente de call center, o Whisper performa bem. O problema aparece em ligações de celular com sinal ruim, ambientes barulhentos ou sotaques mais carregados. O modelo transcrevia coisas como "segunda via de bolo" em vez de "segunda via de boleto".</p>
+  <p>A solução foi adicionar um passo de pós-processamento que aplica um vocabulário customizado de termos do domínio — nomes de serviços, tipos de faturas, termos técnicos da empresa — usando fuzzy matching para corrigir transcrições prováveis antes de enviar para o classificador.</p>
+
+  <h2>Latência total: onde o tempo vai</h2>
+  <p>O target era resposta em menos de 3 segundos após o usuário terminar de falar. O breakdown de latência na prática:</p>
+  <ul>
+    <li>Acumulação de buffer de áudio: ~2,0s (por design)</li>
+    <li>Transcrição com Whisper: ~0,4s (modelo medium em CPU)</li>
+    <li>Classificação de intenção: ~0,3s (Haiku via API)</li>
+    <li>Roteamento e resposta de voz (TTS): ~0,4s</li>
+  </ul>
+  <p>Total: ~3,1s. Ligeiramente acima do target, mas dentro do tolerável para o usuário — a sensação é de uma pequena pausa natural, não de "o sistema travou".</p>
+
+  <h2>O que funcionou melhor do que eu esperava</h2>
+  <p>A taxa de acerto de intenção ficou em 94% — bem acima do que achei que conseguiria com 2 segundos de áudio. Descobri que as pessoas tendem a colocar a intenção principal no começo da frase quando sabem que estão falando com uma URA, mesmo sem instruções explícitas para isso.</p>
+
+  <blockquote>
+    <p>O usuário não quer experiência conversacional — quer ser roteado rápido para quem resolve o problema.</p>
+  </blockquote>
+
+  <p style="margin-top:40px">Ver a estrutura técnica completa:</p>
+  <a href="/ura/" class="case-link">Ver case completo →</a>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">← Voltar ao blog</a>
+</footer>
+
+</body>
+</html>
