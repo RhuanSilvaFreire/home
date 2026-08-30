@@ -15,6 +15,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Rhuan Freire — Engenheiro de Software">
 <meta name="twitter:description" content="Agentes de IA, automação e pipelines de dados.">
+<!-- Google Analytics 4 — substitua G-TFWN2SL819 pelo seu Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFWN2SL819"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TFWN2SL819');
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -410,6 +418,7 @@ img{display:block;max-width:100%}
           <div class="stack-group-label">Mensageria & voz</div>
           <ul>
             <li class="stack-item"><span class="stack-item-dot"></span>WhatsApp Cloud</li>
+            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://gozap.dev/" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid rgba(245,243,238,.3)">Gozap</a></li>
             <li class="stack-item"><span class="stack-item-dot"></span>Twilio</li>
             <li class="stack-item"><span class="stack-item-dot"></span>Telegram</li>
             <li class="stack-item"><span class="stack-item-dot"></span>Whisper</li>
@@ -498,6 +507,7 @@ img{display:block;max-width:100%}
             <div class="logo-group-label">Mensageria & voz</div>
             <ul>
               <li class="logo-item"><span class="logo-item-icon"><img src="/icons/whatsapp.svg" alt="WhatsApp" width="22" height="22" loading="lazy"></span><span class="logo-item-name">WhatsApp</span></li>
+              <li class="logo-item"><a href="https://gozap.dev/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;color:inherit"><span class="logo-item-icon"><span class="logo-item-initial">G</span></span><span class="logo-item-name">Gozap</span></a></li>
               <li class="logo-item"><span class="logo-item-icon"><img src="/icons/twilio.svg" alt="Twilio" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Twilio</span></li>
               <li class="logo-item"><span class="logo-item-icon"><img src="/icons/telegram.svg" alt="Telegram" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Telegram</span></li>
               <li class="logo-item"><span class="logo-item-icon"><img src="/icons/openai.svg" alt="Whisper" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Whisper</span></li>
@@ -627,6 +637,24 @@ img{display:block;max-width:100%}
   var v=document.querySelector('.hero-video');
   if(!v)return;
   v.play().catch(function(){});
+})();
+
+// GA4 — rastreia cliques nos trabalhos e CTAs
+(function(){
+  document.querySelectorAll('.work-row').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        gtag('event','click_trabalho',{project_name:el.querySelector('.work-name').textContent,project_url:el.getAttribute('href')});
+      }
+    });
+  });
+  document.querySelectorAll('.btn-primary,.btn-ghost').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        gtag('event','click_cta',{label:el.textContent.trim(),href:el.getAttribute('href')});
+      }
+    });
+  });
 })();
 </script>
 </body>
