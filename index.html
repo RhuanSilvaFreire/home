@@ -160,6 +160,23 @@ img{display:block;max-width:100%}
 .footer-muted{color:rgba(245,243,238,.4);font-size:13px}
 .footer-links-col{display:flex;flex-direction:column;gap:10px;font-size:14px}
 
+/* Áreas de atuação */
+.areas-section{padding:96px;border-top:1px solid rgba(245,243,238,.12)}
+.areas-header{display:flex;align-items:baseline;gap:32px;margin-bottom:64px}
+.areas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.area-card{padding:40px 36px;border:1px solid rgba(245,243,238,.1);position:relative;overflow:hidden;transition:border-color .32s var(--ease)}
+.area-card:hover{border-color:rgba(245,243,238,.25)}
+.area-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--terracotta);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.area-card:hover::before{transform:scaleX(1)}
+.area-num{font-family:ui-monospace,monospace;font-size:11px;color:rgba(245,243,238,.35);margin-bottom:28px;display:block}
+.area-icon{width:48px;height:48px;margin-bottom:24px;opacity:.85}
+.area-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;line-height:1.1;margin-bottom:16px}
+.area-desc{font-size:14px;line-height:1.65;color:rgba(245,243,238,.6);max-width:32ch}
+.area-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px}
+.area-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border:1px solid rgba(245,243,238,.15);color:rgba(245,243,238,.5)}
+@media(max-width:1024px){.areas-section{padding:64px 32px}.areas-grid{grid-template-columns:1fr;gap:0}}
+@media(max-width:600px){.areas-section{padding:48px 16px}.area-card{padding:28px 20px}}
+
 /* Spine */
 .spine{position:fixed;top:0;height:100vh;width:56px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
 .spine-left{left:0}
@@ -232,6 +249,7 @@ img{display:block;max-width:100%}
   </a>
   <div class="nav-links">
     <a href="#inicio" class="nav-link active">início</a>
+    <a href="#areas" class="nav-link">serviços</a>
     <a href="#trabalhos" class="nav-link">trabalhos</a>
     <a href="#sobre" class="nav-link">sobre</a>
     <a href="/blog/" class="nav-link">blog</a>
@@ -324,6 +342,74 @@ img{display:block;max-width:100%}
   <div class="editorial-divider-bg"></div>
   <div class="editorial-divider-overlay"></div>
   <div class="editorial-divider-label">Engenharia · Automação · IA</div>
+</section>
+
+<!-- Áreas de atuação -->
+<section id="areas" class="areas-section">
+  <div class="rv areas-header">
+    <div class="section-label">Áreas de atuação</div>
+  </div>
+  <div class="areas-grid">
+    <!-- DevOps -->
+    <div class="rv area-card">
+      <span class="area-num">01</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="4" y="10" width="40" height="28" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M4 18h40" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
+        <circle cx="11" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
+        <circle cx="17" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
+        <circle cx="23" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
+        <path d="M12 28l4-4-4-4M20 28h8" stroke="rgba(245,243,238,.7)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">DevOps &amp; Infraestrutura</h3>
+      <p class="area-desc">Clusters Docker Swarm com Traefik v3 e Portainer EE. Roteamento, SSL, zero-downtime deploy e observabilidade completa com Prometheus e Grafana.</p>
+      <div class="area-tags">
+        <span class="area-tag">Docker Swarm</span>
+        <span class="area-tag">Traefik</span>
+        <span class="area-tag">Portainer</span>
+        <span class="area-tag">Prometheus</span>
+        <span class="area-tag">Grafana</span>
+      </div>
+    </div>
+    <!-- Automação -->
+    <div class="rv rv-d1 area-card">
+      <span class="area-num">02</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="10" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <circle cx="38" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <circle cx="24" cy="10" r="5" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
+        <circle cx="24" cy="38" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M15 24h9M24 15v9M24 28v5M29 24h4" stroke="rgba(245,243,238,.4)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">Automação de processos</h3>
+      <p class="area-desc">Pipelines com n8n e RabbitMQ: sync de marketplaces, qualificação de leads, notificações e integrações entre sistemas com idempotência e retry garantidos.</p>
+      <div class="area-tags">
+        <span class="area-tag">n8n</span>
+        <span class="area-tag">RabbitMQ</span>
+        <span class="area-tag">PostgreSQL</span>
+        <span class="area-tag">Pipelines</span>
+      </div>
+    </div>
+    <!-- Agentes de IA -->
+    <div class="rv rv-d2 area-card">
+      <span class="area-num">03</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="8" y="14" width="32" height="22" rx="4" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M16 26c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="26" r="2.5" fill="rgba(245,243,238,.7)"/>
+        <path d="M16 38v-2M32 38v-2M20 38v-2M28 38v-2M24 38v-2" stroke="rgba(245,243,238,.4)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">Agentes de IA aplicada</h3>
+      <p class="area-desc">Agentes de atendimento no WhatsApp com handoff humano, RAG sobre documentos fiscais e contratos, URA conversacional com Whisper e Claude. IA que opera em produção.</p>
+      <div class="area-tags">
+        <span class="area-tag">Claude API</span>
+        <span class="area-tag">RAG</span>
+        <span class="area-tag">WhatsApp</span>
+        <span class="area-tag">Whisper</span>
+        <span class="area-tag">pgvector</span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Stack -->
@@ -474,29 +560,13 @@ img{display:block;max-width:100%}
             </ul>
           </div>
           <div>
-            <div class="logo-group-label">Engenharia</div>
-            <ul>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/nodedotjs.svg" alt="Node.js" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Node.js</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/python.svg" alt="Python" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Python</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/typescript.svg" alt="TypeScript" width="22" height="22" loading="lazy"></span><span class="logo-item-name">TypeScript</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/fastapi.svg" alt="FastAPI" width="22" height="22" loading="lazy"></span><span class="logo-item-name">FastAPI</span></li>
-            </ul>
-          </div>
-          <div>
-            <div class="logo-group-label">Colaboração</div>
-            <ul>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/slack.svg" alt="Slack" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Slack</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/notion.svg" alt="Notion" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Notion</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/linear.svg" alt="Linear" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Linear</span></li>
-            </ul>
-          </div>
-          <div>
             <div class="logo-group-label">Code & Deploy</div>
             <ul>
               <li class="logo-item"><span class="logo-item-icon"><img src="/icons/github.svg" alt="GitHub" width="22" height="22" loading="lazy"></span><span class="logo-item-name">GitHub</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/visualstudiocode.svg" alt="VS Code" width="22" height="22" loading="lazy"></span><span class="logo-item-name">VS Code</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/figma.svg" alt="Figma" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Figma</span></li>
-              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/vercel.svg" alt="Vercel" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Vercel</span></li>
+              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/python.svg" alt="Python" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Python</span></li>
+              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/nodedotjs.svg" alt="Node.js" width="22" height="22" loading="lazy"></span><span class="logo-item-name">Node.js</span></li>
+              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/typescript.svg" alt="TypeScript" width="22" height="22" loading="lazy"></span><span class="logo-item-name">TypeScript</span></li>
+              <li class="logo-item"><span class="logo-item-icon"><img src="/icons/fastapi.svg" alt="FastAPI" width="22" height="22" loading="lazy"></span><span class="logo-item-name">FastAPI</span></li>
             </ul>
           </div>
         </div>
