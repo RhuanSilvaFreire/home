@@ -107,7 +107,7 @@ footer{padding:40px 24px;flex-direction:column}
   <h2>O problema real</h2>
   <p>Quando um cliente começa a mandar mensagens com ponto de exclamação, ou escreve "quero falar com um ser humano", o agente precisa parar. Mas isso é óbvio. O caso difícil é o cliente que está frustrado e ainda não disse isso — mas o contexto da conversa deixa claro que mais uma resposta automática vai piorar a situação.</p>
   <p>Na construção desse projeto, eu precisava criar um agente de atendimento via WhatsApp para uma empresa de médio porte. O volume era de ~300 conversas por dia, com um time de 4 atendentes humanos disponíveis das 8h às 18h.</p>
-  <p>A arquitetura base foi construída sobre a <a href="https://GoZap.dev/" target="_blank" rel="noopener">GoZap</a>, que resolve a camada de infraestrutura do WhatsApp Business API — gestão de sessões, filas de mensagens e webhooks. Com isso, eu pude focar no que realmente importava: a lógica do agente.</p>
+  <p>A arquitetura base foi construída sobre a <a href="https://gozap.dev/" target="_blank" rel="noopener">GoZap</a>, que resolve a camada de infraestrutura do WhatsApp Business API — gestão de sessões, filas de mensagens e webhooks. Com isso, eu pude focar no que realmente importava: a lógica do agente.</p>
 
   <h2>Memória por contato: o que não pode faltar</h2>
   <p>A primeira versão do agente não tinha memória entre conversas. Cada webhook chegava como uma mensagem nova, sem histórico. O resultado: o cliente explicava o problema, o agente respondia, a conversa acabava, o cliente voltava um dia depois e tinha que explicar tudo de novo.</p>
