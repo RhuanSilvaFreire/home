@@ -155,20 +155,32 @@ img{display:block;max-width:100%}
 
 /* Footer */
 .footer{padding:80px 96px 48px;position:relative}
-.footer-rule{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(245,243,238,.18) 20%,rgba(245,243,238,.18) 80%,transparent 100%);margin-bottom:64px}
-.footer-main{display:grid;grid-template-columns:1fr auto;gap:64px;align-items:flex-start;margin-bottom:64px}
-.footer-brand{}
-.footer-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:28px;letter-spacing:-.025em;color:var(--bone);margin-bottom:10px}
-.footer-tagline{font-size:13px;color:rgba(245,243,238,.42);line-height:1.6;max-width:28ch;letter-spacing:.01em}
-.footer-social{display:flex;gap:16px;align-items:center}
-.footer-social-link{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:8px;border:1px solid rgba(245,243,238,.1);background:rgba(245,243,238,.04);transition:border-color .24s var(--ease),background .24s var(--ease),transform .24s var(--ease)}
+.footer-rule{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(245,243,238,.18) 20%,rgba(245,243,238,.18) 80%,transparent 100%);margin-bottom:72px}
+.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:64px;margin-bottom:72px}
+.footer-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.025em;color:var(--bone);margin-bottom:8px}
+.footer-role{font-size:12px;color:var(--terracotta);letter-spacing:.08em;text-transform:uppercase;font-weight:500;margin-bottom:16px}
+.footer-desc{font-size:13px;color:rgba(245,243,238,.38);line-height:1.7;max-width:30ch;margin-bottom:28px}
+.footer-social{display:flex;gap:10px;align-items:center}
+.footer-social-link{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;border:1px solid rgba(245,243,238,.1);background:rgba(245,243,238,.04);transition:border-color .24s var(--ease),background .24s var(--ease),transform .24s var(--ease)}
 .footer-social-link:hover{border-color:rgba(245,243,238,.28);background:rgba(245,243,238,.08);transform:translateY(-2px)}
 .footer-social-link:focus-visible{outline:2px solid var(--terracotta);outline-offset:3px}
-.footer-social-link img{opacity:.7;transition:opacity .24s var(--ease)}
+.footer-social-link img{opacity:.65;transition:opacity .24s var(--ease)}
 .footer-social-link:hover img{opacity:1}
+.footer-col-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,243,238,.28);font-weight:500;margin-bottom:20px}
+.footer-nav-list{display:flex;flex-direction:column;gap:10px}
+.footer-nav-link{font-size:13px;color:rgba(245,243,238,.5);transition:color .2s var(--ease);letter-spacing:.01em}
+.footer-nav-link:hover{color:var(--bone)}
+.footer-contact-item{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+.footer-contact-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,243,238,.22);font-weight:500}
+.footer-contact-value{font-size:13px;color:rgba(245,243,238,.6);transition:color .2s var(--ease)}
+.footer-contact-value:hover{color:var(--bone)}
+.footer-contact-value a{color:inherit;text-decoration:none}
+.footer-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:20px;border:1px solid rgba(245,243,238,.1);font-size:11px;color:rgba(245,243,238,.35);letter-spacing:.02em;margin-top:4px}
+.footer-badge-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.12)}
 .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:32px;border-top:1px solid rgba(245,243,238,.07)}
-.footer-copy{font-size:12px;color:rgba(245,243,238,.28);letter-spacing:.02em}
-.footer-legal-link{font-size:12px;color:rgba(245,243,238,.28);letter-spacing:.02em;transition:color .2s var(--ease)}
+.footer-copy{font-size:11px;color:rgba(245,243,238,.22);letter-spacing:.02em}
+.footer-legal{display:flex;gap:24px}
+.footer-legal-link{font-size:11px;color:rgba(245,243,238,.22);letter-spacing:.02em;transition:color .2s var(--ease)}
 .footer-legal-link:hover{color:rgba(245,243,238,.6)}
 
 /* Áreas de atuação */
@@ -214,7 +226,7 @@ img{display:block;max-width:100%}
 .about-grid{grid-template-columns:1fr;gap:48px}
 .about-heading{font-size:40px}
 .about-stats{grid-template-columns:1fr}
-.footer{padding:56px 32px 40px}.footer-main{grid-template-columns:1fr;gap:40px}.footer-bottom{flex-direction:column;align-items:flex-start;gap:12px}
+.footer{padding:56px 32px 40px}.footer-grid{grid-template-columns:1fr;gap:40px}.footer-bottom{flex-direction:column;align-items:flex-start;gap:12px}
 .spine{display:none}
 .logo-wall-grid{grid-template-columns:1fr}
 }
@@ -287,7 +299,7 @@ img{display:block;max-width:100%}
       <p class="hero-desc">DevOps com Docker Swarm e Traefik, automação de processos com N8N, agentes de IA para atendimento via WhatsApp. Infraestrutura que se recupera sozinha. Pipelines que processam sem intervenção. Para times que não têm tempo de babysitar servidor.</p>
     </div>
     <div class="rv rv-d3 hero-ctas">
-      <a href="#trabalhos" class="btn-primary">Ver casos reais</a>
+      <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="btn-primary">Falar pelo WhatsApp</a>
       <a href="#sobre" class="btn-ghost">Quem sou</a>
     </div>
   </div>
@@ -624,7 +636,7 @@ img{display:block;max-width:100%}
         <p class="about-body" style="margin-top:18px">O padrão que busco é simples: entregar e não voltar para apagar incêndio. Um cluster que se recupera sozinho. Um pipeline que processa 300 pedidos por hora sem intervenção. Um agente de WhatsApp que sabe exatamente quando passar para o humano. Trabalho próximo de times de produto, operações e tecnologia em São Paulo e remotamente.</p>
       </div>
       <div class="rv rv-d3">
-        <p class="about-body" style="margin-top:18px">Aceitando projetos selecionados. <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="about-link">Fale pelo LinkedIn</a> ou <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="about-link">WhatsApp (11) 99636-8169</a>.</p>
+        <p class="about-body" style="margin-top:18px">Aceitando projetos selecionados. <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="about-link">Fale pelo WhatsApp</a>.</p>
       </div>
       <div class="rv rv-d4">
         <div class="about-stats">
@@ -640,33 +652,65 @@ img{display:block;max-width:100%}
 <!-- Footer -->
 <footer id="contato" class="footer">
   <div class="footer-rule"></div>
-  <div class="footer-main">
-    <div class="footer-brand">
+  <div class="footer-grid">
+
+    <!-- Col 1: Brand -->
+    <div>
       <div class="footer-name">Rhuan Freire</div>
-      <p class="footer-tagline">DevOps · Automação · IA aplicada<br>São Paulo — freelance, remoto, contrato</p>
+      <div class="footer-role">Engenheiro Freelance</div>
+      <p class="footer-desc">DevOps · Automação N8N · Agentes de IA<br>São Paulo — remoto, contrato</p>
+      <div class="footer-social">
+        <a href="https://github.com/devrhuanfreire" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="GitHub">
+          <img src="/icons/github.svg" alt="GitHub" width="17" height="17">
+        </a>
+        <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn">
+          <img src="/icons/linkedin.svg" alt="LinkedIn" width="17" height="17">
+        </a>
+        <a href="https://www.instagram.com/devrhuanfreire/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram">
+          <img src="/icons/instagram.svg" alt="Instagram" width="17" height="17">
+        </a>
+        <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="WhatsApp">
+          <img src="/icons/whatsapp.svg" alt="WhatsApp" width="17" height="17">
+        </a>
+      </div>
     </div>
-    <div class="footer-social">
-      <a href="https://github.com/devrhuanfreire" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="GitHub">
-        <img src="/icons/github.svg" alt="GitHub" width="18" height="18">
-      </a>
-      <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn">
-        <img src="/icons/linkedin.svg" alt="LinkedIn" width="18" height="18">
-      </a>
-      <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="WhatsApp">
-        <img src="/icons/whatsapp.svg" alt="WhatsApp" width="18" height="18">
-      </a>
+
+    <!-- Col 2: Navegação -->
+    <div>
+      <div class="footer-col-label">Navegação</div>
+      <ul class="footer-nav-list">
+        <li><a href="#inicio" class="footer-nav-link">Início</a></li>
+        <li><a href="#trabalho" class="footer-nav-link">Projetos</a></li>
+        <li><a href="#stack" class="footer-nav-link">Stack</a></li>
+        <li><a href="#sobre" class="footer-nav-link">Sobre</a></li>
+        <li><a href="#contato" class="footer-nav-link">Contato</a></li>
+      </ul>
     </div>
+
+    <!-- Col 3: Contato -->
+    <div>
+      <div class="footer-col-label">Contato</div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-label">WhatsApp</span>
+        <span class="footer-contact-value"><a href="https://wa.me/5511996368169">(11) 99636-8169</a></span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-label">Instagram</span>
+        <span class="footer-contact-value"><a href="https://www.instagram.com/devrhuanfreire/" target="_blank" rel="noopener noreferrer">@devrhuanfreire</a></span>
+      </div>
+      <div class="footer-badge">
+        <span class="footer-badge-dot"></span>
+        Disponível para novos projetos
+      </div>
+    </div>
+
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">© 2025 Rhuan Freire</span>
-    <a href="/privacidade" class="footer-legal-link">Política de Privacidade</a>
-  </div>
-  <div style="justify-self:end">
-    <svg width="72" height="36" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-label="rf monogram">
-      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
-    </svg>
+    <span class="footer-copy">© 2026 Rhuan Freire · São Paulo</span>
+    <div class="footer-legal">
+      <a href="/privacidade" class="footer-legal-link">Privacidade</a>
+      <a href="https://gozap.dev/" class="footer-legal-link" rel="noopener noreferrer">GoZap</a>
+    </div>
   </div>
 </footer>
 
