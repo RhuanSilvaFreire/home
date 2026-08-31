@@ -135,6 +135,9 @@ async def process_audio_chunk(audio_bytes: bytes) -> str:
     <p>O usuário não quer experiência conversacional — quer ser roteado rápido para quem resolve o problema.</p>
   </blockquote>
 
+  <h2>Variação: URA via WhatsApp</h2>
+  <p>O mesmo padrão de detecção de intenção funciona via WhatsApp — áudio enviado como mensagem de voz é transcrito pelo Whisper e classificado antes de rotear. Para a camada de infraestrutura do WhatsApp Business API (sessão, fila, webhooks de entrega), usamos o <a href="https://gozap.dev/" target="_blank" rel="noopener"><strong>GoZAP</strong></a>, que abstrai toda a gestão de conexão e expõe uma API limpa para envio e recebimento de mensagens.</p>
+
   <p style="margin-top:40px">Ver a estrutura técnica completa:</p>
   <a href="/ura/" class="case-link">Ver case completo →</a>
 
