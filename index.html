@@ -48,7 +48,7 @@
 @font-face{font-family:'Inter Tight';font-style:italic;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSyv5HMAFg6IuGlBNMjxLsCwapkRA.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Inter Tight';font-style:italic;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSyv5HMAFg6IuGlBNMjxLsCwapkRA.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rhuan Freire","jobTitle":"Engenheiro de Sistemas — DevOps, Automação e IA","description":"Engenharia de sistemas em São Paulo: infraestrutura Docker Swarm, Traefik, automação com N8N e agentes de IA aplicada. Alta disponibilidade para empresas de qualquer porte.","url":"https://dev.rhuanfreire.com.br","address":{"@type":"PostalAddress","addressLocality":"São Paulo","addressCountry":"BR"},"knowsAbout":["Docker Swarm","Traefik","N8N","Agentes de IA","WhatsApp Business API","Prometheus","Grafana","RabbitMQ","PostgreSQL","Python","Node.js"],"sameAs":["https://www.linkedin.com/in/rhuan-silva-freire-25b103218/"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rhuan Freire","jobTitle":"Engenheiro de Sistemas — DevOps, Automação e IA","description":"Engenharia de sistemas em São Paulo: infraestrutura Docker Swarm, Traefik, automação com N8N e agentes de IA aplicada. Alta disponibilidade para empresas de qualquer porte.","url":"https://dev.rhuanfreire.com.br","address":{"@type":"PostalAddress","addressLocality":"São Paulo","addressCountry":"BR"},"knowsAbout":["Docker Swarm","Traefik","N8N","Agentes de IA","WhatsApp Business API","Prometheus","Grafana","RabbitMQ","PostgreSQL","Python","Node.js"],"sameAs":["https://www.linkedin.com/in/rhuanfreire/"]}</script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--carbon:#0D0D0D;--bone:#F5F3EE;--terracotta:#C45E3A;--slate:#496A89;--ease:cubic-bezier(.22,1,.36,1)}
@@ -699,7 +699,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="https://github.com/devrhuanfreire" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="GitHub">
           <img src="/icons/github.svg" alt="GitHub" width="17" height="17">
         </a>
-        <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn">
+        <a href="https://www.linkedin.com/in/rhuanfreire/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn">
           <img src="/icons/linkedin.svg" alt="LinkedIn" width="17" height="17">
         </a>
         <a href="https://www.instagram.com/devrhuanfreire/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram">
@@ -737,7 +737,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="footer-contact-item">
         <span class="footer-contact-label">LinkedIn</span>
-        <span class="footer-contact-value"><a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener noreferrer">Rhuan Freire</a></span>
+        <span class="footer-contact-value"><a href="https://www.linkedin.com/in/rhuanfreire/" target="_blank" rel="noopener noreferrer">Rhuan Freire</a></span>
       </div>
       <div class="footer-contact-item">
         <span class="footer-contact-label">Instagram</span>
@@ -805,9 +805,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       track('click_trabalho',{project_name:el.querySelector('.work-name').textContent,project_url:el.getAttribute('href')});
     });
   });
-  document.querySelectorAll('.btn-primary,.btn-ghost').forEach(function(el){
+  document.querySelectorAll('.btn-primary,.btn-ghost,.footer-social-link,.about-link').forEach(function(el){
     el.addEventListener('click',function(){
-      track('click_cta',{label:el.textContent.trim(),href:el.getAttribute('href')});
+      track('click_cta',{label:(el.getAttribute('aria-label')||el.textContent).trim(),href:el.getAttribute('href')});
     });
   });
 })();
