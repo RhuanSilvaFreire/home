@@ -794,20 +794,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   v.play().catch(function(){});
 })();
 
-// GA4 — rastreia cliques nos trabalhos e CTAs
+// Rastreia cliques nos trabalhos e CTAs via dataLayer (compativel com GTM lazy)
 (function(){
+  function track(event, params){
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push(Object.assign({event:event},params));
+  }
   document.querySelectorAll('.work-row').forEach(function(el){
     el.addEventListener('click',function(){
-      if(typeof gtag==='function'){
-        gtag('event','click_trabalho',{project_name:el.querySelector('.work-name').textContent,project_url:el.getAttribute('href')});
-      }
+      track('click_trabalho',{project_name:el.querySelector('.work-name').textContent,project_url:el.getAttribute('href')});
     });
   });
   document.querySelectorAll('.btn-primary,.btn-ghost').forEach(function(el){
     el.addEventListener('click',function(){
-      if(typeof gtag==='function'){
-        gtag('event','click_cta',{label:el.textContent.trim(),href:el.getAttribute('href')});
-      }
+      track('click_cta',{label:el.textContent.trim(),href:el.getAttribute('href')});
     });
   });
 })();
