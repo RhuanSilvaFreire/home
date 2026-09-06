@@ -15,15 +15,29 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Rhuan Freire — Engenharia de Sistemas · DevOps, IA e Automação">
 <meta name="twitter:description" content="Docker Swarm, N8N, agentes de IA e automação de atendimento WhatsApp. Engenharia de sistemas em São Paulo — alta disponibilidade, qualquer escala.">
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-P2M3SV2R');</script>
+<!-- Google Tag Manager — lazy load após interação ou 3s -->
+<script>
+(function(){
+  var GTM_ID='GTM-P2M3SV2R';
+  var loaded=false;
+  function loadGTM(){
+    if(loaded)return;
+    loaded=true;
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+    var f=document.getElementsByTagName('script')[0];
+    var j=document.createElement('script');
+    j.async=true;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+GTM_ID;
+    f.parentNode.insertBefore(j,f);
+  }
+  setTimeout(loadGTM,3000);
+  ['click','scroll','keydown','touchstart','mousemove'].forEach(function(e){
+    document.addEventListener(e,loadGTM,{once:true,passive:true});
+  });
+})();
+</script>
 <!-- End Google Tag Manager -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
