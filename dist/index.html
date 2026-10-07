@@ -196,7 +196,8 @@ img{display:block;max-width:100%}
 .footer-copy{font-size:11px;color:rgba(245,243,238,.65);letter-spacing:.02em}
 .footer-legal{display:flex;gap:24px}
 .footer-legal-link{font-size:11px;color:rgba(245,243,238,.65);letter-spacing:.02em;transition:color .2s var(--ease)}
-.footer-legal-link:hover{color:rgba(245,243,238,.6)}
+.footer-legal-link:hover,.footer-legal-link:focus-visible{color:var(--bone)}
+.footer-legal-link:focus-visible{outline:2px solid var(--terracotta);outline-offset:3px}
 
 /* Áreas de atuação */
 .areas-section{padding:96px;border-top:1px solid rgba(245,243,238,.12)}
@@ -750,7 +751,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="footer-bottom">
     <span class="footer-copy">© 2026 Rhuan Freire · São Paulo</span>
     <div class="footer-legal">
-      <a href="/privacidade" class="footer-legal-link">Privacidade</a>
+      <a href="/termos/" class="footer-legal-link">Termos</a>
+      <a href="/privacidade/" class="footer-legal-link">Privacidade</a>
     </div>
   </div>
 </footer>

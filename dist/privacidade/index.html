@@ -48,6 +48,7 @@ ul li{margin-bottom:8px}
 footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
 footer a{color:var(--bone);border:none;opacity:.7}
 footer a:hover{opacity:1}
+.footer-links{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
 
 @media(max-width:768px){
 .nav{padding:14px 24px}
@@ -59,7 +60,7 @@ footer{padding:40px 24px;flex-direction:column;align-items:flex-start}
 </head>
 <body>
 
-<nav class="nav">
+<nav class="nav" aria-label="Principal">
   <a href="/" class="nav-brand">
     <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -70,12 +71,12 @@ footer{padding:40px 24px;flex-direction:column;align-items:flex-start}
   </a>
 </nav>
 
-<div class="container">
+<main class="container">
   <h1>Política de Privacidade</h1>
   <p class="updated">Última atualização: 30 de agosto de 2026</p>
 
   <h2>1. Quem somos</h2>
-  <p>Este site é operado por <strong>Rhuan Freire</strong>, engenheiro de software independente baseado em São Paulo, Brasil. Para contato: <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener">LinkedIn</a>.</p>
+  <p>Este site é operado por <strong>Rhuan Freire</strong>, engenheiro de software independente baseado em São Paulo, Brasil. Para contato: <a href="https://www.linkedin.com/in/rhuanfreire/" target="_blank" rel="noopener">LinkedIn</a>.</p>
 
   <h2>2. Quais dados coletamos</h2>
   <p>Este site é um portfólio informativo e <strong>não coleta dados pessoais diretamente</strong> — não há formulários de cadastro, login ou campos de entrada de dados.</p>
@@ -137,12 +138,15 @@ footer{padding:40px 24px;flex-direction:column;align-items:flex-start}
   <p>Esta política pode ser atualizada periodicamente. A data de "última atualização" no topo desta página indica quando a versão atual entrou em vigor.</p>
 
   <h2>10. Contato</h2>
-  <p>Para exercer seus direitos ou tirar dúvidas sobre privacidade, entre em contato via <a href="https://www.linkedin.com/in/rhuan-silva-freire-25b103218/" target="_blank" rel="noopener">LinkedIn</a>.</p>
-</div>
+  <p>Para exercer seus direitos ou tirar dúvidas sobre privacidade, entre em contato via <a href="https://www.linkedin.com/in/rhuanfreire/" target="_blank" rel="noopener">LinkedIn</a>.</p>
+</main>
 
 <footer>
   <span>© 2026 Rhuan Freire</span>
-  <a href="/">← Voltar ao início</a>
+  <span class="footer-links">
+    <a href="/termos/">Termos de uso</a>
+    <a href="/">← Voltar ao início</a>
+  </span>
 </footer>
 
 </body>
