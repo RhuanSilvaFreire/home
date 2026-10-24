@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maestri: um canvas para orquestrar agentes de IA, terminais e navegador — Rhuan Freire</title>
+<meta name="description" content="As peças do canvas, os comandos list, ask e check, como recrutar colegas com papel definido, portais de navegador e andares isolados.">
+<link rel="canonical" href="https://dev.rhuanfreire.com.br/recursos/maestri/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maestri: um canvas para orquestrar agentes de IA, terminais e navegador">
+<meta property="og:description" content="As peças do canvas, os comandos list, ask e check, como recrutar colegas com papel definido, portais de navegador e andares isolados.">
+<meta property="og:url" content="https://dev.rhuanfreire.com.br/recursos/maestri/">
+<meta property="og:image" content="https://dev.rhuanfreire.com.br/images/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFWN2SL819"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TFWN2SL819');
+</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Maestri: um canvas para orquestrar agentes de IA, terminais e navegador", "description": "As peças do canvas, os comandos list, ask e check, como recrutar colegas com papel definido, portais de navegador e andares isolados.", "author": {"@type": "Person", "name": "Rhuan Freire"}, "mainEntityOfPage": "https://dev.rhuanfreire.com.br/recursos/maestri/", "inLanguage": "pt-BR"}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2')}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--carbon:#0D0D0D;--bone:#F5F3EE;--terracotta:#C45E3A;--ease:cubic-bezier(.22,1,.36,1)}
+body{background:var(--carbon);color:var(--bone);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7}
+a{color:var(--terracotta);text-decoration:none;border-bottom:1px solid rgba(196,94,58,.4);transition:border-color .2s}
+a:hover{border-color:var(--terracotta)}
+.nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,13,13,.72);border-bottom:1px solid rgba(245,243,238,.12);padding:18px 96px;display:flex;align-items:center;gap:40px}
+.nav-brand{display:flex;align-items:center;gap:12px;color:var(--bone);border:none}
+.nav-brand-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:17px;letter-spacing:-.02em}
+.nav-links{display:flex;gap:40px;margin-left:auto}
+.nav-link{font-size:14px;color:rgba(245,243,238,.65);border:none;transition:color .2s}
+.nav-link:hover{color:var(--bone)}
+.article-wrap{max-width:720px;margin:0 auto;padding:72px 32px 120px}
+.article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,243,238,.45);border:none;margin-bottom:48px;transition:color .2s}
+.article-back:hover{color:rgba(245,243,238,.75)}
+.article-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px}
+h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(32px,5vw,52px);letter-spacing:-.025em;line-height:1.08;margin-bottom:20px}
+.article-meta{font-size:13px;color:rgba(245,243,238,.4);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(245,243,238,.1)}
+.article-lead{font-size:20px;color:rgba(245,243,238,.7);line-height:1.6;margin-bottom:48px}
+h2{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;margin:56px 0 16px}
+p{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:20px}
+ul,ol{padding-left:24px;margin-bottom:20px}
+li{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:8px}
+strong{color:rgba(245,243,238,.9);font-weight:500}
+code{font-family:monospace;font-size:14px;background:rgba(245,243,238,.08);padding:2px 6px;border-radius:4px;color:rgba(245,243,238,.85)}
+pre{background:rgba(245,243,238,.05);border:1px solid rgba(245,243,238,.1);border-radius:8px;padding:24px;overflow-x:auto;margin:32px 0}
+pre code{background:none;padding:0;font-size:13px;line-height:1.65}
+blockquote{border-left:3px solid var(--terracotta);padding:16px 24px;margin:32px 0;background:rgba(196,94,58,.06);border-radius:0 6px 6px 0}
+blockquote p{margin:0;color:rgba(245,243,238,.8);font-style:italic}
+.case-link{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;padding:10px 18px;border:1px solid rgba(196,94,58,.4);border-radius:6px;color:var(--terracotta);transition:background .2s,border-color .2s}
+.case-link:hover{background:rgba(196,94,58,.08);border-color:var(--terracotta)}
+footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
+footer a{color:rgba(245,243,238,.6);border:none}
+@media(max-width:768px){.nav{padding:14px 24px}.nav-links{display:none}.article-wrap{padding:48px 24px 80px}footer{padding:40px 24px;flex-direction:column}}
+
+.check{list-style:none;padding-left:0}
+.check li{padding:12px 0 12px 34px;border-bottom:1px solid rgba(245,243,238,.08);position:relative}
+.check li::before{content:"";position:absolute;left:0;top:17px;width:16px;height:16px;border:1.5px solid var(--terracotta);border-radius:3px}
+.note{border:1px solid rgba(245,243,238,.12);background:rgba(245,243,238,.04);border-radius:8px;padding:16px 20px;margin:28px 0}
+.note p{margin:0;font-size:15px}
+.article-wrap table{border-collapse:collapse;width:100%;margin:22px 0;font-size:15px}
+.article-wrap th,.article-wrap td{border:1px solid rgba(245,243,238,.14);padding:10px 12px;text-align:left;vertical-align:top}
+.article-wrap th{background:rgba(245,243,238,.06)}
+.cta-box{margin:64px 0 0;padding:28px;border:1px solid rgba(196,94,58,.4);border-radius:8px;background:rgba(196,94,58,.06)}
+.cta-box p{margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/" class="article-back">← Início</a>
+
+  <div class="article-tag">IA · Maestri</div>
+  <h1>Maestri: um canvas para orquestrar agentes de IA, terminais e navegador</h1>
+  <div class="article-meta">Rhuan Freire · Material de consulta</div>
+
+  <p class="article-lead">Terminais com agentes, notas e portais ligados no mesmo espaço. O modelo, os comandos principais e as boas práticas para montar um time.</p>
+<div class="note"><p><strong>Guia completo para baixar:</strong> o mesmo conteúdo em arquivo. <a href="/recursos/maestri/guia-maestri.pdf" download>Baixar o PDF</a> · <a href="/recursos/maestri/guia-maestri.md" download>Baixar em Markdown</a></p></div><p>O Maestri é um workspace em formato de canvas. Em vez de abas soltas, você posiciona no mesmo espaço <strong>terminais com agentes de IA, notas e portais de navegador</strong>, e liga uns aos outros. Este guia explica o modelo e os comandos principais da CLI <code>maestri</code>, que já vem no PATH dentro do workspace. Para detalhes e novidades, vale a documentação do próprio app.</p>
+<h2>1. As peças do canvas</h2>
+<table>
+<thead>
+<tr>
+<th>Peça</th>
+<th>Para que serve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Terminal</strong></td>
+<td>Roda um agente (por exemplo Claude Code ou Codex) ou um shell comum</td>
+</tr>
+<tr>
+<td><strong>Nota</strong></td>
+<td>Texto compartilhado que um ou mais agentes conectados podem ler</td>
+</tr>
+<tr>
+<td><strong>Portal</strong></td>
+<td>Navegador embutido que um agente pode controlar (navegar, clicar, preencher, tirar print)</td>
+</tr>
+<tr>
+<td><strong>Corda (conexão)</strong></td>
+<td>Liga duas peças. Só quem está ligado consegue conversar ou usar a outra peça</td>
+</tr>
+<tr>
+<td><strong>Banda</strong></td>
+<td>Um time de agentes agrupado, em que todos falam com todos</td>
+</tr>
+<tr>
+<td><strong>Andar (floor)</strong></td>
+<td>Uma camada do workspace, que pode ter checkout git isolado para experimentos</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Ver quem está conectado</h2>
+<pre><code>maestri list
+</code></pre>
+<p>Mostra os agentes, notas e portais ligados ao seu terminal. Rode esse comando antes de recrutar alguém novo: se já existe um colega com o papel certo, reaproveite.</p>
+<h2>3. Conversar entre agentes</h2>
+<pre><code>maestri ask &quot;Nome&quot; &quot;pedido&quot;
+maestri check &quot;Nome&quot;
+</code></pre>
+<ul>
+<li><code>ask</code> envia uma instrução a um agente conectado.</li>
+<li><code>check</code> lê o que o agente escreveu, sem interromper.</li>
+</ul>
+<p>Dica de fluxo: peça que o agente responda de volta com <code>maestri ask</code> quando terminar, em vez de você ficar conferindo.</p>
+<h2>4. Recrutar um colega com papel definido</h2>
+<pre><code>maestri role create &quot;Revisor&quot; &quot;Revise código. Nunca edite arquivos.&quot;
+maestri recruit &quot;Lince&quot; --role &quot;Revisor&quot;
+</code></pre>
+<ul>
+<li>O <strong>papel (role)</strong> é o prompt inicial do colega. Seja específico sobre o que ele pode e não pode fazer.</li>
+<li><code>recruit</code> abre um novo terminal já ligado a você.</li>
+<li><code>maestri preset list</code> mostra os agentes disponíveis para escolher com <code>--preset</code>.</li>
+<li>Para trocar o agente de um colega sem perder as conexões: <code>maestri recruit ... --replace "Nome"</code>.</li>
+</ul>
+<h2>5. Portais: o agente com navegador</h2>
+<pre><code>maestri portal create http://localhost:3000 &quot;App&quot;
+maestri portal snapshot &quot;App&quot;
+maestri portal click &quot;App&quot; @e3
+maestri portal screenshot &quot;App&quot;
+</code></pre>
+<p>O <code>snapshot</code> devolve a página como uma árvore de elementos com referências (<code>@e1</code>, <code>@e2</code>...). Use essas referências para clicar e preencher. Dá para testar layout responsivo com <code>maestri portal resize "App" 390 844</code>.</p>
+<h2>6. Andares isolados para experimentos</h2>
+<p>Quando a mudança é arriscada, crie um andar com branch própria, recrute o agente lá e traga de volta só quando estiver pronta:</p>
+<pre><code>maestri floor create &quot;Experimento&quot; --branch feat/ideia
+maestri recruit &quot;Pioneiro&quot; --floor &quot;Experimento&quot;
+maestri floor land &quot;Experimento&quot;
+</code></pre>
+<p>O checkout principal não é tocado enquanto o experimento acontece.</p>
+<h2>7. Boas práticas</h2>
+<ul>
+<li>Dê a cada colega <strong>um papel só</strong>, com limites claros.</li>
+<li>Conecte apenas o necessário. Quem não está ligado não enxerga o resto.</li>
+<li>Use notas para contexto compartilhado em vez de repetir o mesmo texto em cada pedido.</li>
+<li>Dispense (<code>maestri dismiss</code>) quem terminou, para não ocupar terminais à toa.</li>
+<li>Revise o que o agente produziu antes de aceitar, principalmente em ações com efeito externo.</li>
+</ul>
+<h2>8. Checklist para começar</h2>
+<ul class="check"><li>Rodei <code>maestri list</code> e sei quem está conectado?</li><li>Cada colega tem um papel claro e limites definidos?</li><li>O contexto compartilhado está em uma nota, e não repetido em cada pedido?</li><li>Mudanças arriscadas estão em um andar isolado?</li><li>Peço que o colega responda de volta ao terminar?</li><li>Revisei o resultado antes de aceitar?</li></ul>
+
+<h2>9. Problemas comuns</h2>
+<table>
+<thead>
+<tr>
+<th>Sintoma</th>
+<th>O que verificar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O comando <code>maestri</code> não é encontrado</td>
+<td>Use a variável <code>MAESTRI_CLI</code>, que aponta para o executável</td>
+</tr>
+<tr>
+<td>Um agente não enxerga a nota ou o portal</td>
+<td>Falta a conexão (corda) entre eles</td>
+</tr>
+<tr>
+<td>Colega duplicado com o mesmo papel</td>
+<td>Rode <code>maestri list</code> antes de recrutar</td>
+</tr>
+<tr>
+<td>O colega não segue o combinado</td>
+<td>Reescreva o papel com limites mais específicos</td>
+</tr>
+</tbody>
+</table>
+  <div class="cta-box">
+    <p><strong>Precisa disso rodando no seu ambiente?</strong> Posso olhar o seu caso e montar com você.</p>
+    <a href="https://wa.me/5511996368169" class="case-link">Falar no WhatsApp →</a>
+  </div>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">Blog</a>
+</footer>
+
+</body>
+</html>
