@@ -19,14 +19,14 @@ Dá para usar os dois ao mesmo tempo.
 
 1. Entre no n8n como **dono ou administrador** e abra **Settings > Instance-level MCP**.
 2. Marque **Enable MCP access**.
-3. Escolha quais workflows o agente pode usar. Nenhum workflow fica exposto por padrão. Use uma destas opções:
+3. Escolha quais workflows o agente pode usar. Nenhum workflow fica exposto por padrão. Na tela, a área **Access** tem o item **Workflows exposed** (a documentação chama a página de *Workflows enabled*). Use uma destas opções:
     - **Settings > Instance-level MCP > Workflows enabled > Enable workflows**, escolha o workflow e confirme;
     - no editor do workflow: menu `...` > **Settings** > ligue **Available in MCP**;
     - na lista de workflows: menu do cartão > **Enable MCP access**.
 4. Existe a opção **Auto-expose new workflows**, que expõe os workflows futuros sozinha. Ela vem desligada, e é melhor deixar assim.
 5. Em **Connection details**, clique em **Connect**. Na janela **Connect a client** estão o **Server URL** e as duas formas de autenticar:
     - **OAuth (recomendado):** o cliente abre o navegador e você aprova o acesso no n8n;
-    - **API key:** o n8n gera um token ligado à sua conta. **O token só aparece uma vez**; depois fica oculto. Gerar outro revoga o anterior na hora.
+    - **API key:** o n8n mostra o **Server URL**, o **Access token** e um **Configuration JSON** pronto. **O token só aparece uma vez**; depois fica oculto (`******abcd`). O botão de atualizar ao lado gera outro e revoga o anterior na hora, então atualize os clientes.
 
 O Server URL termina em `/mcp-server/http`. Copie ele da janela, não da barra de endereço do navegador.
 
@@ -57,6 +57,24 @@ Depois, dentro do Claude Code, rode `/mcp`, escolha **n8n** e conclua a autoriza
 ```bash
 claude mcp add --transport http n8n-mcp https://SEU-N8N/mcp-server/http \
   --header "Authorization: Bearer SEU_TOKEN"
+```
+
+### Caminho A, com chave de API, por arquivo de configuração
+
+A aba **API key** do n8n já entrega este JSON. Troque o texto do token pelo seu (ou, em `.mcp.json` versionado, use `${N8N_MCP_TOKEN}`):
+
+```json
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "type": "http",
+      "url": "https://SEU-N8N/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer SEU_TOKEN"
+      }
+    }
+  }
+}
 ```
 
 ### Caminho B, nó MCP Server Trigger
@@ -95,7 +113,8 @@ Dentro do Claude Code, `/mcp` mostra o estado de cada servidor (conectado ou com
 ## 6. Segurança antes de liberar
 
 - [ ] A autenticação está ligada, e o token não está em print, repositório nem mensagem de chat?
-- [ ] Só os workflows e ferramentas necessários estão expostos? Nenhuma que apague, pague ou envie mensagem em massa sem aprovação?
+- [ ] Só os workflows necessários estão em **Workflows exposed**, e **Auto-expose new workflows** está desligado? Nenhum que apague, pague ou envie mensagem em massa sem aprovação?
+- [ ] Você revisou **Connected clients** e, se possível, restringiu **Allowed callback URLs** (o padrão, *All*, é menos seguro)?
 - [ ] Ações sensíveis pedem confirmação de uma pessoa antes?
 - [ ] O retorno das ferramentas é tratado como dado não confiável? Texto vindo de fora pode carregar instruções (prompt injection).
 - [ ] Cada ferramenta valida os parâmetros que recebe, em vez de confiar no que o modelo mandou?

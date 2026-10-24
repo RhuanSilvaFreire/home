@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>n8n como servidor MCP: seus fluxos viram ferramentas do agente de IA — Rhuan Freire</title>
-<meta name="description" content="Passo a passo para expor fluxos do n8n como ferramentas MCP com o nó MCP Server Trigger, conectar ao Claude Code e os cuidados de segurança antes de liberar para um agente.">
+<title>n8n com MCP nativo: ligue na instância e conecte no Claude Code — Rhuan Freire</title>
+<meta name="description" content="Passo a passo para ativar o MCP nativo do n8n (Instance-level MCP), escolher os workflows expostos, copiar o Server URL e conectar no Claude Code, com os cuidados de segurança antes de liberar.">
 <link rel="canonical" href="https://dev.rhuanfreire.com.br/recursos/n8n-mcp/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="n8n como servidor MCP: seus fluxos viram ferramentas do agente de IA">
-<meta property="og:description" content="Passo a passo para expor fluxos do n8n como ferramentas MCP com o nó MCP Server Trigger, conectar ao Claude Code e os cuidados de segurança antes de liberar para um agente.">
+<meta property="og:title" content="n8n com MCP nativo: ligue na instância e conecte no Claude Code">
+<meta property="og:description" content="Passo a passo para ativar o MCP nativo do n8n (Instance-level MCP), escolher os workflows expostos, copiar o Server URL e conectar no Claude Code, com os cuidados de segurança antes de liberar.">
 <meta property="og:url" content="https://dev.rhuanfreire.com.br/recursos/n8n-mcp/">
 <meta property="og:image" content="https://dev.rhuanfreire.com.br/images/og-cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -20,7 +20,7 @@
   gtag('js', new Date());
   gtag('config', 'G-TFWN2SL819');
 </script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "n8n como servidor MCP: seus fluxos viram ferramentas do agente de IA", "description": "Passo a passo para expor fluxos do n8n como ferramentas MCP com o nó MCP Server Trigger, conectar ao Claude Code e os cuidados de segurança antes de liberar para um agente.", "author": {"@type": "Person", "name": "Rhuan Freire"}, "mainEntityOfPage": "https://dev.rhuanfreire.com.br/recursos/n8n-mcp/", "inLanguage": "pt-BR"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "n8n com MCP nativo: ligue na instância e conecte no Claude Code", "description": "Passo a passo para ativar o MCP nativo do n8n (Instance-level MCP), escolher os workflows expostos, copiar o Server URL e conectar no Claude Code, com os cuidados de segurança antes de liberar.", "author": {"@type": "Person", "name": "Rhuan Freire"}, "mainEntityOfPage": "https://dev.rhuanfreire.com.br/recursos/n8n-mcp/", "inLanguage": "pt-BR"}</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2')}
@@ -92,56 +92,50 @@ footer a{color:rgba(245,243,238,.6);border:none}
   <a href="/" class="article-back">← Início</a>
 
   <div class="article-tag">IA · n8n + MCP</div>
-  <h1>n8n como servidor MCP: seus fluxos viram ferramentas do agente de IA</h1>
+  <h1>n8n com MCP nativo: ligue na instância e conecte no Claude Code</h1>
   <div class="article-meta">Rhuan Freire · Material de consulta</div>
 
-  <p class="article-lead">Um agente de IA só vira útil quando consegue agir nos seus sistemas. O n8n já tem os fluxos prontos; o MCP é a porta padrão para o agente chamá-los. Aqui está o caminho curto e o que travar antes de liberar.</p>
+  <p class="article-lead">O n8n traz um servidor MCP embutido. Em poucos cliques você escolhe quais workflows um agente de IA pode usar e conecta o Claude Code por OAuth. Aqui está o caminho curto e o que travar antes de liberar.</p>
 
-  <div class="note"><p><strong>Guia completo para baixar:</strong> o passo a passo do zero, desde ligar o MCP no n8n até conectar no Claude Code, com os dois caminhos, o checklist de segurança e os erros comuns. <a href="/recursos/n8n-mcp/guia-n8n-mcp-claude-code.pdf" download>Baixar o PDF</a> · <a href="/recursos/n8n-mcp/guia-n8n-mcp-claude-code.md" download>Baixar em Markdown</a></p></div>
+  <div class="note"><p><strong>Guia completo para baixar:</strong> o passo a passo do zero, desde ligar o MCP no n8n até conectar no Claude Code, com o checklist de segurança e os erros comuns. <a href="/recursos/n8n-mcp/guia-n8n-mcp-claude-code.pdf" download>Baixar o PDF</a> · <a href="/recursos/n8n-mcp/guia-n8n-mcp-claude-code.md" download>Baixar em Markdown</a></p></div>
 
   <h2>1. A ideia em uma frase</h2>
-  <p>Você monta no n8n um fluxo que expõe <strong>ferramentas</strong> por um endpoint MCP. Um cliente compatível (como o Claude Code) conecta nesse endpoint, descobre as ferramentas e chama cada uma quando a conversa pede. O fluxo roda no n8n, com as suas credenciais, e devolve o resultado ao agente.</p>
+  <p>Você liga o <strong>MCP da instância</strong> no n8n, escolhe quais workflows ficam disponíveis e conecta um cliente (como o Claude Code). O agente passa a ver e rodar só esses workflows, com as credenciais que já estão no n8n.</p>
 
-  <h2>2. Dois caminhos no n8n</h2>
-  <p><strong>Caminho A, MCP da instância:</strong> em <code>Settings &gt; Instance-level MCP</code>, o dono ou administrador marca <code>Enable MCP access</code> e escolhe quais workflows ficam disponíveis (<code>Available in MCP</code>). A conexão usa OAuth ou chave de API, e a URL termina em <code>/mcp-server/http</code>. É o mais rápido para o agente rodar workflows que você já tem.</p>
-  <p><strong>Caminho B, nó MCP Server Trigger:</strong> você monta um conjunto pequeno de ferramentas sob medida dentro de um workflow. É o que os passos abaixo mostram. O guia para baixar cobre os dois.</p>
-
-  <h2>3. Passo a passo do caminho B</h2>
+  <h2>2. Ligar o MCP no n8n</h2>
   <ol>
-    <li><strong>Crie um workflow</strong> e adicione o nó <code>MCP Server Trigger</code>. Ele é o ponto de entrada: recebe as chamadas dos clientes MCP.</li>
-    <li><strong>Ligue ferramentas ao nó.</strong> Cada nó de ferramenta conectado ao gatilho vira uma tool que o agente enxerga. Dá para usar nós de ferramenta prontos (HTTP, planilha, banco) ou expor outro workflow seu com o nó <code>Custom n8n Workflow Tool</code>.</li>
-    <li><strong>Descreva cada ferramenta com clareza.</strong> O agente escolhe pelo nome e pela descrição. Nome objetivo e uma frase dizendo o que entra e o que sai evitam chamadas erradas.</li>
-    <li><strong>Defina a autenticação do gatilho</strong> (token no cabeçalho). Não deixe o endpoint aberto.</li>
-    <li><strong>Publique o workflow</strong> e copie a URL de produção do nó. É ela que o cliente MCP usa; a de teste só vale enquanto você escuta um evento.</li>
+    <li>Entre como <strong>dono ou administrador</strong> e abra <code>Settings &gt; Instance-level MCP</code>.</li>
+    <li>Em <strong>Connection details</strong>, deixe o <strong>MCP status</strong> em <code>Enabled</code>.</li>
+    <li>Em <strong>Access &gt; Workflows exposed</strong>, escolha quais workflows o cliente pode usar. Nenhum fica exposto por padrão.</li>
+    <li>Deixe <strong>Auto-expose new workflows</strong> desligado, para um workflow novo não ficar acessível sem você decidir.</li>
+    <li>Clique em <strong>Connect</strong>. A janela <strong>Connect a client</strong> mostra o <strong>Server URL</strong> e as duas formas de entrar: <strong>OAuth</strong> (recomendado) e <strong>API key</strong>.</li>
   </ol>
+  <p>O Server URL termina em <code>/mcp-server/http</code>, por exemplo <code>https://seu-n8n.com.br/mcp-server/http</code>. Copie da janela, não da barra de endereço do navegador.</p>
 
-  <h2>4. Conectar no Claude Code</h2>
-  <p>No caminho B, use a URL de produção do nó. No caminho A, a URL termina em <code>/mcp-server/http</code> e dá para entrar por OAuth: rode o comando sem o <code>--header</code> e depois <code>/mcp</code> dentro do Claude Code. Prefira <code>http</code>; o <code>sse</code> só se o seu servidor não aceitar.</p>
-  <pre><code>claude mcp add --transport http n8n https://SEU-N8N/mcp/ID-DO-WEBHOOK   --header &quot;Authorization: Bearer SEU_TOKEN&quot;
+  <h2>3. Conectar no Claude Code</h2>
+  <p>Com OAuth (recomendado):</p>
+  <pre><code>claude mcp add --transport http n8n https://SEU-N8N/mcp-server/http</code></pre>
+  <p>Depois, dentro do Claude Code, rode <code>/mcp</code>, escolha <strong>n8n</strong> e aprove o acesso no navegador. Para conferir: <code>claude mcp list</code>.</p>
+  <p>Com chave de API, no lugar do OAuth:</p>
+  <pre><code>claude mcp add --transport http n8n-mcp https://SEU-N8N/mcp-server/http   --header &quot;Authorization: Bearer SEU_TOKEN&quot;</code></pre>
+  <div class="note"><p><strong>Token só aparece uma vez.</strong> Guarde em um gerenciador de senhas. Gerar outro revoga o anterior na hora. Se salvar a configuração em <code>.mcp.json</code> do projeto, use variável de ambiente, nunca o token escrito no arquivo.</p></div>
 
-claude mcp list</code></pre>
-  <div class="note"><p><strong>Confira na documentação:</strong> o nome do nó, o formato da URL e as opções de autenticação mudam entre versões do n8n e do cliente. Valide na versão que você usa antes de colocar em produção.</p></div>
+  <h2>4. Primeiro teste</h2>
+  <p>Peça algo de <strong>leitura</strong> ao Claude, como "liste os workflows do n8n disponíveis para você". Só depois exponha workflows que enviam mensagem, gravam ou apagam, um de cada vez.</p>
 
-  <h2>5. Que ferramentas valem a pena</h2>
-  <p>Comece por ações de leitura, que são seguras e já economizam tempo:</p>
-  <ul>
-    <li>consultar o status de um atendimento ou pedido;</li>
-    <li>buscar um cliente por telefone ou e-mail;</li>
-    <li>listar as conversas abertas de um canal (por exemplo WhatsApp com Chatwoot);</li>
-    <li>pesquisar na sua base de conhecimento (RAG).</li>
-  </ul>
-  <p>Ações que escrevem (criar ticket, enviar mensagem) entram depois, uma de cada vez, com confirmação humana.</p>
-
-  <h2>6. Segurança antes de liberar</h2>
-  <ul class="check"><li>O endpoint exige autenticação e o token não está em repositório nem em print?</li><li>O agente enxerga só as ferramentas necessárias para a tarefa, e nenhuma que apague ou pague?</li><li>Ações que enviam, apagam ou cobram pedem confirmação de uma pessoa antes?</li><li>O retorno de cada ferramenta é tratado como dado não confiável (risco de prompt injection)?</li><li>Cada ferramenta valida os parâmetros que recebe, em vez de confiar no que o modelo mandou?</li><li>Há limite de chamadas e log das execuções para investigar se algo sair do esperado?</li></ul>
+  <h2>5. Segurança antes de liberar</h2>
+  <ul class="check"><li>Só os workflows necessários estão em <strong>Workflows exposed</strong>, e <strong>Auto-expose</strong> está desligado?</li><li>Você revisou <strong>Connected clients</strong> e, se possível, restringiu <strong>Allowed callback URLs</strong> (o padrão, <em>All</em>, é menos seguro)?</li><li>Workflows que enviam, apagam ou cobram pedem confirmação de uma pessoa antes?</li><li>O retorno dos workflows é tratado como dado não confiável (risco de prompt injection)?</li><li>Cada workflow valida os parâmetros que recebe, em vez de confiar no que o modelo mandou?</li><li>Você sabe revogar? Em <strong>MCP status</strong>, escolher <em>Disable</em> desconecta todos os clientes.</li></ul>
 
   <h2>Se não funcionar</h2>
   <ul>
-    <li><strong>O cliente não vê as ferramentas:</strong> confirme que o workflow está <em>ativo</em> e que você usou a URL de produção, não a de teste.</li>
-    <li><strong>Erro de autenticação:</strong> o cabeçalho tem que bater exatamente com o configurado no gatilho.</li>
-    <li><strong>O agente chama a ferramenta errada:</strong> reescreva o nome e a descrição. É o ajuste que mais resolve.</li>
-    <li><strong>Timeout:</strong> fluxos longos precisam responder rápido ou devolver um aviso e continuar em segundo plano.</li>
+    <li><strong>"You do not have sufficient permissions to authorize this request":</strong> o acesso MCP está desligado ou você não é dono/administrador.</li>
+    <li><strong>O Claude conecta, mas não vê workflows:</strong> o workflow não está em <em>Workflows exposed</em>.</li>
+    <li><strong>Erro 401 ou 403 com chave de API:</strong> o cabeçalho tem que ser idêntico ao token gerado; se você gerou outro, o antigo foi revogado.</li>
+    <li><strong>Conexão pendurada atrás de proxy:</strong> desligue o buffer de proxy no endpoint MCP (no nginx, <code>proxy_buffering off</code>).</li>
   </ul>
+
+  <h2>Alternativa: ferramentas sob medida com o nó MCP Server Trigger</h2>
+  <p>Se você quer expor só um conjunto pequeno de ferramentas dentro de um workflow, o n8n também tem o nó <code>MCP Server Trigger</code>, que usa uma URL própria e autenticação Bearer ou Header. O guia para baixar descreve esse caminho também.</p>
 
   <div class="cta-box">
     <p><strong>Precisa disso rodando no seu ambiente?</strong> Posso olhar o seu caso e montar com você.</p>
