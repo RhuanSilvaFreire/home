@@ -97,26 +97,32 @@ footer a{color:rgba(245,243,238,.6);border:none}
 
   <p class="article-lead">Um agente de IA só vira útil quando consegue agir nos seus sistemas. O n8n já tem os fluxos prontos; o MCP é a porta padrão para o agente chamá-los. Aqui está o caminho curto e o que travar antes de liberar.</p>
 
+  <div class="note"><p><strong>Guia completo para baixar:</strong> o passo a passo do zero, desde ligar o MCP no n8n até conectar no Claude Code, com os dois caminhos, o checklist de segurança e os erros comuns. <a href="/recursos/n8n-mcp/guia-n8n-mcp-claude-code.pdf" download>Baixar o PDF</a> · <a href="/recursos/n8n-mcp/guia-n8n-mcp-claude-code.md" download>Baixar em Markdown</a></p></div>
+
   <h2>1. A ideia em uma frase</h2>
   <p>Você monta no n8n um fluxo que expõe <strong>ferramentas</strong> por um endpoint MCP. Um cliente compatível (como o Claude Code) conecta nesse endpoint, descobre as ferramentas e chama cada uma quando a conversa pede. O fluxo roda no n8n, com as suas credenciais, e devolve o resultado ao agente.</p>
 
-  <h2>2. Passo a passo</h2>
+  <h2>2. Dois caminhos no n8n</h2>
+  <p><strong>Caminho A, MCP da instância:</strong> em <code>Settings &gt; Instance-level MCP</code>, o dono ou administrador marca <code>Enable MCP access</code> e escolhe quais workflows ficam disponíveis (<code>Available in MCP</code>). A conexão usa OAuth ou chave de API, e a URL termina em <code>/mcp-server/http</code>. É o mais rápido para o agente rodar workflows que você já tem.</p>
+  <p><strong>Caminho B, nó MCP Server Trigger:</strong> você monta um conjunto pequeno de ferramentas sob medida dentro de um workflow. É o que os passos abaixo mostram. O guia para baixar cobre os dois.</p>
+
+  <h2>3. Passo a passo do caminho B</h2>
   <ol>
     <li><strong>Crie um workflow</strong> e adicione o nó <code>MCP Server Trigger</code>. Ele é o ponto de entrada: recebe as chamadas dos clientes MCP.</li>
-    <li><strong>Ligue ferramentas ao nó.</strong> Cada nó de ferramenta conectado ao gatilho vira uma tool que o agente enxerga. Dá para usar nós de ferramenta prontos (HTTP, planilha, banco) ou chamar outro workflow seu como ferramenta.</li>
+    <li><strong>Ligue ferramentas ao nó.</strong> Cada nó de ferramenta conectado ao gatilho vira uma tool que o agente enxerga. Dá para usar nós de ferramenta prontos (HTTP, planilha, banco) ou expor outro workflow seu com o nó <code>Custom n8n Workflow Tool</code>.</li>
     <li><strong>Descreva cada ferramenta com clareza.</strong> O agente escolhe pelo nome e pela descrição. Nome objetivo e uma frase dizendo o que entra e o que sai evitam chamadas erradas.</li>
     <li><strong>Defina a autenticação do gatilho</strong> (token no cabeçalho). Não deixe o endpoint aberto.</li>
-    <li><strong>Ative o workflow</strong> e copie a URL de produção do nó. É ela que o cliente MCP usa.</li>
+    <li><strong>Publique o workflow</strong> e copie a URL de produção do nó. É ela que o cliente MCP usa; a de teste só vale enquanto você escuta um evento.</li>
   </ol>
 
-  <h2>3. Conectar no Claude Code</h2>
-  <p>Troque o nome, a URL e o token pelos seus. O tipo de transporte (<code>http</code> ou <code>sse</code>) depende da sua versão do n8n.</p>
+  <h2>4. Conectar no Claude Code</h2>
+  <p>No caminho B, use a URL de produção do nó. No caminho A, a URL termina em <code>/mcp-server/http</code> e dá para entrar por OAuth: rode o comando sem o <code>--header</code> e depois <code>/mcp</code> dentro do Claude Code. Prefira <code>http</code>; o <code>sse</code> só se o seu servidor não aceitar.</p>
   <pre><code>claude mcp add --transport http n8n https://SEU-N8N/mcp/ID-DO-WEBHOOK   --header &quot;Authorization: Bearer SEU_TOKEN&quot;
 
 claude mcp list</code></pre>
   <div class="note"><p><strong>Confira na documentação:</strong> o nome do nó, o formato da URL e as opções de autenticação mudam entre versões do n8n e do cliente. Valide na versão que você usa antes de colocar em produção.</p></div>
 
-  <h2>4. Que ferramentas valem a pena</h2>
+  <h2>5. Que ferramentas valem a pena</h2>
   <p>Comece por ações de leitura, que são seguras e já economizam tempo:</p>
   <ul>
     <li>consultar o status de um atendimento ou pedido;</li>
@@ -126,7 +132,7 @@ claude mcp list</code></pre>
   </ul>
   <p>Ações que escrevem (criar ticket, enviar mensagem) entram depois, uma de cada vez, com confirmação humana.</p>
 
-  <h2>5. Segurança antes de liberar</h2>
+  <h2>6. Segurança antes de liberar</h2>
   <ul class="check"><li>O endpoint exige autenticação e o token não está em repositório nem em print?</li><li>O agente enxerga só as ferramentas necessárias para a tarefa, e nenhuma que apague ou pague?</li><li>Ações que enviam, apagam ou cobram pedem confirmação de uma pessoa antes?</li><li>O retorno de cada ferramenta é tratado como dado não confiável (risco de prompt injection)?</li><li>Cada ferramenta valida os parâmetros que recebe, em vez de confiar no que o modelo mandou?</li><li>Há limite de chamadas e log das execuções para investigar se algo sair do esperado?</li></ul>
 
   <h2>Se não funcionar</h2>
