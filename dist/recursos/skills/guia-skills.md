@@ -65,7 +65,7 @@ Categorias que mais valem a pena, de qualquer rotina de desenvolvimento:
 
 ## 6. Repositórios oficiais
 
-- **Skills de exemplo e de documentos (Anthropic):** github.com/anthropics/skills. Contém, entre outras, `skill-creator`, `mcp-builder`, `webapp-testing`, `frontend-design`, `claude-api`, `doc-coauthoring` e as de documentos `docx`, `pdf`, `pptx` e `xlsx`. As de documentos têm código aberto à vista, mas não são código aberto no sentido estrito, então leia a licença de cada uma. O repositório traz também o modelo `template/` e a especificação em `spec/`.
+- **Skills de exemplo e de documentos (Anthropic):** github.com/anthropics/skills. Contém, entre outras, `skill-creator`, `mcp-builder`, `webapp-testing`, `frontend-design`, `claude-api`, `doc-coauthoring` e as de documentos `docx`, `pdf`, `pptx` e `xlsx`. As de documentos têm o código à vista, mas não são código aberto no sentido estrito, então leia a licença de cada uma. O repositório traz também o modelo `template/` e a especificação em `spec/`.
 - **Diretório oficial de plugins do Claude Code:** github.com/anthropics/claude-plugins-official
 - **Claude Code (ferramenta de terminal):** github.com/anthropics/claude-code
 - **Documentação de skills:** code.claude.com/docs/en/skills
@@ -82,16 +82,36 @@ Depois, é só pedir usando o nome: "use a skill de PDF para extrair os campos d
 
 O repositório avisa que as skills são exemplos educacionais: teste antes de depender delas em trabalho crítico.
 
-## 7. Checklist antes de compartilhar uma skill
+## 7. Repositórios da comunidade que vale conhecer
+
+Estes são de terceiros, **não são oficiais da Anthropic**. A descrição abaixo vem da página de cada repositório; confira a licença e o conteúdo antes de instalar, e leia as permissões (`allowed-tools`) de cada skill.
+
+| Repositório | O que é | Licença |
+|---|---|---|
+| github.com/google/skills | Skills de agente para produtos e tecnologias do Google. É da própria Google | Apache 2.0 |
+| github.com/pbakaus/impeccable | Uma linguagem de design para o seu agente produzir interfaces melhores | Apache 2.0 |
+| github.com/Leonxlnx/taste-skill | Conjunto de skills para agentes de código gerarem frontends mais bem desenhados, com direção de arte, imagens de referência e checagem no navegador | MIT |
+| github.com/BagelHole/DevOps-Security-Agent-Skills | Base de conhecimento de DevOps, segurança, infraestrutura e conformidade com mais de 80 skills, scripts e playbooks | MIT |
+| github.com/eugeniughelbur/obsidian-second-brain | Memória persistente para agentes de código (como o Claude Code), guardada em Markdown num cofre do Obsidian | MIT |
+| github.com/WorldFlowAI/everything-claude-code | Kit para Claude Code com agentes, comandos, skills, regras e hooks | Sem licença declarada no repositório |
+
+Observações:
+
+- O repositório `everything-claude-code` não declara licença e a última atualização é de janeiro de 2026. Sem licença, o uso e a cópia não estão autorizados de forma clara; leia antes de reaproveitar.
+- Skills de terceiros podem incluir scripts e liberar ferramentas. Leia o `SKILL.md` e os arquivos ao lado antes de rodar.
+- Popularidade (estrelas) não é garantia de qualidade nem de segurança.
+
+## 8. Checklist antes de compartilhar ou instalar uma skill
 
 - [ ] A `description` diz o que faz e quando usar?
 - [ ] Não há dados pessoais, senhas, tokens ou caminhos da sua máquina dentro dela?
 - [ ] Ela é curta, com o material pesado em arquivos separados?
 - [ ] As ferramentas liberadas em `allowed-tools` são só as necessárias?
 - [ ] Ações com efeito (publicar, enviar, apagar) pedem confirmação?
+- [ ] Se a skill é de terceiros, você leu o `SKILL.md`, os scripts e a licença?
 - [ ] Você testou chamando com `/nome` e deixando o Claude escolher sozinho?
 
-## 8. Problemas comuns
+## 9. Problemas comuns
 
 | Sintoma | O que verificar |
 |---|---|
