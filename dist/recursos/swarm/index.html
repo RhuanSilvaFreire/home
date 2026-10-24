@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Docker Swarm em produção: deploy sem downtime e rollback — Rhuan Freire</title>
+<meta name="description" content="Stack com atualização gradual, healthcheck e rollback automático no Docker Swarm, comandos de update e rollback e o checklist antes de publicar, a partir da documentação oficial do Docker.">
+<link rel="canonical" href="https://dev.rhuanfreire.com.br/recursos/swarm/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Swarm em produção: deploy sem downtime e rollback">
+<meta property="og:description" content="Stack com atualização gradual, healthcheck e rollback automático no Docker Swarm, comandos de update e rollback e o checklist antes de publicar, a partir da documentação oficial do Docker.">
+<meta property="og:url" content="https://dev.rhuanfreire.com.br/recursos/swarm/">
+<meta property="og:image" content="https://dev.rhuanfreire.com.br/images/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFWN2SL819"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TFWN2SL819');
+</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Docker Swarm em produção: deploy sem downtime e rollback", "description": "Stack com atualização gradual, healthcheck e rollback automático no Docker Swarm, comandos de update e rollback e o checklist antes de publicar, a partir da documentação oficial do Docker.", "author": {"@type": "Person", "name": "Rhuan Freire"}, "mainEntityOfPage": "https://dev.rhuanfreire.com.br/recursos/swarm/", "inLanguage": "pt-BR"}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2')}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--carbon:#0D0D0D;--bone:#F5F3EE;--terracotta:#C45E3A;--ease:cubic-bezier(.22,1,.36,1)}
+body{background:var(--carbon);color:var(--bone);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7}
+a{color:var(--terracotta);text-decoration:none;border-bottom:1px solid rgba(196,94,58,.4);transition:border-color .2s}
+a:hover{border-color:var(--terracotta)}
+.nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,13,13,.72);border-bottom:1px solid rgba(245,243,238,.12);padding:18px 96px;display:flex;align-items:center;gap:40px}
+.nav-brand{display:flex;align-items:center;gap:12px;color:var(--bone);border:none}
+.nav-brand-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:17px;letter-spacing:-.02em}
+.nav-links{display:flex;gap:40px;margin-left:auto}
+.nav-link{font-size:14px;color:rgba(245,243,238,.65);border:none;transition:color .2s}
+.nav-link:hover{color:var(--bone)}
+.article-wrap{max-width:720px;margin:0 auto;padding:72px 32px 120px}
+.article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,243,238,.45);border:none;margin-bottom:48px;transition:color .2s}
+.article-back:hover{color:rgba(245,243,238,.75)}
+.article-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px}
+h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(32px,5vw,52px);letter-spacing:-.025em;line-height:1.08;margin-bottom:20px}
+.article-meta{font-size:13px;color:rgba(245,243,238,.4);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(245,243,238,.1)}
+.article-lead{font-size:20px;color:rgba(245,243,238,.7);line-height:1.6;margin-bottom:48px}
+h2{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;margin:56px 0 16px}
+p{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:20px}
+ul,ol{padding-left:24px;margin-bottom:20px}
+li{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:8px}
+strong{color:rgba(245,243,238,.9);font-weight:500}
+code{font-family:monospace;font-size:14px;background:rgba(245,243,238,.08);padding:2px 6px;border-radius:4px;color:rgba(245,243,238,.85)}
+pre{background:rgba(245,243,238,.05);border:1px solid rgba(245,243,238,.1);border-radius:8px;padding:24px;overflow-x:auto;margin:32px 0}
+pre code{background:none;padding:0;font-size:13px;line-height:1.65}
+blockquote{border-left:3px solid var(--terracotta);padding:16px 24px;margin:32px 0;background:rgba(196,94,58,.06);border-radius:0 6px 6px 0}
+blockquote p{margin:0;color:rgba(245,243,238,.8);font-style:italic}
+.case-link{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;padding:10px 18px;border:1px solid rgba(196,94,58,.4);border-radius:6px;color:var(--terracotta);transition:background .2s,border-color .2s}
+.case-link:hover{background:rgba(196,94,58,.08);border-color:var(--terracotta)}
+footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
+footer a{color:rgba(245,243,238,.6);border:none}
+@media(max-width:768px){.nav{padding:14px 24px}.nav-links{display:none}.article-wrap{padding:48px 24px 80px}footer{padding:40px 24px;flex-direction:column}}
+
+.check{list-style:none;padding-left:0}
+.check li{padding:12px 0 12px 34px;border-bottom:1px solid rgba(245,243,238,.08);position:relative}
+.check li::before{content:"";position:absolute;left:0;top:17px;width:16px;height:16px;border:1.5px solid var(--terracotta);border-radius:3px}
+.note{border:1px solid rgba(245,243,238,.12);background:rgba(245,243,238,.04);border-radius:8px;padding:16px 20px;margin:28px 0}
+.note p{margin:0;font-size:15px}
+.article-wrap table{border-collapse:collapse;width:100%;margin:22px 0;font-size:15px}
+.article-wrap th,.article-wrap td{border:1px solid rgba(245,243,238,.14);padding:10px 12px;text-align:left;vertical-align:top}
+.article-wrap th{background:rgba(245,243,238,.06)}
+.cta-box{margin:64px 0 0;padding:28px;border:1px solid rgba(196,94,58,.4);border-radius:8px;background:rgba(196,94,58,.06)}
+.cta-box p{margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/" class="article-back">← Início</a>
+
+  <div class="article-tag">Infra · Docker Swarm</div>
+  <h1>Docker Swarm em produção: deploy sem downtime e rollback</h1>
+  <div class="article-meta">Rhuan Freire · Material de consulta</div>
+
+  <p class="article-lead">Como publicar e atualizar um serviço no Swarm sem derrubá-lo, voltar atrás quando algo falha e o que cuidar com volumes, segredos e managers.</p>
+<div class="note"><p><strong>Guia completo para baixar:</strong> o mesmo conteúdo em arquivo. <a href="/recursos/swarm/guia-swarm.pdf" download>Baixar o PDF</a> · <a href="/recursos/swarm/guia-swarm.md" download>Baixar em Markdown</a></p></div><p>O Docker Swarm transforma uma ou mais máquinas em um cluster que roda <strong>serviços</strong> com réplicas, atualização gradual e volta automática quando algo dá errado. Este guia mostra o essencial para publicar e atualizar um serviço sem derrubá-lo. Se a sua versão do Docker for diferente, a documentação oficial vale mais do que este guia.</p>
+<h2>1. Conceitos em um minuto</h2>
+<table>
+<thead>
+<tr>
+<th>Termo</th>
+<th>O que é</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nó</strong></td>
+<td>Uma máquina no cluster. Pode ser <em>manager</em> (decide) ou <em>worker</em> (executa)</td>
+</tr>
+<tr>
+<td><strong>Serviço</strong></td>
+<td>O que você quer rodando: imagem, réplicas, portas, rede</td>
+</tr>
+<tr>
+<td><strong>Tarefa</strong></td>
+<td>Um container que o Swarm cria para cumprir o serviço</td>
+</tr>
+<tr>
+<td><strong>Stack</strong></td>
+<td>Um conjunto de serviços descritos em um arquivo Compose e publicados juntos</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Começar</h2>
+<pre><code class="language-bash">docker swarm init                       # transforma esta máquina em manager
+docker stack deploy -c stack.yml app    # publica a stack chamada &quot;app&quot;
+docker service ls                       # lista os serviços
+docker service ps app_web               # mostra as tarefas de um serviço
+</code></pre>
+<h2>3. Um stack.yml com atualização e volta automáticas</h2>
+<pre><code class="language-yaml">services:
+  web:
+    image: nginx:1.27
+    ports:
+      - &quot;8080:80&quot;
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;wget&quot;, &quot;-qO-&quot;, &quot;http://localhost/&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1          # uma réplica por vez
+        delay: 10s              # espera entre uma e outra
+        order: start-first      # sobe a nova antes de derrubar a antiga
+        failure_action: rollback
+        monitor: 30s            # observa cada tarefa depois de atualizar
+      rollback_config:
+        parallelism: 1
+        order: stop-first
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          memory: 256M
+</code></pre>
+<p>Pontos que fazem diferença:</p>
+<ul>
+<li><strong><code>healthcheck</code>:</strong> sem ele, o Swarm só sabe que o processo subiu, não que a aplicação responde.</li>
+<li><strong><code>order: start-first</code>:</strong> evita o intervalo sem réplica. Exige que a aplicação aguente duas versões ao mesmo tempo, então cuide de migrações de banco compatíveis.</li>
+<li><strong><code>failure_action: rollback</code>:</strong> se a atualização falhar, o Swarm volta sozinho para a versão anterior.</li>
+<li><strong>Fixe a versão da imagem.</strong> <code>latest</code> impede o rollback de saber o que era "a anterior".</li>
+</ul>
+<h2>4. Atualizar sem downtime</h2>
+<pre><code class="language-bash">docker service update --image nginx:1.27.1 app_web
+docker service inspect --pretty app_web     # política de atualização e estado
+docker service ps app_web                   # progresso tarefa por tarefa
+</code></pre>
+<p>Se a atualização pausar (<code>Update status: paused</code>), corrija a causa e retome com <code>docker service update app_web</code>.</p>
+<p>Flags úteis do <code>docker service update</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Para que serve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--update-parallelism N</code></td>
+<td>Quantas tarefas atualizar ao mesmo tempo (<code>0</code> = todas)</td>
+</tr>
+<tr>
+<td><code>--update-delay T</code></td>
+<td>Espera entre as atualizações, como <code>10s</code></td>
+</tr>
+<tr>
+<td><code>--update-order start-first</code></td>
+<td>Sobe a nova tarefa antes de parar a antiga</td>
+</tr>
+<tr>
+<td><code>--update-failure-action</code></td>
+<td><code>pause</code>, <code>continue</code> ou <code>rollback</code> quando falha</td>
+</tr>
+<tr>
+<td><code>--update-monitor T</code></td>
+<td>Quanto tempo vigiar cada tarefa depois de atualizar</td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td>Recria as tarefas sem mudar nada (reinício gradual)</td>
+</tr>
+</tbody>
+</table>
+<h2>5. Voltar atrás</h2>
+<pre><code class="language-bash">docker service update --rollback app_web
+</code></pre>
+<p>Isso devolve o serviço à especificação anterior. Dá para ajustar a velocidade da volta com as flags <code>--rollback-*</code>.</p>
+<h2>6. Cuidados em produção</h2>
+<ul>
+<li><strong>Banco de dados e volumes:</strong> um volume local fica no nó onde foi criado. Se a tarefa mudar de nó, os dados não vão junto. Para serviços com estado, fixe o nó com <code>placement.constraints</code> ou use armazenamento compartilhado.</li>
+<li><strong>Segredos:</strong> use <code>docker secret</code> em vez de variáveis de ambiente com senhas dentro do arquivo.</li>
+<li><strong>Redes:</strong> deixe os serviços em redes internas e publique só o necessário.</li>
+<li><strong>Managers:</strong> use um número ímpar (3 ou 5) para manter o quórum. Um manager só é um ponto único de falha.</li>
+<li><strong>Recursos:</strong> defina limites de memória e CPU para um serviço não consumir o nó inteiro.</li>
+</ul>
+<h2>7. Checklist antes de publicar</h2>
+<ul class="check"><li>A imagem tem versão fixa, e não <code>latest</code>?</li><li>Há <code>healthcheck</code> que testa a aplicação de verdade?</li><li><code>update_config</code> tem <code>failure_action: rollback</code> e <code>monitor</code> definidos?</li><li>Você ensaiou o rollback pelo menos uma vez?</li><li>Os serviços com estado têm volume e nó definidos, e há backup dos dados?</li><li>As senhas estão em secrets e não no arquivo?</li><li>Há limite de memória e CPU nos serviços?</li></ul>
+
+<h2>8. Problemas comuns</h2>
+<table>
+<thead>
+<tr>
+<th>Sintoma</th>
+<th>O que verificar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A atualização pausa sozinha</td>
+<td>A nova tarefa falhou o healthcheck ou caiu. Veja <code>docker service ps --no-trunc</code> e os logs</td>
+</tr>
+<tr>
+<td>Réplicas ficam em <code>Pending</code></td>
+<td>Falta recurso ou nenhum nó atende às restrições de placement</td>
+</tr>
+<tr>
+<td>A tarefa reinicia em loop</td>
+<td>A aplicação sai com erro. Veja <code>docker service logs</code></td>
+</tr>
+<tr>
+<td>O dado "sumiu" depois de um deploy</td>
+<td>A tarefa foi para outro nó e o volume local ficou no anterior</td>
+</tr>
+<tr>
+<td>Rollback não volta ao esperado</td>
+<td>A imagem anterior usava a tag <code>latest</code>, que já foi sobrescrita. Fixe versões</td>
+</tr>
+</tbody>
+</table>
+<h2>9. Referências oficiais</h2>
+<ul>
+<li>Rolling update no Swarm: docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/</li>
+<li><code>docker service update</code>: docs.docker.com/reference/cli/docker/service/update/</li>
+<li>Visão geral do modo Swarm: docs.docker.com/engine/swarm/</li>
+</ul>
+  <div class="cta-box">
+    <p><strong>Precisa disso rodando no seu ambiente?</strong> Posso olhar o seu caso e montar com você.</p>
+    <a href="https://wa.me/5511996368169" class="case-link">Falar no WhatsApp →</a>
+  </div>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">Blog</a>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backup e restore que funcionam: bancos, volumes e o teste que ninguém faz — Rhuan Freire</title>
+<meta name="description" content="Como fazer backup consistente de PostgreSQL, SQLite e volumes Docker, automatizar com cron e testar a restauração, a partir da documentação oficial do PostgreSQL e do SQLite.">
+<link rel="canonical" href="https://dev.rhuanfreire.com.br/recursos/backup/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Backup e restore que funcionam: bancos, volumes e o teste que ninguém faz">
+<meta property="og:description" content="Como fazer backup consistente de PostgreSQL, SQLite e volumes Docker, automatizar com cron e testar a restauração, a partir da documentação oficial do PostgreSQL e do SQLite.">
+<meta property="og:url" content="https://dev.rhuanfreire.com.br/recursos/backup/">
+<meta property="og:image" content="https://dev.rhuanfreire.com.br/images/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFWN2SL819"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TFWN2SL819');
+</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Backup e restore que funcionam: bancos, volumes e o teste que ninguém faz", "description": "Como fazer backup consistente de PostgreSQL, SQLite e volumes Docker, automatizar com cron e testar a restauração, a partir da documentação oficial do PostgreSQL e do SQLite.", "author": {"@type": "Person", "name": "Rhuan Freire"}, "mainEntityOfPage": "https://dev.rhuanfreire.com.br/recursos/backup/", "inLanguage": "pt-BR"}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/intertight/v9/NGSwv5HMAFg6IuGlBNMjxLsC66ZMtb8hyW62x0xCHy5XgqoUPvi5.woff2) format('woff2')}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--carbon:#0D0D0D;--bone:#F5F3EE;--terracotta:#C45E3A;--ease:cubic-bezier(.22,1,.36,1)}
+body{background:var(--carbon);color:var(--bone);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7}
+a{color:var(--terracotta);text-decoration:none;border-bottom:1px solid rgba(196,94,58,.4);transition:border-color .2s}
+a:hover{border-color:var(--terracotta)}
+.nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(13,13,13,.72);border-bottom:1px solid rgba(245,243,238,.12);padding:18px 96px;display:flex;align-items:center;gap:40px}
+.nav-brand{display:flex;align-items:center;gap:12px;color:var(--bone);border:none}
+.nav-brand-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:17px;letter-spacing:-.02em}
+.nav-links{display:flex;gap:40px;margin-left:auto}
+.nav-link{font-size:14px;color:rgba(245,243,238,.65);border:none;transition:color .2s}
+.nav-link:hover{color:var(--bone)}
+.article-wrap{max-width:720px;margin:0 auto;padding:72px 32px 120px}
+.article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,243,238,.45);border:none;margin-bottom:48px;transition:color .2s}
+.article-back:hover{color:rgba(245,243,238,.75)}
+.article-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px}
+h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(32px,5vw,52px);letter-spacing:-.025em;line-height:1.08;margin-bottom:20px}
+.article-meta{font-size:13px;color:rgba(245,243,238,.4);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(245,243,238,.1)}
+.article-lead{font-size:20px;color:rgba(245,243,238,.7);line-height:1.6;margin-bottom:48px}
+h2{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;margin:56px 0 16px}
+p{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:20px}
+ul,ol{padding-left:24px;margin-bottom:20px}
+li{font-size:16px;color:rgba(245,243,238,.72);margin-bottom:8px}
+strong{color:rgba(245,243,238,.9);font-weight:500}
+code{font-family:monospace;font-size:14px;background:rgba(245,243,238,.08);padding:2px 6px;border-radius:4px;color:rgba(245,243,238,.85)}
+pre{background:rgba(245,243,238,.05);border:1px solid rgba(245,243,238,.1);border-radius:8px;padding:24px;overflow-x:auto;margin:32px 0}
+pre code{background:none;padding:0;font-size:13px;line-height:1.65}
+blockquote{border-left:3px solid var(--terracotta);padding:16px 24px;margin:32px 0;background:rgba(196,94,58,.06);border-radius:0 6px 6px 0}
+blockquote p{margin:0;color:rgba(245,243,238,.8);font-style:italic}
+.case-link{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;padding:10px 18px;border:1px solid rgba(196,94,58,.4);border-radius:6px;color:var(--terracotta);transition:background .2s,border-color .2s}
+.case-link:hover{background:rgba(196,94,58,.08);border-color:var(--terracotta)}
+footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
+footer a{color:rgba(245,243,238,.6);border:none}
+@media(max-width:768px){.nav{padding:14px 24px}.nav-links{display:none}.article-wrap{padding:48px 24px 80px}footer{padding:40px 24px;flex-direction:column}}
+
+.check{list-style:none;padding-left:0}
+.check li{padding:12px 0 12px 34px;border-bottom:1px solid rgba(245,243,238,.08);position:relative}
+.check li::before{content:"";position:absolute;left:0;top:17px;width:16px;height:16px;border:1.5px solid var(--terracotta);border-radius:3px}
+.note{border:1px solid rgba(245,243,238,.12);background:rgba(245,243,238,.04);border-radius:8px;padding:16px 20px;margin:28px 0}
+.note p{margin:0;font-size:15px}
+.article-wrap table{border-collapse:collapse;width:100%;margin:22px 0;font-size:15px}
+.article-wrap th,.article-wrap td{border:1px solid rgba(245,243,238,.14);padding:10px 12px;text-align:left;vertical-align:top}
+.article-wrap th{background:rgba(245,243,238,.06)}
+.cta-box{margin:64px 0 0;padding:28px;border:1px solid rgba(196,94,58,.4);border-radius:8px;background:rgba(196,94,58,.06)}
+.cta-box p{margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/" class="article-back">← Início</a>
+
+  <div class="article-tag">Infra · Backup</div>
+  <h1>Backup e restore que funcionam: bancos, volumes e o teste que ninguém faz</h1>
+  <div class="article-meta">Rhuan Freire · Material de consulta</div>
+
+  <p class="article-lead">Backup só vale se a restauração funciona. O essencial para copiar bancos e volumes com consistência e como testar a volta.</p>
+<div class="note"><p><strong>Guia completo para baixar:</strong> o mesmo conteúdo em arquivo. <a href="/recursos/backup/guia-backup.pdf" download>Baixar o PDF</a> · <a href="/recursos/backup/guia-backup.md" download>Baixar em Markdown</a></p></div><p>Backup só vale se a <strong>restauração</strong> funciona. Este guia mostra o essencial para copiar bancos e volumes de forma consistente e, principalmente, como testar a volta. Se a sua versão for diferente, a documentação oficial vale mais do que este guia.</p>
+<h2>1. O que entra no backup</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Exemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bancos de dados</strong></td>
+<td>PostgreSQL, SQLite, MySQL</td>
+</tr>
+<tr>
+<td><strong>Volumes e arquivos enviados</strong></td>
+<td>Pastas de uploads, dados de aplicações</td>
+</tr>
+<tr>
+<td><strong>Configuração</strong></td>
+<td>Arquivos de stack ou compose, <code>.env</code>, certificados</td>
+</tr>
+<tr>
+<td><strong>Segredos</strong></td>
+<td>Guardados à parte e cifrados, nunca junto do backup em texto puro</td>
+</tr>
+</tbody>
+</table>
+<p>Regra de bolso (3-2-1): <strong>3 cópias</strong> dos dados, em <strong>2 tipos de mídia</strong> diferentes, com <strong>1 cópia fora do local</strong>.</p>
+<h2>2. PostgreSQL</h2>
+<p><code>pg_dump</code> copia um banco com consistência: o resultado é um retrato do momento em que o comando começou, e ele não bloqueia as outras operações.</p>
+<pre><code class="language-bash">pg_dump -Fc -h HOST -U USUARIO NOME_DO_BANCO &gt; banco.dump
+</code></pre>
+<p>O formato <code>-Fc</code> (custom) é comprimido e permite restaurar só algumas tabelas. Para restaurar:</p>
+<pre><code class="language-bash">createdb -T template0 NOVO_BANCO
+pg_restore -d NOVO_BANCO banco.dump
+</code></pre>
+<p>Para guardar também os usuários e permissões do servidor (que o <code>pg_dump</code> não inclui):</p>
+<pre><code class="language-bash">pg_dumpall --globals-only &gt; globais.sql
+</code></pre>
+<p>Depois de restaurar, rode <code>ANALYZE</code> em cada banco, para o planejador de consultas ter estatísticas.</p>
+<h2>3. SQLite</h2>
+<p>Copiar o arquivo do banco enquanto a aplicação grava pode gerar uma cópia inconsistente. O shell do SQLite tem o comando <code>.backup</code>:</p>
+<pre><code class="language-bash">sqlite3 /caminho/app.db &quot;.backup /caminho/backup/app.db&quot;
+</code></pre>
+<p>Para uma cópia em texto, que serve de arquivo de longo prazo:</p>
+<pre><code class="language-bash">sqlite3 /caminho/app.db .dump | gzip -c &gt; app.dump.gz
+</code></pre>
+<h2>4. Volumes do Docker</h2>
+<pre><code class="language-bash">docker run --rm -v NOME_DO_VOLUME:/dados -v &quot;$(pwd)&quot;:/backup alpine \
+  tar czf /backup/volume.tar.gz -C /dados .
+</code></pre>
+<p>Para serviços que escrevem o tempo todo (bancos), prefira o backup pela própria ferramenta do banco, e não pela cópia da pasta.</p>
+<h2>5. Automatizar</h2>
+<p>Um script simples, chamado todo dia pelo <code>cron</code>:</p>
+<pre><code class="language-bash">#!/bin/sh
+set -eu
+DIA=$(date +%F)
+DEST=/backups/$DIA
+mkdir -p &quot;$DEST&quot;
+pg_dump -Fc -h HOST -U USUARIO NOME_DO_BANCO &gt; &quot;$DEST/banco.dump&quot;
+# apague os mais antigos que 14 dias
+find /backups -maxdepth 1 -type d -mtime +14 -exec rm -rf {} +
+</code></pre>
+<pre><code>0 3 * * * /opt/backup.sh
+</code></pre>
+<p>Depois envie a pasta para outro local (outro servidor ou armazenamento de objetos) e <strong>cifre</strong> antes de sair da máquina.</p>
+<h2>6. O teste de restauração</h2>
+<p>Faça isto de tempos em tempos, em um ambiente separado:</p>
+<ol>
+<li>Pegue o backup mais recente.</li>
+<li>Restaure em um banco ou volume novo, nunca por cima do real.</li>
+<li>Suba a aplicação apontando para essa cópia.</li>
+<li>Confira: login funciona, os dados recentes estão lá, os arquivos abrem.</li>
+<li>Anote <strong>quanto tempo</strong> levou. Esse é o seu tempo real de recuperação.</li>
+</ol>
+<h2>7. Checklist</h2>
+<ul class="check"><li>Existe backup automático de cada banco e de cada volume importante?</li><li>Há uma cópia fora do servidor e fora do mesmo provedor?</li><li>O backup que sai da máquina está cifrado?</li><li>As senhas e chaves estão guardadas separadas do backup?</li><li>A restauração foi testada nos últimos 90 dias?</li><li>Você sabe quanto tempo leva restaurar tudo?</li><li>Alguém é avisado quando o backup falha?</li><li>A retenção está definida (quantos dias ou versões guardar)?</li></ul>
+
+<h2>8. Problemas comuns</h2>
+<table>
+<thead>
+<tr>
+<th>Sintoma</th>
+<th>O que verificar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pg_restore</code> dá erro de usuário inexistente</td>
+<td>Restaure antes os usuários, com os globais do <code>pg_dumpall --globals-only</code></td>
+</tr>
+<tr>
+<td>Backup de SQLite corrompido</td>
+<td>Foi feito copiando o arquivo com a aplicação gravando. Use <code>.backup</code></td>
+</tr>
+<tr>
+<td>Restauração muito lenta</td>
+<td>Considere dump em formato diretório com <code>-j</code> para paralelizar</td>
+</tr>
+<tr>
+<td>Disco encheu de backups</td>
+<td>Falta a rotina de retenção</td>
+</tr>
+<tr>
+<td>"Tudo certo" mas dados antigos</td>
+<td>O job falhou em silêncio. Monitore a data do último backup</td>
+</tr>
+</tbody>
+</table>
+<h2>9. Referências oficiais</h2>
+<ul>
+<li>PostgreSQL, SQL dump: postgresql.org/docs/current/backup-dump.html</li>
+<li>SQLite, shell de linha de comando: sqlite.org/cli.html</li>
+</ul>
+  <div class="cta-box">
+    <p><strong>Precisa disso rodando no seu ambiente?</strong> Posso olhar o seu caso e montar com você.</p>
+    <a href="https://wa.me/5511996368169" class="case-link">Falar no WhatsApp →</a>
+  </div>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">Blog</a>
+</footer>
+
+</body>
+</html>
