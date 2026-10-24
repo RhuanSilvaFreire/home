@@ -1,6 +1,6 @@
 # n8n + MCP + Claude Code: guia passo a passo
 
-**Rhuan Freire** · dev.rhuanfreire.com.br · Material de consulta · conferido na documentação oficial do n8n e do Claude Code em 24/10/2026
+Material informativo · conferido na documentação oficial do n8n e do Claude Code em 24/10/2026
 
 Este guia leva você do zero até um agente (Claude Code) chamando workflows do seu n8n por MCP. Os nomes de menus e comandos abaixo vêm da documentação oficial; se a sua versão for diferente, a documentação dela vale mais do que este PDF.
 
@@ -139,7 +139,3 @@ Dentro do Claude Code, `/mcp` mostra o estado de cada servidor (conectado ou com
 - n8n, nó MCP Server Trigger: docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-langchain.mcptrigger/
 - n8n, exemplos de clientes MCP: docs.n8n.io/connect/connect-to-n8n-mcp-server/mcp-client-examples/
 - Claude Code, MCP: code.claude.com/docs/en/mcp
-
----
-
-Precisa disso rodando no seu ambiente? Fale comigo: wa.me/5511996368169
