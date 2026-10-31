@@ -2,12 +2,10 @@
 <html lang="pt-BR" data-fx-home data-header-auto>
 <head>
 <script>
-// Gates de efeito: tela de carregamento só na 1ª visita da sessão; fallback libera o conteúdo se o JS de animação falhar
+// Gates de efeito: tela de carregamento em todo carregamento da home; fallback libera o conteúdo se o JS de animação falhar
 (function(d){
   d.classList.add('fx-js','fx-header-hide');
-  var seen=false;
-  try{seen=sessionStorage.getItem('fx-seen')==='1'}catch(e){}
-  if(!seen)d.classList.add('fx-loading');
+  d.classList.add('fx-loading');
   setTimeout(function(){d.classList.add('fx-fallback');d.classList.remove('fx-loading')},7000);
 })(document.documentElement);
 </script>
@@ -408,16 +406,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="hero-spot" aria-hidden="true"></div>
   <div class="hero-content">
-    <div class="hb"><span class="label-line">Engenharia de sistemas · São Paulo, BR</span></div>
+    <div class="hb"><span class="label-line">DevOps · Automação · IA aplicada — São Paulo</span></div>
     <div class="hb">
       <h1>Sistemas que rodam<br>sem <em>você olhar.</em></h1>
     </div>
     <div class="hb">
-      <p class="hero-desc">De agentes de IA a clusters de alta disponibilidade — construo a infraestrutura e as integrações que permitem empresas de qualquer tamanho operar em escala. Sem gargalo no pico. Sem plantão humano para manter funcionando.</p>
+      <p class="hero-desc">Infraestrutura, automações e agentes de IA que aguentam o pico, se recuperam sozinhos e atendem 24h — sem plantão. Do primeiro fluxo no N8N ao cluster Docker Swarm em produção.</p>
     </div>
     <div class="hb hero-ctas">
       <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="btn-white"><span class="btn-icon" aria-hidden="true"><img src="/icons/whatsapp.svg" alt="" width="24" height="24" style="filter:brightness(0) invert(1)"></span>Falar pelo WhatsApp</a>
-      <a href="#sobre" class="btn">Quem sou</a>
+      <a href="#trabalhos" class="btn">Ver projetos</a>
     </div>
   </div>
   <a href="#manifesto" class="scroll-down hb" aria-label="Rolar para o conteúdo">
