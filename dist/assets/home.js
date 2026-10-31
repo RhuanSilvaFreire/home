@@ -204,18 +204,23 @@
   if (bands.length) {
     mm.add({ desktop: "(min-width: 961px)", mobile: "(max-width: 960px)" }, function (ctx) {
       var desktop = ctx.conditions.desktop;
+      var zoomFrom = function (i) {
+        return { scale: desktop ? 3.2 : 2.2, opacity: 0, filter: "blur(16px)", xPercent: i % 2 ? 18 : -18 };
+      };
+      var zoomTo = { scale: 1, opacity: 1, filter: "blur(0px)", xPercent: 0, duration: 1, ease: "power3.out" };
+      // A primeira faixa já começa a aproximar enquanto o carrossel de tecnologias ainda está saindo da tela
+      gsap.fromTo(bands[0], zoomFrom(0), Object.assign({}, zoomTo, {
+        scrollTrigger: { trigger: ".services", start: "top 92%", end: "center center", scrub: true }
+      }));
       var tlBands = gsap.timeline({
         scrollTrigger: {
           trigger: ".services", start: "center center",
-          end: function () { return "+=" + window.innerHeight * (desktop ? 1.6 : 1.1); },
-          pin: true, scrub: 1, anticipatePin: 1
+          end: function () { return "+=" + window.innerHeight * (desktop ? 1.1 : 0.8); },
+          pin: true, scrub: true
         }
       });
-      bands.forEach(function (b, i) {
-        tlBands.fromTo(b,
-          { scale: desktop ? 3.2 : 2.2, opacity: 0, filter: "blur(16px)", xPercent: i === 1 ? -18 : 18 },
-          { scale: 1, opacity: 1, filter: "blur(0px)", xPercent: 0, duration: 1, ease: "power3.out" },
-          i * 0.55);
+      bands.slice(1).forEach(function (b, i) {
+        tlBands.fromTo(b, zoomFrom(i + 1), zoomTo, i * 0.55);
       });
       tlBands.to({}, { duration: 0.35 }); // respiro com as palavras encaixadas antes de soltar o pin
       return function () { gsap.set(bands, { clearProps: "all" }); };
