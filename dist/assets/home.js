@@ -49,9 +49,9 @@
   /* ---------- Preloader + entrada da hero ---------- */
   var isLoading = doc.classList.contains("fx-loading");
   var tl = gsap.timeline({ paused: true });
-  tl.fromTo(heroLines, { opacity: 0, x: -100, filter: "blur(10px)" },
-      { opacity: 1, x: 0, filter: "blur(0px)", duration: 2, stagger: 0.25, ease: "power4.out" })
-    .from(heroChars, { opacity: 0, x: -60, filter: "blur(10px)", duration: 2.4, stagger: 0.035, ease: "power4.out" }, "<0.2");
+  tl.fromTo(heroLines, { opacity: 0, x: -100, filter: FX.blur(10) },
+      { opacity: 1, x: 0, filter: FX.blur(0), duration: 2, stagger: 0.25, ease: "power4.out" })
+    .from(heroChars, { opacity: 0, x: -60, filter: FX.blur(10), duration: 2.4, stagger: 0.035, ease: "power4.out" }, "<0.2");
 
   // Toque (sem mouse para a lente): uma varredura de brilho percorre o título depois da entrada
   if (!FX.finePointer) {
@@ -96,14 +96,16 @@
       // a contagem até 100 ocupa o tempo que falta do mínimo, nunca salta
       gsap.timeline({ onComplete: endPreloader })
         .to(state, { p: 100, duration: Math.max(0.45, wait), ease: "power1.inOut", onUpdate: render })
-        .to(".ld-logo, .ld-hud", { opacity: 0, filter: "blur(8px)", duration: 0.45, ease: "power2.in" }, "+=0.15")
+        .to(".ld-logo, .ld-hud", { opacity: 0, filter: FX.blur(8), duration: 0.45, ease: "power2.in" }, "+=0.15")
         .to(".ld-core", { scale: 1.15, opacity: 0, duration: 0.5, ease: "power2.in" }, "<")
         .set(".ld-portal", { opacity: 1 })
         .fromTo(".ld-portal", { scale: 0.8 }, { scale: 9, borderWidth: 1, duration: 0.9, ease: "expo.in" }, "<0.2")
         .to(".ld-panel", { opacity: 0, duration: 0.55, ease: "power2.inOut" }, "-=0.5")
         .add(done, "-=0.65");
     };
-    if (document.readyState === "complete") finish();
+    // Não espera o "load" (vídeo da hero e imagens seguram ele por segundos no 4G): fontes prontas bastam
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(finish, finish);
+    else if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });
     setTimeout(finish, PRELOADER_MAX_S * 1000);
   }
@@ -119,11 +121,11 @@
       if (desktop) {
         from.x = dir === "right" ? 140 : dir === "up" ? 0 : -140;
         from.y = dir === "up" ? 100 : 0;
-        from.filter = "blur(12px)";
+        from.filter = FX.blur(12);
       } else {
         from.y = 60;
         from.x = dir === "right" ? 30 : -30;
-        from.filter = "blur(6px)";
+        from.filter = FX.blur(6);
       }
       from.scrollTrigger = { trigger: el, start: "top 100%", end: "top 50%", scrub: 1.5 };
       gsap.from(el, from);
@@ -135,7 +137,7 @@
     layers.forEach(function (l) {
       gsap.to(l[0], { y: desktop ? l[1] : l[1] * 0.5, ease: "none", scrollTrigger: heroScroll });
     });
-    gsap.to(".hero-content", { opacity: 0, filter: desktop ? "blur(8px)" : "none", ease: "power1.in", scrollTrigger: heroScroll });
+    gsap.to(".hero-content", { opacity: 0, filter: desktop ? FX.blur(8) : "none", ease: "power1.in", scrollTrigger: heroScroll });
     gsap.to(".hero-video", { yPercent: 15, ease: "none", scrollTrigger: heroScroll });
 
     /* Manifesto: palavras acendem uma a uma conforme o scroll */
@@ -166,7 +168,7 @@
     /* Lista de tecnologias entrando uma a uma da esquerda */
     gsap.utils.toArray(".stack-item").forEach(function (el) {
       gsap.from(el, {
-        x: desktop ? -200 : -40, opacity: 0, filter: desktop ? "blur(10px)" : "none", ease: "power4.out",
+        x: desktop ? -200 : -40, opacity: 0, filter: desktop ? FX.blur(10) : "none", ease: "power4.out",
         scrollTrigger: { trigger: el, start: "top 92%", end: "top 70%", scrub: 2 }
       });
     });
@@ -203,9 +205,9 @@
     mm.add({ desktop: "(min-width: 961px)", mobile: "(max-width: 960px)" }, function (ctx) {
       var desktop = ctx.conditions.desktop;
       var zoomFrom = function (i) {
-        return { scale: desktop ? 3.2 : 2.2, opacity: 0, filter: "blur(16px)", xPercent: i % 2 ? 18 : -18 };
+        return { scale: desktop ? 3.2 : 2.2, opacity: 0, filter: FX.blur(16), xPercent: i % 2 ? 18 : -18 };
       };
-      var zoomTo = { scale: 1, opacity: 1, filter: "blur(0px)", xPercent: 0, duration: 1, ease: "power3.out" };
+      var zoomTo = { scale: 1, opacity: 1, filter: FX.blur(0), xPercent: 0, duration: 1, ease: "power3.out" };
       // A primeira faixa já começa a aproximar enquanto o carrossel de tecnologias ainda está saindo da tela
       gsap.fromTo(bands[0], zoomFrom(0), Object.assign({}, zoomTo, {
         scrollTrigger: { trigger: ".services", start: "top 92%", end: "center center", scrub: true }

@@ -9,7 +9,15 @@
   var CURTAIN_MS = 320;
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 
-  var FX = { reduced: REDUCED, finePointer: FINE_POINTER, lenis: null, gsap: hasGsap };
+  // Aparelho leve (toque ou pouco núcleo/memória): mesmos efeitos, sem blur animado, que é o que pesa na GPU
+  var LITE = !FINE_POINTER || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+  if (LITE) doc.classList.add("fx-lite");
+
+  // Celular: a barra de endereço some/aparece no scroll e disparava refresh de todos os pins (travadas)
+  if (hasGsap) ScrollTrigger.config({ ignoreMobileResize: true });
+
+  var FX = { reduced: REDUCED, finePointer: FINE_POINTER, lite: LITE, lenis: null, gsap: hasGsap };
+  FX.blur = function (px) { return LITE ? "none" : "blur(" + px + "px)"; };
   window.FX = FX;
 
   /* ---------- Smooth scroll (iniciado uma única vez) ---------- */
@@ -237,7 +245,8 @@
     var tryPlay = function () { if (!v.ended && v.paused) v.play().catch(function () {}); };
     tryPlay();
     v.addEventListener("loadeddata", tryPlay, { once: true });
-    ["touchstart", "pointerdown", "scroll", "keydown"].forEach(function (ev) {
+    // iOS só libera play() em touchend/click (touchstart e scroll não contam como gesto)
+    ["touchstart", "touchend", "click", "pointerdown", "scroll", "keydown"].forEach(function (ev) {
       window.addEventListener(ev, tryPlay, { once: true, passive: true });
     });
   };
@@ -249,7 +258,7 @@
       var chars = FX.split(h1, "words");
       FX.repel(chars);
       if (hasGsap) {
-        gsap.from(chars, { opacity: 0, x: -60, filter: "blur(10px)", duration: 1.6, stagger: 0.06, ease: "power4.out" });
+        gsap.from(chars, { opacity: 0, x: -60, filter: FX.blur(10), duration: 1.6, stagger: 0.06, ease: "power4.out" });
       }
     }
     FX.autoReveal([

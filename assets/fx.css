@@ -147,7 +147,13 @@ html.fx-loading .screen-loading{display:block;position:fixed;inset:0;z-index:999
 .ld-count small{font-size:.28em;letter-spacing:.02em;color:var(--terracotta);margin-left:6px}
 .ld-portal{position:absolute;left:50%;top:50%;width:min(64vmin,440px);aspect-ratio:1;margin:calc(min(64vmin,440px) / -2) 0 0 calc(min(64vmin,440px) / -2);border-radius:50%;
   border:2px solid var(--terracotta);box-shadow:0 0 30px rgba(196,94,58,.55),inset 0 0 30px rgba(196,94,58,.35);opacity:0}
-@media(max-width:600px){.ld-hud{font-size:11px}.ld-hud .tr{display:none}.ld-hud strong{font-size:13px}}
+@media(max-width:600px){
+  .ld-hud{font-size:11px}.ld-hud strong{font-size:13px}
+  .ld-hud .tr{top:auto;bottom:clamp(64px,10vh,96px);left:0;right:0;justify-content:center;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,243,238,.5)}
+  .ld-core,.ld-portal{width:min(82vw,440px);margin:calc(min(82vw,440px) / -2) 0 0 calc(min(82vw,440px) / -2)}
+  .ld-glow{width:120vw}
+  .ld-count{font-size:56px}
+}
 
 /* ---------- Reveal genérico (páginas internas) ---------- */
 html.fx-js .fx-rv{opacity:0;transform:translateX(-40px);filter:blur(10px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease),filter 1.2s var(--ease)}
@@ -171,3 +177,10 @@ video{pointer-events:none}
 /* ---------- Indicador de progresso do scroll ---------- */
 .fx-progress{position:fixed;top:0;left:0;width:100%;height:2px;z-index:1000;pointer-events:none;transform:scaleX(0);transform-origin:0 50%;
   background:linear-gradient(90deg,var(--slate,#496A89),var(--accent));box-shadow:0 0 12px rgba(196,94,58,.6)}
+
+/* ---------- Aparelhos leves (toque / pouco hardware): sem blur, que é o que trava a rolagem ---------- */
+html.fx-lite .fx-rv{filter:none}
+html.fx-lite .card-glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(245,243,238,.07)}
+html.fx-lite .about-bg-img{filter:grayscale(1)}
+/* Vídeo da hero: esconde o botão de play nativo (Modo de Pouca Energia no iPhone); fica o pôster até tocar */
+.hero-video::-webkit-media-controls,.hero-video::-webkit-media-controls-start-playback-button,.hero-video::-webkit-media-controls-overlay-play-button{display:none!important;-webkit-appearance:none}
