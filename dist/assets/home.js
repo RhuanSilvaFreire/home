@@ -230,13 +230,14 @@
     var container = document.querySelector(".object-container");
     if (!container) return;
     if (!animated) { container.classList.add("is-static"); return; }
-    ScrollTrigger.create({
-      trigger: container, start: "top 85%", once: true,
-      onEnter: function () {
-        loadScript(MATTER_SRC).then(function () { initPhysics(container); })
-          .catch(function () { container.classList.add("is-static"); });
-      }
-    });
+    // IntersectionObserver não depende do refresh dos pins, que adiantava o disparo no desktop
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      loadScript(MATTER_SRC).then(function () { initPhysics(container); })
+        .catch(function () { container.classList.add("is-static"); });
+    }, { threshold: 0.5 });
+    io.observe(container);
   }
 
   function loadScript(src) {
