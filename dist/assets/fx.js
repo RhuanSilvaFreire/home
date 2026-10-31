@@ -125,7 +125,7 @@
   };
 
   /* ---------- Lente HUD no texto: letras perto do cursor sobem um pouco e acendem (só desktop com mouse) ---------- */
-  var RADIUS = 140, LIFT = 10, LERP = 0.12, EPSILON = 0.01;
+  var RADIUS = 190, LIFT = 18, GROW = 0.12, LERP = 0.14, EPSILON = 0.01;
   var repelItems = [];
   var mouse = { x: -9999, y: -9999 };
   var running = false;
@@ -151,12 +151,13 @@
       var target = k * k * (3 - 2 * k);
       it.h += (target - it.h) * LERP;
       if (Math.abs(it.h) < EPSILON && target === 0) {
-        if (it.h !== 0) { it.h = 0; it.el.style.translate = ""; it.el.style.removeProperty("--heat"); }
+        if (it.h !== 0) { it.h = 0; it.el.style.translate = ""; it.el.style.scale = ""; it.el.style.removeProperty("--heat"); }
         return;
       }
       moving = true;
       // "translate" (propriedade individual) compõe com o transform usado pelo GSAP
       it.el.style.translate = "0px " + (-it.h * LIFT).toFixed(2) + "px";
+      it.el.style.scale = (1 + it.h * GROW).toFixed(3);
       it.el.style.setProperty("--heat", it.h.toFixed(3));
     });
     running = moving;

@@ -45,7 +45,7 @@ html.fx-header-hide .nav:focus-within{opacity:1;transform:none;pointer-events:au
 }
 
 /* ---------- Lente HUD (--heat 0..1 vem do fx.js) ---------- */
-.char,.word{--heat:0;text-shadow:0 0 calc(var(--heat) * 18px) rgba(196,94,58,calc(var(--heat) * .9)),0 0 calc(var(--heat) * 4px) rgba(245,243,238,calc(var(--heat) * .6))}
+.char,.word{--heat:0;text-shadow:0 0 calc(var(--heat) * 28px) rgba(196,94,58,calc(var(--heat) * 1)),0 0 calc(var(--heat) * 10px) rgba(196,94,58,calc(var(--heat) * .8)),0 0 calc(var(--heat) * 3px) rgba(245,243,238,calc(var(--heat) * .7))}
 
 /* ---------- Tipografia utilitária ---------- */
 .color-gradient{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
