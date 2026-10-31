@@ -2,7 +2,8 @@
 (function () {
   "use strict";
   var doc = document.documentElement;
-  var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Decisão: efeitos de scroll rodam mesmo com prefers-reduced-motion; só preloader e loops infinitos respeitam a preferência (CSS).
+  var REDUCED = false;
   var FINE_POINTER = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var HEADER_THRESHOLD = 120;
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
@@ -23,6 +24,19 @@
       (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
     }
   }
+
+  /* ---------- Indicador de progresso do scroll ---------- */
+  var bar = document.createElement("div");
+  bar.className = "fx-progress";
+  bar.setAttribute("aria-hidden", "true");
+  document.body.appendChild(bar);
+  var syncBar = function () {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = "scaleX(" + (max > 0 ? window.scrollY / max : 0).toFixed(4) + ")";
+  };
+  window.addEventListener("scroll", syncBar, { passive: true });
+  window.addEventListener("resize", syncBar);
+  syncBar();
 
   /* ---------- Âncoras internas com Lenis ---------- */
   document.addEventListener("click", function (e) {

@@ -46,16 +46,51 @@
     var desktop = ctx.conditions.desktop;
     gsap.utils.toArray(".rv").forEach(function (el, i) {
       var dir = el.dataset.from || (i % 2 ? "right" : "left");
-      var from = { opacity: 0, ease: "power1.out" };
+      var from = { opacity: 0, ease: "power2.out" };
       if (desktop) {
-        from.x = dir === "right" ? 50 : dir === "up" ? 0 : -50;
-        from.y = dir === "up" ? 50 : 0;
-        from.filter = "blur(10px)";
+        from.x = dir === "right" ? 140 : dir === "up" ? 0 : -140;
+        from.y = dir === "up" ? 100 : 0;
+        from.filter = "blur(12px)";
       } else {
-        from.y = 32;
+        from.y = 60;
+        from.x = dir === "right" ? 30 : -30;
       }
-      from.scrollTrigger = { trigger: el, start: "top 88%", end: "top 62%", scrub: 2 };
+      from.scrollTrigger = { trigger: el, start: "top 100%", end: "top 50%", scrub: 1.5 };
       gsap.from(el, from);
+    });
+
+    /* Hero: parallax em camadas (label lento, título médio, texto e CTAs rápidos) e vídeo aproximando */
+    var heroScroll = { trigger: ".hero", start: "top top", end: "bottom top", scrub: true };
+    var layers = [[".hero .label-line", -40], [".hero h1", -110], [".hero-desc", -170], [".hero-ctas", -230], [".hero .scroll-down", -60]];
+    layers.forEach(function (l) {
+      gsap.to(l[0], { y: desktop ? l[1] : l[1] * 0.5, ease: "none", scrollTrigger: heroScroll });
+    });
+    gsap.to(".hero-content", { opacity: 0, filter: desktop ? "blur(8px)" : "none", ease: "power1.in", scrollTrigger: heroScroll });
+    gsap.to(".hero-video", { yPercent: 15, ease: "none", scrollTrigger: heroScroll });
+
+    /* Manifesto: palavras acendem uma a uma conforme o scroll */
+    var words = gsap.utils.toArray(".manifesto-text .word");
+    if (words.length) {
+      gsap.fromTo(words, { opacity: 0.12 }, {
+        opacity: 1, stagger: 0.05, ease: "none",
+        scrollTrigger: { trigger: ".manifesto-text", start: "top 85%", end: "bottom 35%", scrub: 1 }
+      });
+    }
+
+    /* Cards das áreas: sobem em cascata com leve rotação */
+    gsap.utils.toArray(".area-card").forEach(function (el, i) {
+      gsap.fromTo(el, { y: desktop ? 160 : 60, rotate: desktop ? (i % 2 ? 4 : -4) : 0 }, {
+        y: 0, rotate: 0, ease: "power2.out",
+        scrollTrigger: { trigger: el, start: "top 110%", end: "top 55%", scrub: 1.5 }
+      });
+    });
+
+    /* Fundos com parallax */
+    gsap.utils.toArray(".stack-bg img").forEach(function (el) {
+      gsap.fromTo(el, { yPercent: -10, scale: 1.15 }, {
+        yPercent: 10, ease: "none",
+        scrollTrigger: { trigger: el.closest("section"), start: "top bottom", end: "bottom top", scrub: true }
+      });
     });
 
     /* Lista de tecnologias entrando uma a uma da esquerda */
@@ -66,13 +101,28 @@
       });
     });
 
-    /* Cards de trabalho entram girando levemente */
-    gsap.utils.toArray(".work-row").forEach(function (el, i) {
-      gsap.from(el, {
-        x: desktop ? -200 : -40, rotate: desktop ? -6 : 0, opacity: 0, filter: desktop ? "blur(10px)" : "none",
-        transformOrigin: "left center", ease: "power4.out",
-        scrollTrigger: { trigger: el, start: "top 95%", end: "top 65%", scrub: 2 }
+    /* Trabalhos: no desktop vira faixa horizontal fixada; no mobile, entrada lateral simples */
+    var workSection = document.querySelector(".work-section");
+    var track = workSection && workSection.querySelector("ul");
+    if (desktop && track) {
+      workSection.classList.add("is-horizontal");
+      var distance = function () { return Math.max(0, track.scrollWidth - window.innerWidth + 96); };
+      gsap.to(track, {
+        x: function () { return -distance(); }, ease: "none",
+        scrollTrigger: {
+          trigger: workSection, start: "top top", end: function () { return "+=" + distance(); },
+          pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1, refreshPriority: -1
+        }
       });
+      gsap.utils.toArray(".work-row").forEach(function (el, i) {
+        gsap.from(el, { y: 80 + i * 30, rotate: 3, opacity: 0, ease: "power3.out",
+          scrollTrigger: { trigger: workSection, start: "top 90%", end: "top 20%", scrub: 1.5 } });
+      });
+      return function () { workSection.classList.remove("is-horizontal"); };
+    }
+    gsap.utils.toArray(".work-row").forEach(function (el) {
+      gsap.from(el, { x: -40, opacity: 0, ease: "power4.out",
+        scrollTrigger: { trigger: el, start: "top 95%", end: "top 65%", scrub: 2 } });
     });
   });
 
@@ -81,12 +131,12 @@
   if (bands.length === 3) {
     mm.add("(min-width: 961px)", function () {
       ScrollTrigger.create({
-        trigger: ".services", start: "top bottom", end: "top top", scrub: 3,
+        trigger: ".services", start: "top bottom", end: "top top", scrub: 1,
         onUpdate: function (self) {
-          var p = self.progress * 100;
-          gsap.set(bands[0], { xPercent: 100 - p });
-          gsap.set(bands[1], { xPercent: -100 + p });
-          gsap.set(bands[2], { xPercent: 100 - p });
+          var p = self.progress * 40;
+          gsap.set(bands[0], { xPercent: 40 - p });
+          gsap.set(bands[1], { xPercent: -40 + p });
+          gsap.set(bands[2], { xPercent: 40 - p });
         }
       });
       ScrollTrigger.create({
