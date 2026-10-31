@@ -61,31 +61,19 @@
   if (isLoading) runPreloader(function () { tl.play(); });
   else tl.play();
 
-  /* Tela de carregamento HUD: % segue o load real (com mínimo e teto), log de boot, saída abrindo ao meio */
-  var BOOT_LOG = [
-    "mount /infra/docker-swarm", "route traefik → edge", "queue rabbitmq :5672",
-    "sync n8n workflows", "attach agents.ia", "healthcheck cluster"
-  ];
+  /* Tela de carregamento: logo desenhado, contagem segue o load real (com mínimo e teto), saída em cortina que já entrega a hero */
   function runPreloader(done) {
     var screen = document.querySelector(".screen-loading");
     var pct = screen.querySelector(".loader-pct");
-    var arc = screen.querySelector(".ld-arc");
-    var log = screen.querySelector(".ld-log");
     var state = { p: 0 };
-    var shown = 0;
     var render = function () {
-      var v = Math.round(state.p);
-      pct.textContent = ("00" + v).slice(-3);
-      arc.style.strokeDasharray = v + " 100";
-      var lines = Math.min(BOOT_LOG.length, Math.floor(v / (100 / BOOT_LOG.length)));
-      while (shown < lines) {
-        var line = document.createElement("p");
-        line.innerHTML = "&gt; " + BOOT_LOG[shown] + ' <span class="ok">[ok]</span>';
-        log.appendChild(line);
-        gsap.from(line, { opacity: 0, x: -12, duration: 0.3, ease: "power2.out" });
-        shown++;
-      }
+      pct.textContent = ("00" + Math.round(state.p)).slice(-3);
+      gsap.set(".ld-bar i", { scaleX: state.p / 100 });
     };
+    gsap.timeline()
+      .to(".ld-brace", { strokeDashoffset: 0, duration: 1.1, stagger: 0.12, ease: "power3.inOut" })
+      .fromTo(".ld-rf", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, "-=0.45")
+      .from(".ld-foot > *", { opacity: 0, y: 18, duration: 0.8, stagger: 0.1, ease: "expo.out" }, 0.2);
     var crawl = gsap.to(state, { p: 86, duration: PRELOADER_MIN_S + 0.8, ease: "power1.inOut", onUpdate: render });
     var started = performance.now();
     var finished = false;
@@ -97,13 +85,9 @@
       // a contagem até 100 ocupa o tempo que falta do mínimo, nunca salta
       gsap.timeline({ onComplete: endPreloader })
         .to(state, { p: 100, duration: Math.max(0.45, wait), ease: "power1.inOut", onUpdate: render })
-        .to(".ld-rings", { scale: 2.4, opacity: 0, duration: 0.7, ease: "power3.in" }, "+=0.1")
-        .to(".ld-logo, .ld-pct, .ld-log, .ld-corner, .ld-grid, .ld-scan", { opacity: 0, filter: "blur(6px)", duration: 0.4, ease: "power2.in" }, "<0.15")
-        .to(".ld-flash", { opacity: 1, scaleX: 1, duration: 0.35, ease: "power4.out" }, "-=0.15")
-        .to(".ld-top", { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, "+=0.05")
-        .to(".ld-bottom", { yPercent: 100, duration: 0.9, ease: "power4.inOut" }, "<")
-        .to(".ld-flash", { opacity: 0, scaleY: 6, duration: 0.5, ease: "power2.out" }, "<0.1")
-        .add(done, "<0.3");
+        .to(".ld-mark, .ld-foot", { opacity: 0, y: -24, filter: "blur(8px)", duration: 0.55, ease: "power2.in" }, "+=0.15")
+        .to(".ld-panel", { yPercent: -100, duration: 1.05, ease: "expo.inOut" }, "-=0.2")
+        .add(done, "-=0.6");
     };
     if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });

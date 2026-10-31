@@ -19,9 +19,9 @@ Site pessoal de Rhuan Freire em https://dev.rhuanfreire.com.br. HTML/CSS/JS est�
 
 | Arquivo | Escopo |
 |---|---|
-| `assets/fx.css` | Camada visual de **todas** as páginas: tokens, header, botões glass (`.btn`, `.btn-white`), cards, lente HUD (`--heat`), tela de carregamento HUD, barra de progresso, cortina de âncora, correções anti scroll lateral. Carregado depois do `<style>` inline de cada página. |
+| `assets/fx.css` | Camada visual de **todas** as páginas: tokens, header, botões glass (`.btn`, `.btn-white`), cards, lente HUD (`--heat`), tela de carregamento editorial, barra de progresso, cortina de âncora, correções anti scroll lateral. Carregado depois do `<style>` inline de cada página. |
 | `assets/fx.js` | Base de **todas** as páginas: Lenis + GSAP ScrollTrigger (iniciados uma vez), header que aparece após 120px (`data-header-auto`), âncoras (salto com fade quando longe), `FX.split` (texto em letras/palavras com `aria-label`), `FX.repel` (lente HUD no mouse), `FX.autoReveal` (páginas internas), `FX.lazyVideos`, `FX.ensurePlay` (autoplay bloqueado no celular). |
-| `assets/home.js` | Só a home (`<html data-fx-home>`): preloader HUD, entrada da hero, reveals com scrub, parallax, manifesto acendendo palavra a palavra, faixas com zoom fixado, trabalhos em faixa horizontal fixada, pílulas com física (Matter.js carregado sob demanda). |
+| `assets/home.js` | Só a home (`<html data-fx-home>`): preloader editorial (logo desenhado, contagem, saída em cortina), entrada da hero, reveals com scrub, parallax, manifesto acendendo palavra a palavra, faixas com zoom fixado, trabalhos em faixa horizontal fixada, pílulas com física (Matter.js carregado sob demanda). |
 | `index.html` | Home. CSS inline específico + script inline no `<head>` que liga `fx-js`, `fx-header-hide` e `fx-loading` e tem fallback de 7s. |
 
 Libs via CDN (versões fixas): GSAP 3.13.0 + ScrollTrigger (cdnjs), Lenis 1.3.11 (jsdelivr), Matter.js 0.19.0 (cdnjs, sob demanda).
