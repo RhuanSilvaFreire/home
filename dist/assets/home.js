@@ -22,6 +22,17 @@
   document.querySelectorAll(".anime-text").forEach(function (el) { FX.split(el, "words"); });
 
   var heroLines = document.querySelectorAll(".hero .hb");
+  FX.ensurePlay(document.querySelector(".hero-video"));
+
+  /* Holofote HUD da hero segue o mouse (só desktop com mouse) */
+  var hero = document.querySelector(".hero");
+  if (hero && FX.finePointer) {
+    hero.addEventListener("mousemove", function (e) {
+      var r = hero.getBoundingClientRect();
+      hero.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      hero.style.setProperty("--my", (e.clientY - r.top) + "px");
+    }, { passive: true });
+  }
 
   if (FX.reduced || !FX.gsap) {
     endPreloader();
@@ -177,18 +188,28 @@
     });
   });
 
-  /* ---------- Faixas: deslizam dos lados e se alinham, sempre legíveis ---------- */
+  /* ---------- Faixas: seção fixa; palavras vêm de um zoom grande até encaixar, depois a página segue ---------- */
   var bands = gsap.utils.toArray(".services-header");
-  mm.add({ desktop: "(min-width: 961px)", mobile: "(max-width: 960px)" }, function (ctx) {
-    var shift = ctx.conditions.desktop ? 30 : 40;
-    bands.forEach(function (b, i) {
-      gsap.fromTo(b, { xPercent: i === 1 ? -shift : shift, opacity: 0.15 }, {
-        xPercent: 0, opacity: 1, ease: "power2.out",
-        scrollTrigger: { trigger: b, start: "top 100%", end: "center 60%", scrub: 1 }
+  if (bands.length) {
+    mm.add({ desktop: "(min-width: 961px)", mobile: "(max-width: 960px)" }, function (ctx) {
+      var desktop = ctx.conditions.desktop;
+      var tlBands = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".services", start: "center center",
+          end: function () { return "+=" + window.innerHeight * (desktop ? 1.6 : 1.1); },
+          pin: true, scrub: 1, anticipatePin: 1
+        }
       });
+      bands.forEach(function (b, i) {
+        tlBands.fromTo(b,
+          { scale: desktop ? 3.2 : 2.2, opacity: 0, filter: "blur(16px)", xPercent: i === 1 ? -18 : 18 },
+          { scale: 1, opacity: 1, filter: "blur(0px)", xPercent: 0, duration: 1, ease: "power3.out" },
+          i * 0.55);
+      });
+      tlBands.to({}, { duration: 0.35 }); // respiro com as palavras encaixadas antes de soltar o pin
+      return function () { gsap.set(bands, { clearProps: "all" }); };
     });
-    return function () { gsap.set(bands, { clearProps: "all" }); };
-  });
+  }
 
   FX.lazyVideos();
   initPhysicsWhenVisible(true);

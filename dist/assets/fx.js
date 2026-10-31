@@ -6,6 +6,7 @@
   var REDUCED = false;
   var FINE_POINTER = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var HEADER_THRESHOLD = 120;
+  var CURTAIN_MS = 320;
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 
   var FX = { reduced: REDUCED, finePointer: FINE_POINTER, lenis: null, gsap: hasGsap };
@@ -50,10 +51,31 @@
     var target = href.length > 1 && document.getElementById(href.slice(1));
     if (!target) return;
     e.preventDefault();
-    if (FX.lenis) FX.lenis.scrollTo(target, { offset: -40, duration: 1.4 });
-    else target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
     history.replaceState(null, "", href);
+    if (!FX.lenis) { target.scrollIntoView({ behavior: "smooth" }); return; }
+    var distance = Math.abs(target.getBoundingClientRect().top);
+    // Perto: rola suave. Longe: atravessar pins e scrubs trava, então corta com um fade rápido.
+    if (distance < window.innerHeight * 1.5) { FX.lenis.scrollTo(target, { offset: -40, duration: 1.2 }); return; }
+    jumpWithCurtain(target);
   });
+
+  var curtain = null;
+  function jumpWithCurtain(target) {
+    if (!curtain) {
+      curtain = document.createElement("div");
+      curtain.className = "fx-curtain";
+      curtain.setAttribute("aria-hidden", "true");
+      document.body.appendChild(curtain);
+    }
+    curtain.classList.add("is-on");
+    setTimeout(function () {
+      FX.lenis.scrollTo(target, { offset: -40, immediate: true, force: true });
+      if (hasGsap) ScrollTrigger.update();
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { curtain.classList.remove("is-on"); });
+      });
+    }, CURTAIN_MS);
+  }
 
   /* ---------- Header: some no topo da hero, aparece após 120px ---------- */
   if (doc.hasAttribute("data-header-auto")) {
@@ -102,8 +124,8 @@
     return pieces;
   };
 
-  /* ---------- Texto que foge do cursor (só desktop com mouse) ---------- */
-  var RADIUS = 150, MAX_DISPLACEMENT = 120, LERP = 0.1, EPSILON = 0.05;
+  /* ---------- Lente HUD no texto: letras perto do cursor sobem um pouco e acendem (só desktop com mouse) ---------- */
+  var RADIUS = 140, LIFT = 10, LERP = 0.12, EPSILON = 0.01;
   var repelItems = [];
   var mouse = { x: -9999, y: -9999 };
   var running = false;
@@ -123,23 +145,19 @@
     var moving = false;
     var px = mouse.x + window.scrollX, py = mouse.y + window.scrollY;
     repelItems.forEach(function (it) {
-      var dx = it.ox - px, dy = it.oy - py;
-      var dist = Math.hypot(dx, dy);
-      var tx = 0, ty = 0;
-      if (dist > 0.5 && dist < RADIUS) {
-        var force = (1 - dist / RADIUS) * MAX_DISPLACEMENT;
-        tx = (dx / dist) * force;
-        ty = (dy / dist) * force;
-      }
-      it.cx += (tx - it.cx) * LERP;
-      it.cy += (ty - it.cy) * LERP;
-      if (Math.abs(it.cx) < EPSILON && Math.abs(it.cy) < EPSILON && tx === 0 && ty === 0) {
-        if (it.cx !== 0 || it.cy !== 0) { it.cx = 0; it.cy = 0; it.el.style.translate = ""; }
+      var dist = Math.hypot(it.ox - px, it.oy - py);
+      // curva suave (smoothstep): 1 no cursor, 0 na borda do raio
+      var k = dist < RADIUS ? 1 - dist / RADIUS : 0;
+      var target = k * k * (3 - 2 * k);
+      it.h += (target - it.h) * LERP;
+      if (Math.abs(it.h) < EPSILON && target === 0) {
+        if (it.h !== 0) { it.h = 0; it.el.style.translate = ""; it.el.style.removeProperty("--heat"); }
         return;
       }
       moving = true;
       // "translate" (propriedade individual) compõe com o transform usado pelo GSAP
-      it.el.style.translate = it.cx.toFixed(2) + "px " + it.cy.toFixed(2) + "px";
+      it.el.style.translate = "0px " + (-it.h * LIFT).toFixed(2) + "px";
+      it.el.style.setProperty("--heat", it.h.toFixed(3));
     });
     running = moving;
     if (moving) requestAnimationFrame(tick);
@@ -147,7 +165,7 @@
 
   FX.repel = function (pieces) {
     if (REDUCED || !FINE_POINTER || !pieces.length) return;
-    pieces.forEach(function (el) { repelItems.push({ el: el, ox: 0, oy: 0, cx: 0, cy: 0 }); });
+    pieces.forEach(function (el) { repelItems.push({ el: el, ox: 0, oy: 0, h: 0 }); });
     if (repelItems.length === pieces.length) {
       document.addEventListener("mousemove", function (e) {
         mouse.x = e.clientX; mouse.y = e.clientY;
@@ -188,14 +206,39 @@
       entries.forEach(function (en) {
         var v = en.target;
         if (en.isIntersecting) {
+          if (v.ended) return; // vídeos sem loop congelam no último quadro
           if (!v.src && v.dataset.src) v.src = v.dataset.src;
-          if (!REDUCED) v.play().catch(function () {});
-        } else {
+          v.play().catch(function () {});
+        } else if (!v.ended) {
           v.pause();
         }
       });
-    }, { rootMargin: "200px 0px" });
-    Array.prototype.forEach.call(vids, function (v) { io.observe(v); });
+    }, { threshold: 0.3 });
+    // carrega antes de chegar na tela, para começar a tocar sem espera
+    var preload = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var v = en.target;
+        if (!en.isIntersecting || v.src || !v.dataset.src) return;
+        v.preload = "auto";
+        v.src = v.dataset.src;
+        preload.unobserve(v);
+      });
+    }, { rootMargin: "800px 0px" });
+    Array.prototype.forEach.call(vids, function (v) { preload.observe(v); io.observe(v); });
+  };
+
+  /* ---------- Autoplay bloqueado (economia de bateria/dados no celular): tenta de novo no 1º gesto ---------- */
+  FX.ensurePlay = function (v) {
+    if (!v) return;
+    v.muted = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+    var tryPlay = function () { if (!v.ended && v.paused) v.play().catch(function () {}); };
+    tryPlay();
+    v.addEventListener("loadeddata", tryPlay, { once: true });
+    ["touchstart", "pointerdown", "scroll", "keydown"].forEach(function (ev) {
+      window.addEventListener(ev, tryPlay, { once: true, passive: true });
+    });
   };
 
   /* ---------- Páginas internas: aplica reveal e título com letras ---------- */
