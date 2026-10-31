@@ -99,6 +99,8 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .hero h1 em{font-style:normal}
 .hero h1 em .char{color:var(--terracotta)}
 .hero-desc{font-size:19px;line-height:1.6;color:var(--muted);max-width:620px;margin-top:36px}
+.hero .label-line{line-height:1.8;letter-spacing:.14em;max-width:100%}
+@media(hover:hover){.hero .label-line:hover{letter-spacing:.14em}}
 .hero-ctas{display:flex;gap:20px;margin-top:48px;flex-wrap:wrap;justify-content:center}
 .hero .scroll-down{position:absolute;left:0;right:0;margin:0 auto;width:max-content;bottom:28px;z-index:1}
 
@@ -136,13 +138,17 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .video-background::before{top:0;background:linear-gradient(#0D0D0D 0%,rgba(13,13,13,0) 100%)}
 .video-background::after{bottom:0;background:linear-gradient(0deg,#0D0D0D 0%,rgba(13,13,13,0) 100%)}
 .video-background .veil{position:absolute;inset:0;background:rgba(13,13,13,.45)}
-.areas-header{margin-bottom:56px;text-align:center}
-.areas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:1320px;margin:0 auto}
-.area-card{padding:44px 40px;border-radius:32px;position:relative}
+.areas-header{margin-bottom:64px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px}
+.areas-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(36px,5vw,64px);line-height:1.05;letter-spacing:-.02em;text-wrap:balance}
+.areas-title em{font-style:normal;color:var(--terracotta)}
+.areas-sub{font-size:17px;line-height:1.6;color:var(--muted);max-width:56ch}
+.areas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1320px;margin:0 auto}
+.area-card{padding:40px 34px;border-radius:32px;position:relative;display:flex;flex-direction:column}
+.area-card .area-tags{margin-top:auto;padding-top:28px}
 .area-num{font-family:"Inter Tight",sans-serif;font-size:13px;color:rgba(245,243,238,.4);position:absolute;top:28px;right:32px}
 .area-icon{width:64px;height:64px;padding:12px;margin-bottom:28px;border-radius:50%;background:rgba(245,243,238,.15);border:2px solid rgba(245,243,238,.2);box-shadow:0 0 24px rgba(13,13,13,.3);transition:transform .8s ease}
 .area-card:hover .area-icon{transform:rotate(-12deg) scale(1.06)}
-.area-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:32px;line-height:1.1;margin-bottom:16px;text-shadow:0 2px 18px rgba(13,13,13,.7)}
+.area-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:28px;line-height:1.1;margin-bottom:16px;text-shadow:0 2px 18px rgba(13,13,13,.7)}
 .area-desc{font-size:16px;line-height:1.65;color:var(--muted);max-width:52ch}
 .area-desc a{color:var(--bone)!important}
 .area-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
@@ -288,13 +294,15 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
   .manifesto > .section-label,.stack-inner > .section-label{position:sticky;top:120px}
 }
 /* Responsivo */
-@media(max-width:1100px){.areas-grid{grid-template-columns:1fr}}
+@media(max-width:1100px){.areas-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.areas-grid{grid-template-columns:1fr}}
 @media(max-width:960px){
   :root{--pad:16px}
   .nav{padding:14px 16px 24px;gap:16px}
   .nav-brand-name{display:none}
   .hero{padding:110px 16px 130px}
   .hero-desc{font-size:16px}
+  .hero .label-line{font-size:10.5px;letter-spacing:.1em;padding:8px 12px}
   .hero-ctas{flex-direction:column;align-items:center;gap:16px}
   .manifesto{padding:96px 16px 80px;grid-template-columns:1fr;gap:24px}
   .services{padding:16px 0;gap:4px;min-height:100svh}
@@ -406,12 +414,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="hero-spot" aria-hidden="true"></div>
   <div class="hero-content">
-    <div class="hb"><span class="label-line">DevOps · Automação · IA aplicada — São Paulo</span></div>
+    <div class="hb"><span class="label-line" title="SEO, blogs e linkagem interna · Sites · Automações · IA · DevOps · Integrações">Tráfego orgânico · Sites · Automações · IA · DevOps · Integrações</span></div>
     <div class="hb">
-      <h1>Sistemas que rodam<br>sem <em>você olhar.</em></h1>
+      <h1>Software que roda.<br><em>Infra que segura.</em></h1>
     </div>
     <div class="hb">
-      <p class="hero-desc">Infraestrutura, automações e agentes de IA que aguentam o pico, se recuperam sozinhos e atendem 24h — sem plantão. Do primeiro fluxo no N8N ao cluster Docker Swarm em produção.</p>
+      <p class="hero-desc">Engenharia de ponta a ponta para operações que não podem cair.</p>
     </div>
     <div class="hb hero-ctas">
       <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="btn-white"><span class="btn-icon" aria-hidden="true"><img src="/icons/whatsapp.svg" alt="" width="24" height="24" style="filter:brightness(0) invert(1)"></span>Falar pelo WhatsApp</a>
@@ -479,10 +487,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <!-- Faixas (antigo divisor editorial) -->
-<section class="services" aria-label="DevOps · Automação · IA aplicada · Integrações">
-  <div class="services-header" aria-hidden="true"><span>DevOps</span></div>
-  <div class="services-header" aria-hidden="true"><span>Automação</span></div>
-  <div class="services-header" aria-hidden="true"><span>IA aplicada · Integrações</span></div>
+<section class="services" aria-label="Sites e tráfego orgânico · Automações e IA · DevOps e integrações">
+  <div class="services-header" aria-hidden="true"><span>Sites · SEO</span></div>
+  <div class="services-header" aria-hidden="true"><span>Automações · IA</span></div>
+  <div class="services-header" aria-hidden="true"><span>DevOps · Integrações</span></div>
 </section>
 
 <!-- Áreas de atuação -->
@@ -492,12 +500,86 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="veil"></div>
   </div>
   <div class="rv areas-header">
-    <h2 class="section-label label-line" style="font-size:12px;font-weight:400">Áreas de atuação</h2>
+    <span class="section-label label-line" style="font-size:12px;font-weight:400">Serviços</span>
+    <h2 class="areas-title">Do tráfego <em>ao servidor.</em></h2>
+    <p class="areas-sub">Seis frentes, uma engenharia só: quem constrói o site também cuida de como ele é encontrado, integrado e mantido no ar.</p>
   </div>
   <div class="areas-grid">
-    <!-- DevOps -->
+    <!-- Tráfego orgânico -->
     <div class="rv area-card card-glass">
       <span class="area-num">01</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="21" cy="21" r="12" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M30 30l9 9" stroke="rgba(245,243,238,.7)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M15 25l4-4 3 3 5-6" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3 class="area-title">Tráfego orgânico</h3>
+      <p class="area-desc">SEO técnico, blog e linkagem interna para o site ser encontrado no Google sem depender de anúncio.</p>
+      <div class="area-tags">
+        <span class="area-tag">SEO técnico</span>
+        <span class="area-tag">Blog</span>
+        <span class="area-tag">Linkagem interna</span>
+        <span class="area-tag">Search Console</span>
+      </div>
+    </div>
+    <!-- Sites -->
+    <div class="rv area-card card-glass">
+      <span class="area-num">02</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="5" y="9" width="38" height="30" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M5 16h38" stroke="rgba(245,243,238,.5)" stroke-width="1.5"/>
+        <circle cx="10" cy="12.5" r="1.2" fill="rgba(196,94,58,.9)"/>
+        <path d="M18 24l-4 4 4 4M30 24l4 4-4 4M26 22l-4 12" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3 class="area-title">Sites</h3>
+      <p class="area-desc">Sites rápidos e responsivos, com performance, analytics e rastreamento configurados desde o primeiro deploy.</p>
+      <div class="area-tags">
+        <span class="area-tag">Performance</span>
+        <span class="area-tag">GA4</span>
+        <span class="area-tag">GTM</span>
+        <span class="area-tag">Cloudflare</span>
+      </div>
+    </div>
+    <!-- Automações -->
+    <div class="rv area-card card-glass">
+      <span class="area-num">03</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="10" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <circle cx="38" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <circle cx="24" cy="10" r="5" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
+        <circle cx="24" cy="38" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M15 24h9M24 15v9M24 28v5M29 24h4" stroke="rgba(245,243,238,.4)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">Automações</h3>
+      <p class="area-desc">Processos repetitivos rodando sozinhos: fluxos, filas e rotinas que não dependem de alguém lembrar.</p>
+      <div class="area-tags">
+        <span class="area-tag">N8N</span>
+        <span class="area-tag">RabbitMQ</span>
+        <span class="area-tag">Webhooks</span>
+        <span class="area-tag">Cron</span>
+      </div>
+    </div>
+    <!-- IA -->
+    <div class="rv area-card card-glass">
+      <span class="area-num">04</span>
+      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="8" y="14" width="32" height="22" rx="4" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M16 26c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="26" r="2.5" fill="rgba(245,243,238,.7)"/>
+        <path d="M16 38v-2M32 38v-2M20 38v-2M28 38v-2M24 38v-2" stroke="rgba(245,243,238,.4)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3 class="area-title">IA aplicada</h3>
+      <p class="area-desc">Agentes, RAG e modelos de linguagem integrados ao sistema, com controle de contexto e custo previsível.</p>
+      <div class="area-tags">
+        <span class="area-tag">Claude API</span>
+        <span class="area-tag">OpenAI</span>
+        <span class="area-tag">RAG</span>
+        <span class="area-tag">pgvector</span>
+      </div>
+    </div>
+    <!-- DevOps -->
+    <div class="rv area-card card-glass">
+      <span class="area-num">05</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="4" y="10" width="40" height="28" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <path d="M4 18h40" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
@@ -506,72 +588,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <circle cx="23" cy="14" r="1.5" fill="rgba(245,243,238,.5)"/>
         <path d="M12 28l4-4-4-4M20 28h8" stroke="rgba(245,243,238,.7)" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      <h3 class="area-title">DevOps &amp; Infraestrutura</h3>
-      <p class="area-desc">Infraestrutura que não cede no pico. Cluster Docker Swarm com Traefik, alta disponibilidade, zero-downtime e observabilidade completa — do servidor de startup ao ambiente que exige 99,9%.</p>
+      <h3 class="area-title">DevOps</h3>
+      <p class="area-desc">Servidores, containers e deploy com alta disponibilidade, monitoramento e recuperação automática.</p>
       <div class="area-tags">
         <span class="area-tag">Docker Swarm</span>
         <span class="area-tag">Traefik</span>
-        <span class="area-tag">Portainer</span>
         <span class="area-tag">Prometheus</span>
         <span class="area-tag">Grafana</span>
       </div>
     </div>
-    <!-- Automação -->
+    <!-- Integrações -->
     <div class="rv area-card card-glass">
-      <span class="area-num">02</span>
+      <span class="area-num">06</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="10" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
-        <circle cx="38" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
-        <circle cx="24" cy="10" r="5" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
-        <circle cx="24" cy="38" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
-        <path d="M15 24h9M24 15v9M24 28v5M29 24h4" stroke="rgba(245,243,238,.4)" stroke-width="1.2" stroke-linecap="round"/>
+        <rect x="5" y="15" width="14" height="18" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <rect x="29" y="15" width="14" height="18" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
+        <path d="M19 21h10M26 18l3 3-3 3M29 27H19M22 24l-3 3 3 3" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <h3 class="area-title">Automação de processos</h3>
-      <p class="area-desc">Processos que escalam sem contratar mais. Pipelines N8N e RabbitMQ que processam centenas de pedidos por hora, sincronizam Mercado Livre e outros marketplaces, e publicam conteúdo no Instagram via API — sem intervenção manual.</p>
+      <h3 class="area-title">Integrações</h3>
+      <p class="area-desc">Sistemas conversando entre si: APIs, ERPs, CRMs e marketplaces com dados sincronizados e sem retrabalho.</p>
       <div class="area-tags">
-        <span class="area-tag">N8N</span>
-        <span class="area-tag">RabbitMQ</span>
-        <span class="area-tag">Mercado Livre</span>
-        <span class="area-tag">Instagram API</span>
-      </div>
-    </div>
-    <!-- Agentes de IA -->
-    <div class="rv area-card card-glass">
-      <span class="area-num">03</span>
-      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="8" y="14" width="32" height="22" rx="4" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
-        <path d="M16 26c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="24" cy="26" r="2.5" fill="rgba(245,243,238,.7)"/>
-        <path d="M16 38v-2M32 38v-2M20 38v-2M28 38v-2M24 38v-2" stroke="rgba(245,243,238,.4)" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <h3 class="area-title">Agentes de IA aplicada</h3>
-      <p class="area-desc">Atendimento que cresce com o volume. Agentes WhatsApp com handoff inteligente, RAG sobre documentos, URA por voz com Whisper e <a href="https://gozap.dev/" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid rgba(245,243,238,.3)">GoZAP</a> — IA que resolve de verdade, em qualquer escala.</p>
-      <div class="area-tags">
-        <span class="area-tag">Claude API</span>
-        <span class="area-tag">RAG</span>
-        <span class="area-tag">WhatsApp</span>
-        <span class="area-tag">Whisper</span>
-        <span class="area-tag">pgvector</span>
-      </div>
-    </div>
-    <!-- Produto & Integração -->
-    <div class="rv area-card card-glass">
-      <span class="area-num">04</span>
-      <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="6" y="8" width="36" height="26" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
-        <path d="M16 34v6M32 34v6M11 40h26" stroke="rgba(245,243,238,.5)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M14 20h6M14 25h10" stroke="rgba(245,243,238,.4)" stroke-width="1.5" stroke-linecap="round"/>
-        <rect x="28" y="17" width="10" height="10" rx="2" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
-        <path d="M31 22h4M31 19.5v5" stroke="rgba(196,94,58,.6)" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
-      <h3 class="area-title">Produto &amp; Integração</h3>
-      <p class="area-desc">Do problema ao ar, integrado. Sites, CRMs e funis com Meta Ads e API de conversão, conectados a automações reais e infraestrutura robusta — entrega completa, do primeiro deploy à operação em escala com <a href="https://gozap.dev/" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid rgba(245,243,238,.3)">GoZAP</a> e WhatsApp API.</p>
-      <div class="area-tags">
-        <span class="area-tag">Sites</span>
-        <span class="area-tag">Meta Ads</span>
+        <span class="area-tag">REST APIs</span>
         <span class="area-tag">CRM</span>
-        <span class="area-tag">N8N</span>
-        <span class="area-tag">WhatsApp</span>
+        <span class="area-tag">Mercado Livre</span>
+        <span class="area-tag">WhatsApp API</span>
       </div>
     </div>
   </div>

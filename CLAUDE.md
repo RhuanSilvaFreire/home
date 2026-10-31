@@ -47,5 +47,5 @@ Libs via CDN (versões fixas): GSAP 3.13.0 + ScrollTrigger (cdnjs), Lenis 1.3.11
 ## Pendências conhecidas
 
 - `hero.mp4` é vertical (1192×1740) e com bitrate baixo: fica sem nitidez em tela larga. Precisa de um vídeo horizontal 1920×1080 (3–5 MB).
-- Copy: só a hero foi revisada. Título "Sistemas que rodam sem você olhar." mantido por decisão do usuário.
+- Copy: só a hero foi revisada. Título "Software que roda. Infra que segura." (posicionamento tech amplo, sem nichar em IA ou atendimento).
 - Lighthouse não foi medido depois das mudanças (preloader pode afetar LCP).
