@@ -5,7 +5,8 @@
   var doc = document.documentElement;
   if (!FX) return;
 
-  var PRELOADER_MS = 2200;
+  var PRELOADER_MIN_S = 2.2;   // tempo mínimo para o giro do logo terminar
+  var PRELOADER_MAX_S = 4.5;   // não segura o conteúdo além disso, mesmo sem o load completo
   var MATTER_SRC = "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js";
 
   function endPreloader() {
@@ -17,7 +18,8 @@
   var heroTitle = document.querySelector(".hero h1");
   var heroChars = FX.split(heroTitle, "chars");
   FX.repel(heroChars);
-  document.querySelectorAll(".anime-text").forEach(function (el) { FX.repel(FX.split(el, "words")); });
+  // Manifesto e "Sobre": só divididos em palavras (para o scroll), sem reação ao mouse — mantém o texto legível
+  document.querySelectorAll(".anime-text").forEach(function (el) { FX.split(el, "words"); });
 
   var heroLines = document.querySelectorAll(".hero .hb");
 
@@ -31,13 +33,62 @@
 
   /* ---------- Preloader + entrada da hero ---------- */
   var isLoading = doc.classList.contains("fx-loading");
-  var tl = gsap.timeline({ delay: isLoading ? PRELOADER_MS / 1000 - 0.4 : 0.1 });
-  if (isLoading) {
-    tl.to(".screen-loading", { opacity: 0, filter: "blur(10px)", duration: 0.8, ease: "power4.out", onComplete: endPreloader });
-  }
+  var tl = gsap.timeline({ paused: true });
   tl.fromTo(heroLines, { opacity: 0, x: -100, filter: "blur(10px)" },
-      { opacity: 1, x: 0, filter: "blur(0px)", duration: 2, stagger: 0.25, ease: "power4.out" }, isLoading ? "-=0.5" : 0)
+      { opacity: 1, x: 0, filter: "blur(0px)", duration: 2, stagger: 0.25, ease: "power4.out" })
     .from(heroChars, { opacity: 0, x: -60, filter: "blur(10px)", duration: 2.4, stagger: 0.035, ease: "power4.out" }, "<0.2");
+
+  if (isLoading) runPreloader(function () { tl.play(); });
+  else tl.play();
+
+  /* Tela de carregamento HUD: % segue o load real (com mínimo e teto), log de boot, saída abrindo ao meio */
+  var BOOT_LOG = [
+    "mount /infra/docker-swarm", "route traefik → edge", "queue rabbitmq :5672",
+    "sync n8n workflows", "attach agents.ia", "healthcheck cluster"
+  ];
+  function runPreloader(done) {
+    var screen = document.querySelector(".screen-loading");
+    var pct = screen.querySelector(".loader-pct");
+    var arc = screen.querySelector(".ld-arc");
+    var log = screen.querySelector(".ld-log");
+    var state = { p: 0 };
+    var shown = 0;
+    var render = function () {
+      var v = Math.round(state.p);
+      pct.textContent = ("00" + v).slice(-3);
+      arc.style.strokeDasharray = v + " 100";
+      var lines = Math.min(BOOT_LOG.length, Math.floor(v / (100 / BOOT_LOG.length)));
+      while (shown < lines) {
+        var line = document.createElement("p");
+        line.innerHTML = "&gt; " + BOOT_LOG[shown] + ' <span class="ok">[ok]</span>';
+        log.appendChild(line);
+        gsap.from(line, { opacity: 0, x: -12, duration: 0.3, ease: "power2.out" });
+        shown++;
+      }
+    };
+    var crawl = gsap.to(state, { p: 86, duration: PRELOADER_MIN_S + 0.8, ease: "power1.inOut", onUpdate: render });
+    var started = performance.now();
+    var finished = false;
+    var finish = function () {
+      if (finished) return;
+      finished = true;
+      var wait = Math.max(0, PRELOADER_MIN_S - (performance.now() - started) / 1000);
+      crawl.kill();
+      // a contagem até 100 ocupa o tempo que falta do mínimo, nunca salta
+      gsap.timeline({ onComplete: endPreloader })
+        .to(state, { p: 100, duration: Math.max(0.45, wait), ease: "power1.inOut", onUpdate: render })
+        .to(".ld-rings", { scale: 2.4, opacity: 0, duration: 0.7, ease: "power3.in" }, "+=0.1")
+        .to(".ld-logo, .ld-pct, .ld-log, .ld-corner, .ld-grid, .ld-scan", { opacity: 0, filter: "blur(6px)", duration: 0.4, ease: "power2.in" }, "<0.15")
+        .to(".ld-flash", { opacity: 1, scaleX: 1, duration: 0.35, ease: "power4.out" }, "-=0.15")
+        .to(".ld-top", { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, "+=0.05")
+        .to(".ld-bottom", { yPercent: 100, duration: 0.9, ease: "power4.inOut" }, "<")
+        .to(".ld-flash", { opacity: 0, scaleY: 6, duration: 0.5, ease: "power2.out" }, "<0.1")
+        .add(done, "<0.3");
+    };
+    if (document.readyState === "complete") finish();
+    else window.addEventListener("load", finish, { once: true });
+    setTimeout(finish, PRELOADER_MAX_S * 1000);
+  }
 
   var mm = gsap.matchMedia();
 
@@ -126,49 +177,18 @@
     });
   });
 
-  /* ---------- Faixas gigantes que se encontram (pin só no desktop) ---------- */
+  /* ---------- Faixas: deslizam dos lados e se alinham, sempre legíveis ---------- */
   var bands = gsap.utils.toArray(".services-header");
-  if (bands.length === 3) {
-    mm.add("(min-width: 961px)", function () {
-      ScrollTrigger.create({
-        trigger: ".services", start: "top bottom", end: "top top", scrub: 1,
-        onUpdate: function (self) {
-          var p = self.progress * 40;
-          gsap.set(bands[0], { xPercent: 40 - p });
-          gsap.set(bands[1], { xPercent: -40 + p });
-          gsap.set(bands[2], { xPercent: 40 - p });
-        }
+  mm.add({ desktop: "(min-width: 961px)", mobile: "(max-width: 960px)" }, function (ctx) {
+    var shift = ctx.conditions.desktop ? 30 : 40;
+    bands.forEach(function (b, i) {
+      gsap.fromTo(b, { xPercent: i === 1 ? -shift : shift, opacity: 0.15 }, {
+        xPercent: 0, opacity: 1, ease: "power2.out",
+        scrollTrigger: { trigger: b, start: "top 100%", end: "center 60%", scrub: 1 }
       });
-      ScrollTrigger.create({
-        trigger: ".services", start: "center center", end: function () { return "+=" + window.innerHeight * 1.5; },
-        pin: true, scrub: 3, anticipatePin: 1,
-        onUpdate: function (self) {
-          var p = self.progress;
-          if (p <= 0.5) {
-            var y = (p / 0.5) * 100;
-            gsap.set(bands[0], { yPercent: y, scale: 1 });
-            gsap.set(bands[1], { scale: 1 });
-            gsap.set(bands[2], { yPercent: -y, scale: 1 });
-          } else {
-            gsap.set(bands[0], { yPercent: 100 });
-            gsap.set(bands[2], { yPercent: -100 });
-            var scale = 1 - ((p - 0.5) / 0.5) * 0.4;
-            bands.forEach(function (b) { gsap.set(b, { scale: scale }); });
-          }
-        }
-      });
-      return function () { gsap.set(bands, { clearProps: "all" }); };
     });
-    mm.add("(max-width: 960px)", function () {
-      bands.forEach(function (b, i) {
-        gsap.fromTo(b, { xPercent: i === 1 ? -60 : 60, opacity: 0 }, {
-          xPercent: 0, opacity: 1, ease: "none",
-          scrollTrigger: { trigger: b, start: "top 95%", end: "top 55%", scrub: 1.5 }
-        });
-      });
-      return function () { gsap.set(bands, { clearProps: "all" }); };
-    });
-  }
+    return function () { gsap.set(bands, { clearProps: "all" }); };
+  });
 
   FX.lazyVideos();
   initPhysicsWhenVisible(true);
@@ -198,18 +218,18 @@
 
   function initPhysics(container) {
     var M = window.Matter;
-    var CFG = { restitution: 0.5, friction: 0.15, frictionAir: 0.02, density: 0.002, wall: 200, stiffness: 0.6, maxSpeed: 20 };
+    var CFG = { restitution: 0.5, friction: 0.15, frictionAir: 0.02, density: 0.002, wall: 200, stiffness: 0.6, maxSpeed: 20, gap: 32 };
     var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
     var engine = M.Engine.create();
     engine.gravity.y = 1;
     engine.positionIterations = 20;
     engine.velocityIterations = 16;
 
-    var W = container.clientWidth, H = container.clientHeight, t = CFG.wall;
+    var W = container.clientWidth, H = container.clientHeight, t = CFG.wall, g = CFG.gap; // g: folga para o brilho não ser cortado
     var walls = [
-      M.Bodies.rectangle(W / 2, H + t / 2, W + t * 2, t, { isStatic: true }),
-      M.Bodies.rectangle(-t / 2, H / 2, t, H * 5, { isStatic: true }),
-      M.Bodies.rectangle(W + t / 2, H / 2, t, H * 5, { isStatic: true })
+      M.Bodies.rectangle(W / 2, H - g + t / 2, W + t * 2, t, { isStatic: true }),
+      M.Bodies.rectangle(g - t / 2, H / 2, t, H * 5, { isStatic: true }),
+      M.Bodies.rectangle(W - g + t / 2, H / 2, t, H * 5, { isStatic: true })
     ];
     var objs = Array.prototype.map.call(container.querySelectorAll(".object"), function (el, i) {
       var w = el.offsetWidth, h = el.offsetHeight;
@@ -249,8 +269,8 @@
       if (visible) {
         objs.forEach(function (o) {
           var p = o.body.position;
-          o.el.style.transform = "translate(" + clamp(p.x - o.w / 2, 0, W - o.w).toFixed(1) + "px," +
-            clamp(p.y - o.h / 2, -o.h * 4, H - o.h).toFixed(1) + "px) rotate(" + o.body.angle.toFixed(3) + "rad)";
+          o.el.style.transform = "translate(" + clamp(p.x - o.w / 2, g, W - g - o.w).toFixed(1) + "px," +
+            clamp(p.y - o.h / 2, -o.h * 4, H - g - o.h).toFixed(1) + "px) rotate(" + o.body.angle.toFixed(3) + "rad)";
         });
       }
       requestAnimationFrame(loop);
@@ -259,8 +279,8 @@
     window.addEventListener("resize", function () {
       var nW = container.clientWidth, nH = container.clientHeight;
       if (Math.abs(nW - W) < 40 && Math.abs(nH - H) < 40) return;
-      M.Body.setPosition(walls[0], { x: nW / 2, y: nH + t / 2 });
-      M.Body.setPosition(walls[2], { x: nW + t / 2, y: nH / 2 });
+      M.Body.setPosition(walls[0], { x: nW / 2, y: nH - g + t / 2 });
+      M.Body.setPosition(walls[2], { x: nW - g + t / 2, y: nH / 2 });
       W = nW; H = nH;
     });
   }

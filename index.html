@@ -2,13 +2,13 @@
 <html lang="pt-BR" data-fx-home data-header-auto>
 <head>
 <script>
-// Gates de efeito: preloader só na 1ª visita da sessão; fallback libera o conteúdo se o JS de animação falhar
+// Gates de efeito: tela de carregamento só na 1ª visita da sessão; fallback libera o conteúdo se o JS de animação falhar
 (function(d){
   d.classList.add('fx-js','fx-header-hide');
-  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches,seen=false;
+  var seen=false;
   try{seen=sessionStorage.getItem('fx-seen')==='1'}catch(e){}
-  if(!reduced&&!seen)d.classList.add('fx-loading');
-  setTimeout(function(){d.classList.add('fx-fallback');d.classList.remove('fx-loading')},4000);
+  if(!seen)d.classList.add('fx-loading');
+  setTimeout(function(){d.classList.add('fx-fallback');d.classList.remove('fx-loading')},7000);
 })(document.documentElement);
 </script>
 <meta charset="UTF-8">
@@ -118,11 +118,11 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 /* Faixas gigantes (antigo divisor editorial) */
 .services{position:relative;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;padding:24px 0}
 .services-header{position:relative;width:100%;padding:0 2rem;background:var(--carbon);text-align:center;transform-origin:center}
-.services-header span{display:block;font-family:"Inter Tight",sans-serif;font-weight:400;font-size:clamp(48px,11vw,190px);line-height:1.05;letter-spacing:-.02em;white-space:nowrap;
+.services-header span{display:block;font-family:"Inter Tight",sans-serif;font-weight:400;font-size:clamp(44px,7.5vw,128px);line-height:1.08;letter-spacing:-.02em;
   background:linear-gradient(90deg,rgb(245,243,238) 8%,rgba(245,243,238,.4) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .services-header:nth-child(2){z-index:2}
 .services-header:nth-child(2) span{background:linear-gradient(95deg,#F5F3EE 0%,var(--terracotta) 50%,#F5F3EE 100%) 0 0/200% no-repeat;-webkit-background-clip:text;background-clip:text;animation:text-gradient-animation 3s ease-in-out infinite alternate}
-@media(min-width:961px){.services-header:nth-child(1),.services-header:nth-child(3){transform:translateX(40%)}.services-header:nth-child(2){transform:translateX(-40%)}}
+
 
 /* Áreas: cards de vidro sobre vídeo */
 .areas-section{position:relative;padding:160px var(--pad);overflow:hidden;isolation:isolate}
@@ -214,13 +214,13 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .object-cta{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;z-index:3;pointer-events:none;padding:110px 16px 0}
 .object-cta .footer-cta-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(34px,5vw,72px);line-height:1.1;margin-top:16px}
 .object-cta a{pointer-events:auto;margin-top:36px}
-.object{position:absolute;top:0;left:0;padding:16px 40px;border:2px solid var(--terracotta);border-radius:40px;background:rgba(245,243,238,.97);
-  box-shadow:0 0 6px rgba(196,94,58,.9),0 0 18px rgba(196,94,58,.55),0 0 36px rgba(196,94,58,.25),0 0 10px rgba(196,94,58,.35) inset;
+.object{position:absolute;top:0;left:0;padding:16px 40px;border:1px solid rgba(196,94,58,.55);border-radius:40px;background:rgba(245,243,238,.97);
+  box-shadow:0 0 4px rgba(196,94,58,.35),0 0 12px rgba(196,94,58,.18);
   user-select:none;pointer-events:none;z-index:2;white-space:nowrap;transform:translate(-200px,-200px);will-change:transform;transition:box-shadow .7s ease}
 .object span{font-family:"Inter Tight",sans-serif;font-weight:400;font-size:20px;color:#0D0D0D}
 .object-container.is-draggable .object{pointer-events:auto;cursor:grab}
 .object-container.is-draggable .object:active{cursor:grabbing}
-.object-container.is-draggable .object:hover{box-shadow:0 0 8px rgba(196,94,58,1),0 0 26px rgba(196,94,58,.7),0 0 52px rgba(196,94,58,.35),0 0 12px rgba(196,94,58,.45) inset}
+.object-container.is-draggable .object:hover{box-shadow:0 0 6px rgba(196,94,58,.5),0 0 18px rgba(196,94,58,.28)}
 .object-container.is-static .object{display:none}
 .footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:64px;margin-bottom:72px;padding-top:72px;border-top:2px solid rgba(245,243,238,.08)}
 .footer-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:30px;margin-bottom:8px}
@@ -307,7 +307,8 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 @media(prefers-reduced-motion:reduce){html.fx-js .hero .hb{opacity:1}}
 </style>
 
-<meta property="og:image" content="https://rhuanfreire.com/images/og-cover.jpg">
+<meta property="og:image" content="https://dev.rhuanfreire.com.br/images/og-cover-1200x630.jpg">
+<meta name="twitter:image" content="https://dev.rhuanfreire.com.br/images/og-cover-1200x630.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -321,11 +322,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <div class="screen-loading" aria-hidden="true">
-  <svg class="loader" width="140" height="70" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
-    <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.9)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.9)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
-  </svg>
+  <div class="ld-half ld-top"></div>
+  <div class="ld-half ld-bottom"></div>
+  <div class="ld-grid"></div>
+  <div class="ld-scan"></div>
+  <div class="ld-core">
+    <svg class="ld-rings" viewBox="0 0 300 300">
+      <circle class="ld-ring r1" cx="150" cy="150" r="140"/>
+      <circle class="ld-ring r2" cx="150" cy="150" r="120"/>
+      <circle class="ld-ring r3" cx="150" cy="150" r="100"/>
+      <circle class="ld-arc-bg" cx="150" cy="150" r="128"/>
+      <circle class="ld-arc" cx="150" cy="150" r="128" pathLength="100"/>
+    </svg>
+    <div class="ld-logo">
+      <svg class="loader" width="150" height="75" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.9)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.9)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+      </svg>
+    </div>
+  </div>
+  <div class="ld-pct"><span class="loader-pct">000</span><small>%</small></div>
+  <div class="ld-log"></div>
+  <div class="ld-corner tl">SYS://RF-ENG</div>
+  <div class="ld-corner tr">BOOT_SEQ v3</div>
+  <div class="ld-corner bl">SÃO PAULO · BR</div>
+  <div class="ld-corner br"><span class="ld-dot"></span>ONLINE</div>
+  <div class="ld-flash"></div>
 </div>
 
 <!-- Nav -->
