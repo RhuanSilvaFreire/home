@@ -213,7 +213,7 @@
       var tlBands = gsap.timeline({
         scrollTrigger: {
           trigger: ".services", start: "center center",
-          end: function () { return "+=" + window.innerHeight * (desktop ? 1.1 : 0.8); },
+          end: function () { return "+=" + window.innerHeight * (desktop ? 1.9 : 1.4); },
           pin: true, scrub: true
         }
       });
