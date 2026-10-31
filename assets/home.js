@@ -61,19 +61,30 @@
   if (isLoading) runPreloader(function () { tl.play(); });
   else tl.play();
 
-  /* Tela de carregamento: logo desenhado, contagem segue o load real (com mínimo e teto), saída em cortina que já entrega a hero */
+  /* Tela de carregamento: burst laranja vira o logo, anel acompanha o load real (com mínimo e teto), saída em portal */
   function runPreloader(done) {
     var screen = document.querySelector(".screen-loading");
     var pct = screen.querySelector(".loader-pct");
+    var arc = screen.querySelector(".ld-arc");
+    var burst = screen.querySelectorAll(".ld-burst line");
     var state = { p: 0 };
     var render = function () {
-      pct.textContent = ("00" + Math.round(state.p)).slice(-3);
-      gsap.set(".ld-bar i", { scaleX: state.p / 100 });
+      var v = Math.round(state.p);
+      pct.textContent = ("00" + v).slice(-3);
+      arc.style.strokeDasharray = v + " 100";
     };
+    gsap.set(burst, { scale: 0, svgOrigin: "200 200" });
+    gsap.set(".ld-burst", { svgOrigin: "200 200" });
     gsap.timeline()
-      .to(".ld-brace", { strokeDashoffset: 0, duration: 1.1, stagger: 0.12, ease: "power3.inOut" })
-      .fromTo(".ld-rf", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, "-=0.45")
-      .from(".ld-foot > *", { opacity: 0, y: 18, duration: 0.8, stagger: 0.1, ease: "expo.out" }, 0.2);
+      .to(".ld-glow", { opacity: 1, duration: 1.2, ease: "power2.out" }, 0)
+      .from(".ld-ring", { scale: 0.6, opacity: 0, svgOrigin: "200 200", duration: 1, ease: "expo.out" }, 0)
+      .from(".ld-ticks", { opacity: 0, duration: 1 }, 0.1)
+      .to(burst, { scale: 1, duration: 0.7, stagger: 0.03, ease: "expo.out" }, 0.05)
+      .to(".ld-burst", { rotation: 90, duration: 1.3, ease: "power3.inOut" }, 0.2)
+      .to(burst, { scale: 0.1, opacity: 0, duration: 0.6, stagger: 0.02, ease: "power3.in" }, 0.9)
+      .to(".ld-brace", { strokeDashoffset: 0, duration: 0.9, stagger: 0.1, ease: "power3.inOut" }, 1.05)
+      .fromTo(".ld-rf", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 1.4)
+      .from(".ld-hud > *", { opacity: 0, y: 10, duration: 0.7, stagger: 0.08, ease: "expo.out" }, 0.3);
     var crawl = gsap.to(state, { p: 86, duration: PRELOADER_MIN_S + 0.8, ease: "power1.inOut", onUpdate: render });
     var started = performance.now();
     var finished = false;
@@ -85,9 +96,12 @@
       // a contagem até 100 ocupa o tempo que falta do mínimo, nunca salta
       gsap.timeline({ onComplete: endPreloader })
         .to(state, { p: 100, duration: Math.max(0.45, wait), ease: "power1.inOut", onUpdate: render })
-        .to(".ld-mark, .ld-foot", { opacity: 0, y: -24, filter: "blur(8px)", duration: 0.55, ease: "power2.in" }, "+=0.15")
-        .to(".ld-panel", { yPercent: -100, duration: 1.05, ease: "expo.inOut" }, "-=0.2")
-        .add(done, "-=0.6");
+        .to(".ld-logo, .ld-hud", { opacity: 0, filter: "blur(8px)", duration: 0.45, ease: "power2.in" }, "+=0.15")
+        .to(".ld-core", { scale: 1.15, opacity: 0, duration: 0.5, ease: "power2.in" }, "<")
+        .set(".ld-portal", { opacity: 1 })
+        .fromTo(".ld-portal", { scale: 0.8 }, { scale: 9, borderWidth: 1, duration: 0.9, ease: "expo.in" }, "<0.2")
+        .to(".ld-panel", { opacity: 0, duration: 0.55, ease: "power2.inOut" }, "-=0.5")
+        .add(done, "-=0.65");
     };
     if (document.readyState === "complete") finish();
     else window.addEventListener("load", finish, { once: true });
