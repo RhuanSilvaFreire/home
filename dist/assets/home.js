@@ -183,13 +183,13 @@
       gsap.to(track, {
         x: function () { return -distance(); }, ease: "none",
         scrollTrigger: {
-          trigger: workSection, start: "top top", end: function () { return "+=" + distance(); },
-          pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1, refreshPriority: -1
+          trigger: workSection, start: "top top", end: function () { return "+=" + distance() * 1.35; },
+          pin: true, scrub: true, invalidateOnRefresh: true, refreshPriority: -1
         }
       });
       gsap.utils.toArray(".work-row").forEach(function (el, i) {
-        gsap.from(el, { y: (desktop ? 80 : 40) + i * (desktop ? 30 : 15), rotate: 3, opacity: 0, ease: "power3.out",
-          scrollTrigger: { trigger: workSection, start: "top 90%", end: "top 20%", scrub: 1.5 } });
+        gsap.from(el, { y: (desktop ? 60 : 30) + i * (desktop ? 20 : 10), opacity: 0, ease: "power3.out",
+          scrollTrigger: { trigger: workSection, start: "top 90%", end: "top 30%", scrub: true } });
       });
       return function () { workSection.classList.remove("is-horizontal"); };
     }

@@ -125,9 +125,9 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .services{position:relative;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;padding:24px 0;min-height:100vh}
 .services-header{position:relative;width:100%;padding:0 2rem;background:var(--carbon);text-align:center;transform-origin:center}
 .services-header span{display:block;font-family:"Inter Tight",sans-serif;font-weight:400;font-size:clamp(44px,7.5vw,128px);line-height:1.08;letter-spacing:-.02em;
-  background:linear-gradient(90deg,rgb(245,243,238) 8%,rgba(245,243,238,.4) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  color:var(--bone)}
 .services-header:nth-child(2){z-index:2}
-.services-header:nth-child(2) span{background:linear-gradient(95deg,#F5F3EE 0%,var(--terracotta) 50%,#F5F3EE 100%) 0 0/200% no-repeat;-webkit-background-clip:text;background-clip:text;animation:text-gradient-animation 3s ease-in-out infinite alternate}
+.services-header:nth-child(2) span{color:var(--terracotta)}
 
 
 /* Áreas: cards de vidro sobre vídeo */
@@ -145,15 +145,14 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .areas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1320px;margin:0 auto}
 .area-card{padding:40px 34px;border-radius:32px;position:relative;display:flex;flex-direction:column}
 .area-card .area-tags{margin-top:auto;padding-top:28px}
-.area-num{font-family:"Inter Tight",sans-serif;font-size:13px;color:rgba(245,243,238,.4);position:absolute;top:28px;right:32px}
 .area-icon{width:64px;height:64px;padding:12px;margin-bottom:28px;border-radius:50%;background:rgba(245,243,238,.15);border:2px solid rgba(245,243,238,.2);box-shadow:0 0 24px rgba(13,13,13,.3);transition:transform .8s ease}
 .area-card:hover .area-icon{transform:rotate(-12deg) scale(1.06)}
 .area-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:28px;line-height:1.1;margin-bottom:16px;text-shadow:0 2px 18px rgba(13,13,13,.7)}
 .area-desc{font-size:16px;line-height:1.65;color:var(--muted);max-width:52ch}
 .area-desc a{color:var(--bone)!important}
 .area-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
-.area-tag{font-size:12px;padding:6px 14px;border-radius:40px;background:rgba(245,243,238,.12);border:2px solid transparent;color:rgba(245,243,238,.75);transition:border-color .7s ease}
-.area-card:hover .area-tag{border-color:rgba(245,243,238,.12)}
+.area-tag{font-size:13px;padding:6px 14px;border-radius:40px;background:rgba(245,243,238,.12);border:2px solid transparent;color:rgba(245,243,238,.75);transition:border-color .7s ease}
+.area-card:hover .area-tag{border-color:rgba(196,94,58,.45)}
 
 /* Stack */
 .stack-section{position:relative;padding:140px var(--pad);overflow:hidden}
@@ -176,13 +175,19 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .work-title{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(40px,5vw,72px);line-height:1.1}
 .work-meta{font-size:13px;color:var(--muted);margin-left:auto}
 .work-section ul{display:grid;gap:14px}
-.work-row{display:grid;grid-template-columns:64px 140px 1fr 72px 56px;gap:28px;align-items:center;padding:26px 32px;border-radius:24px;
+.work-row{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:64px 140px 1fr 72px 56px;gap:28px;align-items:center;padding:26px 32px;border-radius:24px;
   background:#161616;border:2px solid rgba(245,243,238,.04);box-shadow:0 0 24px rgba(13,13,13,.8);transition:background .8s ease,border-color .8s ease,scale .8s ease}
 .work-num{font-family:"Inter Tight",sans-serif;font-size:14px;color:rgba(245,243,238,.4)}
-.work-kind{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,243,238,.6)}
+.work-img{display:none}
+.work-section.is-horizontal .work-num{display:none!important}
+.work-section.is-horizontal .work-img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;filter:saturate(.55) brightness(.62);transform:scale(1.02);transition:transform 1.2s cubic-bezier(.22,1,.36,1),filter 1.2s ease}
+.work-section.is-horizontal .work-row::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(13,13,13,.15) 0%,rgba(13,13,13,.35) 45%,rgba(13,13,13,.92) 100%)}
+.work-section.is-horizontal .work-row:hover .work-img{transform:scale(1.07);filter:saturate(.8) brightness(.72)}
+.work-section.is-horizontal .work-row:hover{border-color:rgba(196,94,58,.55)}
+.work-kind{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,243,238,.6)}
 .work-name{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:30px;line-height:1.15;letter-spacing:1px;transition:letter-spacing .7s ease}
 .work-year{font-size:13px;color:var(--muted);text-align:right}
-.work-arrow{width:48px;height:48px;border-radius:50%;background:rgba(245,243,238,.08) var(--arrow-white) center/38% no-repeat;border:2px solid rgba(245,243,238,.12);
+.work-arrow{width:48px;height:48px;border-radius:50%;background:rgba(245,243,238,.08) var(--arrow-white) center/38% no-repeat;border:2px solid rgba(196,94,58,.55);
   transform:rotate(-45deg);transition:transform .7s ease,background-color .7s ease;font-size:0}
 @media(hover:hover){
   .work-row:hover{background:#161616;border-color:rgba(245,243,238,.12);scale:1.01}
@@ -239,7 +244,7 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .footer-desc{font-size:14px;color:var(--muted);line-height:1.7;max-width:32ch;margin-bottom:28px}
 .footer-social{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .footer-social-link{position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:2px solid rgba(245,243,238,.15);background:rgba(245,243,238,.1);transition:border-color .7s ease,transform .7s ease}
-.footer-social-link:hover{border-color:rgba(245,243,238,.5);transform:translateY(-3px)}
+.footer-social-link:hover{border-color:#C45E3A;box-shadow:0 0 14px rgba(196,94,58,.35);transform:translateY(-3px)}
 .footer-social-link img{opacity:.7;filter:grayscale(1) brightness(1.8);transition:opacity .5s ease}
 .footer-social-link:hover img{opacity:1}
 .footer-social-link::after{content:attr(aria-label);position:absolute;bottom:calc(100% + 10px);left:50%;transform:translate(-50%,6px);white-space:nowrap;font-size:11px;padding:6px 10px;border-radius:20px;background:rgba(245,243,238,.95);color:#0D0D0D;opacity:0;pointer-events:none;transition:opacity .5s ease,transform .5s ease}
@@ -384,7 +389,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- Nav -->
 <nav class="nav" role="navigation" aria-label="Navegação principal">
-  <a href="#inicio" class="nav-brand" aria-label="Rhuan Freire — Início">
+  <a href="#inicio" class="nav-brand" aria-label="Rhuan Freire, Início">
     <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -414,7 +419,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="hero-spot" aria-hidden="true"></div>
   <div class="hero-content">
-    <div class="hb"><span class="label-line" title="SEO, blogs e linkagem interna · Sites · Automações · IA · DevOps · Integrações">Tráfego orgânico · Sites · Automações · IA · DevOps · Integrações</span></div>
+    <div class="hb"><span class="label-line">DevOps · Automação · IA aplicada · Integrações</span></div>
     <div class="hb">
       <h1>Software que roda.<br><em>Infra que segura.</em></h1>
     </div>
@@ -436,7 +441,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section id="manifesto" class="manifesto">
   <div class="rv section-label"><span class="label-line" style="padding-left:0">Manifesto</span></div>
   <div class="rv" data-from="right">
-    <p class="manifesto-text anime-text">Alta disponibilidade não é exclusividade de big tech. É engenharia aplicada no tamanho certo. Construo sistemas que se recuperam sozinhos, pipelines que não travam no volume e agentes que atendem sem precisar de plantão. Do problema simples ao desafio que exige expertise elevada — você entrega o <em style="font-style:italic">porquê</em>. Eu chego no como.</p>
+    <p class="manifesto-text anime-text">Alta disponibilidade não é exclusividade de big tech. É engenharia no tamanho certo para a sua operação. Sistemas que se recuperam sozinhos, integrações que não travam no volume, automações que dispensam o plantão e dados que mostram o que está acontecendo. Você traz o <em style="font-style:italic">porquê</em>. Eu chego no como.</p>
   </div>
 </section>
 
@@ -507,7 +512,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="areas-grid">
     <!-- Tráfego orgânico -->
     <div class="rv area-card card-glass">
-      <span class="area-num">01</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <circle cx="21" cy="21" r="12" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <path d="M30 30l9 9" stroke="rgba(245,243,238,.7)" stroke-width="1.5" stroke-linecap="round"/>
@@ -524,7 +528,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <!-- Sites -->
     <div class="rv area-card card-glass">
-      <span class="area-num">02</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="5" y="9" width="38" height="30" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <path d="M5 16h38" stroke="rgba(245,243,238,.5)" stroke-width="1.5"/>
@@ -542,7 +545,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <!-- Automações -->
     <div class="rv area-card card-glass">
-      <span class="area-num">03</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <circle cx="10" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <circle cx="38" cy="24" r="5" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
@@ -561,7 +563,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <!-- IA -->
     <div class="rv area-card card-glass">
-      <span class="area-num">04</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="8" y="14" width="32" height="22" rx="4" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <path d="M16 26c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="rgba(196,94,58,.8)" stroke-width="1.5" stroke-linecap="round"/>
@@ -579,7 +580,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <!-- DevOps -->
     <div class="rv area-card card-glass">
-      <span class="area-num">05</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="4" y="10" width="40" height="28" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <path d="M4 18h40" stroke="rgba(196,94,58,.8)" stroke-width="1.5"/>
@@ -599,7 +599,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <!-- Integrações -->
     <div class="rv area-card card-glass">
-      <span class="area-num">06</span>
       <svg class="area-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="5" y="15" width="14" height="18" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
         <rect x="29" y="15" width="14" height="18" rx="3" stroke="rgba(245,243,238,.7)" stroke-width="1.5"/>
@@ -617,84 +616,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<!-- Stack -->
-<section id="stack" class="stack-section">
-  <div class="stack-bg" aria-hidden="true">
-    <img src="robo-2.jpg" alt="" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:85% center;filter:contrast(1.05) brightness(.85)" loading="lazy">
-    <div class="stack-bg-grad1"></div>
-    <div class="stack-bg-grad2"></div>
-  </div>
-  <div class="stack-inner">
-    <div class="rv section-label">Stack</div>
-    <div>
-      <div class="rv" data-from="right">
-        <h2 class="stack-title color-gradient2">DevOps, automação e IA — o stack que uso em produção de verdade.</h2>
-      </div>
-      <div class="stack-grid">
-        <div>
-          <div class="stack-group-label">Agentes & LLMs</div>
-          <ul>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://claude.ai" target="_blank" rel="noopener" class="stack-link">Claude</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://openai.com" target="_blank" rel="noopener" class="stack-link">OpenAI</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://gemini.google.com" target="_blank" rel="noopener" class="stack-link">Gemini</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.langchain.com" target="_blank" rel="noopener" class="stack-link">LangChain</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://ollama.com" target="_blank" rel="noopener" class="stack-link">Ollama</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="stack-group-label">Orquestração & Infra</div>
-          <ul>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://docs.docker.com/engine/swarm/" target="_blank" rel="noopener" class="stack-link">Docker Swarm</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.portainer.io" target="_blank" rel="noopener" class="stack-link">Portainer</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://traefik.io" target="_blank" rel="noopener" class="stack-link">Traefik</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.cloudflare.com" target="_blank" rel="noopener" class="stack-link">Cloudflare</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="stack-group-label">Banco de Dados</div>
-          <ul>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.postgresql.org" target="_blank" rel="noopener" class="stack-link">PostgreSQL</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.pgbouncer.org" target="_blank" rel="noopener" class="stack-link">PgBouncer</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://redis.io" target="_blank" rel="noopener" class="stack-link">Redis</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="stack-group-label">Mensageria & Automação</div>
-          <ul>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.rabbitmq.com" target="_blank" rel="noopener" class="stack-link">RabbitMQ</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://n8n.io" target="_blank" rel="noopener" class="stack-link">N8N</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://gozap.dev/" target="_blank" rel="noopener" class="stack-link">GoZAP</a></li>
-            <li class="stack-item"><span class="stack-item-dot"></span><a href="https://www.chatwoot.com" target="_blank" rel="noopener" class="stack-link">Chatwoot</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- WorkIndex -->
 <section id="trabalhos" class="work-section">
   <div class="rv work-header">
-    <h2 class="work-title color-gradient2">Trabalhos selecionados</h2>
-    <div class="work-meta">2023 — 2025 · 6 casos</div>
+    <h2 class="work-title">Trabalhos selecionados</h2>
+    <div class="work-meta">6 casos, de 2023 a 2025</div>
   </div>
   <ul>
-    <li><a href="/whatsapp" class="work-row" aria-label="Atendimento no WhatsApp — Agente, 2025">
+    <li><a href="/whatsapp" class="work-row" aria-label="Atendimento no WhatsApp, Agente, 2025">
+      <img class="work-img" src="images/trabalhos/agente-whatsapp-ia.jpg" alt="Smartphone com balões de conversa em laranja" width="1024" height="1024" loading="lazy" decoding="async">
       <span class="work-num">01</span><span class="work-kind">Agente</span><span class="work-name">Atendimento no WhatsApp</span><span class="work-year">2025</span><span class="work-arrow" aria-hidden="true">→</span>
     </a></li>
-    <li><a href="/fiscal" class="work-row" aria-label="Busca em base fiscal — RAG, 2025">
+    <li><a href="/fiscal" class="work-row" aria-label="Busca em base fiscal, RAG, 2025">
+      <img class="work-img" src="images/trabalhos/rag-base-fiscal.jpg" alt="Documentos fiscais se transformando em uma rede de dados" width="1024" height="1024" loading="lazy" decoding="async">
       <span class="work-num">02</span><span class="work-kind">RAG</span><span class="work-name">Busca em base fiscal</span><span class="work-year">2025</span><span class="work-arrow" aria-hidden="true">→</span>
     </a></li>
-    <li><a href="/sync" class="work-row" aria-label="Sync entre marketplaces — Pipeline, 2024">
+    <li><a href="/sync" class="work-row" aria-label="Sync entre marketplaces, Pipeline, 2024">
+      <img class="work-img" src="images/trabalhos/sync-marketplaces.jpg" alt="Caixas em esteira conectadas por fluxos de luz" width="1024" height="1024" loading="lazy" decoding="async">
       <span class="work-num">03</span><span class="work-kind">Pipeline</span><span class="work-name">Sync entre marketplaces</span><span class="work-year">2024</span><span class="work-arrow" aria-hidden="true">→</span>
     </a></li>
-    <li><a href="/ura" class="work-row" aria-label="URA conversacional — Voz, 2024">
+    <li><a href="/ura" class="work-row" aria-label="URA conversacional, Voz, 2024">
+      <img class="work-img" src="images/trabalhos/ura-conversacional.jpg" alt="Headset com ondas sonoras em laranja" width="1024" height="1024" loading="lazy" decoding="async">
       <span class="work-num">04</span><span class="work-kind">Voz</span><span class="work-name">URA conversacional</span><span class="work-year">2024</span><span class="work-arrow" aria-hidden="true">→</span>
     </a></li>
-    <li><a href="/dashboard" class="work-row" aria-label="Painel de operação — Dashboard, 2023">
+    <li><a href="/dashboard" class="work-row" aria-label="Painel de operação, Dashboard, 2023">
+      <img class="work-img" src="images/trabalhos/painel-operacao.jpg" alt="Monitor com gráficos de operação" width="1024" height="1024" loading="lazy" decoding="async">
       <span class="work-num">05</span><span class="work-kind">Dashboard</span><span class="work-name">Painel de operação</span><span class="work-year">2023</span><span class="work-arrow" aria-hidden="true">→</span>
     </a></li>
-    <li><a href="/leads" class="work-row" aria-label="Qualificação de leads — Automação, 2023">
+    <li><a href="/leads" class="work-row" aria-label="Qualificação de leads, Automação, 2023">
+      <img class="work-img" src="images/trabalhos/qualificacao-leads.jpg" alt="Funil de vidro filtrando pontos de luz" width="1024" height="1024" loading="lazy" decoding="async">
       <span class="work-num">06</span><span class="work-kind">Automação</span><span class="work-name">Qualificação de leads</span><span class="work-year">2023</span><span class="work-arrow" aria-hidden="true">→</span>
     </a></li>
   </ul>
@@ -710,7 +660,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Logo Wall -->
     <div class="rv">
       <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,243,238,.5);margin-bottom:18px;display:flex;justify-content:space-between">
-        <span>Ferramental — o que uso</span><span>RF - 2026</span>
+        <span>Ferramentas que uso</span><span>RF - 2026</span>
       </div>
       <div class="logo-wall logo-panel card-glass">
         <div class="logo-wall-grid">
@@ -801,18 +751,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div>
       <div class="rv section-label" style="margin-bottom:18px"><span class="label-line" style="padding-left:0">Sobre</span></div>
       <div class="rv">
-        <h2 class="about-heading anime-text">Tecnologia que escala. Do primeiro processo automatizado ao cluster em produção.</h2>
+        <h2 class="about-heading anime-text">Do primeiro fluxo ao cluster em produção.</h2>
       </div>
       <div class="rv">
-        <p class="about-body">Comecei pelos agentes de IA. Enquanto cursava Análise e Desenvolvimento de Sistemas na Anhanguera, fui estudando automações com N8N, integrações e LLMs — e fui fundo. Me formei, me especializei, e a trajetória naturalmente levou para a área de DevOps: Docker Swarm, Traefik, alta disponibilidade. Hoje entrego do agente conversacional ao cluster que não cai no pico.</p>
-        <p class="about-body" style="margin-top:18px">Vim do marketing usando tecnologia, e fui avançando naturalmente na carreira para desenvolver soluções cada vez melhores. Trabalho com sistemas que escalam, que convertem, que não precisam de plantão humano para continuar funcionando. Já atuei com pequenas, médias e grandes empresas em e-commerce, mercado financeiro, corretagem, medicina holística e venda de cursos.</p>
-        <p class="about-body" style="margin-top:18px">O que me move é o desafio. Você tem um problema — eu penso numa solução. Você traz o <em style="font-style:italic">porquê</em>, eu chego no como. Contato direto pelo <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="about-link">WhatsApp</a>.</p>
+        <p class="about-body">Comecei no marketing, usando tecnologia para medir e vender melhor: GA4, GTM, Search Console, captação de lead e dashboards. Daí vieram as automações com N8N, as integrações entre sistemas e os agentes de IA. Me formei em Análise e Desenvolvimento de Sistemas e a trajetória chegou ao DevOps: Docker Swarm, Traefik e alta disponibilidade.</p>
+        <p class="about-body" style="margin-top:18px">Por isso enxergo a operação inteira: do clique que traz o cliente ao servidor que segura o pico. Já atuei com pequenas, médias e grandes empresas em e-commerce, mercado financeiro, corretagem, medicina holística e venda de cursos.</p>
+        <p class="about-body" style="margin-top:18px">O que me move é o desafio: você traz o problema, eu desenho e mantenho a solução. Contato direto pelo <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="about-link">WhatsApp</a>.</p>
       </div>
       <div class="rv">
         <div class="about-stats">
-          <div class="about-stat"><div class="about-stat-label">Especialização</div><div class="about-stat-value">IA · Automação · DevOps</div></div>
+          <div class="about-stat"><div class="about-stat-label">Especialização</div><div class="about-stat-value">DevOps · Automação · IA · Integrações</div></div>
           <div class="about-stat"><div class="about-stat-label">Stack</div><div class="about-stat-value">Docker · N8N · Go</div></div>
-          <div class="about-stat"><div class="about-stat-label">Capacidade</div><div class="about-stat-value">Alta disponibilidade · Escala vertical</div></div>
+          <div class="about-stat"><div class="about-stat-label">Também faço</div><div class="about-stat-value">Tráfego orgânico · GA4 · Dashboards</div></div>
         </div>
       </div>
     </div>
@@ -825,7 +775,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="object-container">
     <div class="object-cta">
       <span class="label-line">Contato</span>
-      <p class="footer-cta-title color-gradient2">Disponível para novos projetos</p>
+      <p class="footer-cta-title">Tem uma operação para colocar de pé?</p>
       <a href="https://wa.me/5511996368169" target="_blank" rel="noopener noreferrer" class="btn-white"><span class="btn-icon" aria-hidden="true"><img src="/icons/whatsapp.svg" alt="" width="24" height="24" style="filter:brightness(0) invert(1)"></span>Falar pelo WhatsApp</a>
     </div>
     <div aria-hidden="true">
@@ -848,7 +798,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div>
       <div class="footer-name">Rhuan Freire</div>
       <div class="footer-role">Engenharia de Sistemas</div>
-      <p class="footer-desc">IA · Automação · DevOps · Integrações · Alta disponibilidade<br>São Paulo — remoto, contrato</p>
+      <p class="footer-desc">DevOps · Automação · IA aplicada · Integrações<br>São Paulo, atendimento remoto em todo o Brasil</p>
       <div class="footer-social">
         <a href="https://share.google/wt2AoP4Xso9w9Iqv7" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Google Meu Negócio">
           <img src="/icons/googlemybusiness.svg" alt="Google Meu Negócio" width="17" height="17">
@@ -877,7 +827,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <ul class="footer-nav-list">
         <li><a href="#inicio" class="footer-nav-link">Início</a></li>
         <li><a href="#trabalhos" class="footer-nav-link">Projetos</a></li>
-        <li><a href="#stack" class="footer-nav-link">Stack</a></li>
+        <li><a href="#areas" class="footer-nav-link">Serviços</a></li>
         <li><a href="#sobre" class="footer-nav-link">Sobre</a></li>
         <li><a href="/blog/" class="footer-nav-link">Blog</a></li>
         <li><a href="#contato" class="footer-nav-link">Contato</a></li>
