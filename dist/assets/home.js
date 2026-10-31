@@ -26,6 +26,10 @@
 
   /* Holofote HUD da hero segue o mouse (só desktop com mouse) */
   var hero = document.querySelector(".hero");
+  if (hero && !FX.finePointer && FX.gsap && !FX.reduced) {
+    hero.classList.add("is-ambient");
+    gsap.fromTo(hero, { "--mx": "15%", "--my": "35%" }, { "--mx": "85%", "--my": "60%", duration: 7, ease: "sine.inOut", repeat: -1, yoyo: true });
+  }
   if (hero && FX.finePointer) {
     hero.addEventListener("mousemove", function (e) {
       var r = hero.getBoundingClientRect();
@@ -48,6 +52,11 @@
   tl.fromTo(heroLines, { opacity: 0, x: -100, filter: "blur(10px)" },
       { opacity: 1, x: 0, filter: "blur(0px)", duration: 2, stagger: 0.25, ease: "power4.out" })
     .from(heroChars, { opacity: 0, x: -60, filter: "blur(10px)", duration: 2.4, stagger: 0.035, ease: "power4.out" }, "<0.2");
+
+  // Toque (sem mouse para a lente): uma varredura de brilho percorre o título depois da entrada
+  if (!FX.finePointer) {
+    tl.to(heroChars, { "--heat": 1, duration: 0.35, stagger: 0.035, ease: "sine.out", yoyo: true, repeat: 1 }, ">-0.6");
+  }
 
   if (isLoading) runPreloader(function () { tl.play(); });
   else tl.play();
@@ -116,6 +125,7 @@
       } else {
         from.y = 60;
         from.x = dir === "right" ? 30 : -30;
+        from.filter = "blur(6px)";
       }
       from.scrollTrigger = { trigger: el, start: "top 100%", end: "top 50%", scrub: 1.5 };
       gsap.from(el, from);
@@ -163,12 +173,13 @@
       });
     });
 
-    /* Trabalhos: no desktop vira faixa horizontal fixada; no mobile, entrada lateral simples */
+    /* Trabalhos: faixa horizontal fixada (desktop e mobile, só muda o tamanho dos cards) */
     var workSection = document.querySelector(".work-section");
     var track = workSection && workSection.querySelector("ul");
-    if (desktop && track) {
+    if (track) {
       workSection.classList.add("is-horizontal");
-      var distance = function () { return Math.max(0, track.scrollWidth - window.innerWidth + 96); };
+      var edge = desktop ? 96 : 16;
+      var distance = function () { return Math.max(0, track.scrollWidth - window.innerWidth + edge); };
       gsap.to(track, {
         x: function () { return -distance(); }, ease: "none",
         scrollTrigger: {
@@ -177,7 +188,7 @@
         }
       });
       gsap.utils.toArray(".work-row").forEach(function (el, i) {
-        gsap.from(el, { y: 80 + i * 30, rotate: 3, opacity: 0, ease: "power3.out",
+        gsap.from(el, { y: (desktop ? 80 : 40) + i * (desktop ? 30 : 15), rotate: 3, opacity: 0, ease: "power3.out",
           scrollTrigger: { trigger: workSection, start: "top 90%", end: "top 20%", scrub: 1.5 } });
       });
       return function () { workSection.classList.remove("is-horizontal"); };
@@ -247,11 +258,14 @@
     engine.velocityIterations = 16;
 
     var W = container.clientWidth, H = container.clientHeight, t = CFG.wall, g = CFG.gap; // g: folga para o brilho não ser cortado
-    var walls = [
-      M.Bodies.rectangle(W / 2, H - g + t / 2, W + t * 2, t, { isStatic: true }),
-      M.Bodies.rectangle(g - t / 2, H / 2, t, H * 5, { isStatic: true }),
-      M.Bodies.rectangle(W - g + t / 2, H / 2, t, H * 5, { isStatic: true })
-    ];
+    var makeWalls = function (w, h) {
+      return [
+        M.Bodies.rectangle(w / 2, h - g + t / 2, w + t * 2, t, { isStatic: true }),
+        M.Bodies.rectangle(g - t / 2, h / 2, t, h * 5, { isStatic: true }),
+        M.Bodies.rectangle(w - g + t / 2, h / 2, t, h * 5, { isStatic: true })
+      ];
+    };
+    var walls = makeWalls(W, H);
     var objs = Array.prototype.map.call(container.querySelectorAll(".object"), function (el, i) {
       var w = el.offsetWidth, h = el.offsetHeight;
       var body = M.Bodies.rectangle(w / 2 + Math.random() * Math.max(1, W - w), -200 - i * 120, w, h, {
@@ -279,6 +293,14 @@
       });
       container.addEventListener("mouseleave", function () { mc.mouse.button = -1; mc.constraint.bodyB = null; });
       container.classList.add("is-draggable");
+    } else {
+      container.classList.add("is-tappable");
+      objs.forEach(function (o) {
+        o.el.addEventListener("pointerdown", function () {
+          M.Body.setVelocity(o.body, { x: (Math.random() - 0.5) * 8, y: -14 });
+          M.Body.setAngularVelocity(o.body, (Math.random() - 0.5) * 0.3);
+        });
+      });
     }
 
     M.Runner.run(M.Runner.create(), engine);
@@ -297,12 +319,24 @@
       requestAnimationFrame(loop);
     })();
 
+    // Janela mudou de tamanho (DevTools, maximizar): refaz paredes e reescala a posição das pílulas
+    var resizeTimer = null;
     window.addEventListener("resize", function () {
-      var nW = container.clientWidth, nH = container.clientHeight;
-      if (Math.abs(nW - W) < 40 && Math.abs(nH - H) < 40) return;
-      M.Body.setPosition(walls[0], { x: nW / 2, y: nH - g + t / 2 });
-      M.Body.setPosition(walls[2], { x: nW - g + t / 2, y: nH / 2 });
-      W = nW; H = nH;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        var nW = container.clientWidth, nH = container.clientHeight;
+        if (Math.abs(nW - W) < 4 && Math.abs(nH - H) < 4) return;
+        var sx = nW / W;
+        M.World.remove(engine.world, walls);
+        walls = makeWalls(nW, nH);
+        M.World.add(engine.world, walls);
+        objs.forEach(function (o) {
+          var p = o.body.position;
+          M.Body.setPosition(o.body, { x: clamp(p.x * sx, g + o.w / 2, nW - g - o.w / 2), y: Math.min(p.y, nH - g - o.h) });
+          M.Body.setVelocity(o.body, { x: 0, y: 0 });
+        });
+        W = nW; H = nH;
+      }, 150);
     });
   }
 })();
