@@ -202,7 +202,7 @@
     }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
     Array.prototype.forEach.call(els, function (el, i) {
       el.classList.add("fx-rv");
-      el.style.transitionDelay = (i % 4) * 0.08 + "s";
+      el.style.transitionDelay = (i % 4) * 0.04 + "s";
       io.observe(el);
     });
   };

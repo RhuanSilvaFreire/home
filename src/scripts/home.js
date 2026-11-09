@@ -5,11 +5,12 @@
   var doc = document.documentElement;
   if (!FX) return;
 
-  var PRELOADER_MIN_S = 2.2;   // tempo mínimo para o giro do logo terminar
-  var PRELOADER_MAX_S = 4.5;   // não segura o conteúdo além disso, mesmo sem o load completo
+  var PRELOADER_MIN_S = 0.35;   // tempo mínimo para o giro do logo terminar
+  var PRELOADER_MAX_S = 1.2;   // não segura o conteúdo além disso, mesmo sem o load completo
   var MATTER_SRC = "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js";
 
   function endPreloader() {
+    try { performance.mark("fx-preloader-end"); } catch (e) {}
     doc.classList.remove("fx-loading");
     try { sessionStorage.setItem("fx-seen", "1"); } catch (e) { /* storage bloqueado: só não lembra */ }
   }
@@ -49,6 +50,7 @@
   /* ---------- Preloader + entrada da hero ---------- */
   var isLoading = doc.classList.contains("fx-loading");
   var tl = gsap.timeline({ paused: true });
+  tl.timeScale(2);
   tl.fromTo(heroLines, { opacity: 0, x: -100, filter: FX.blur(10) },
       { opacity: 1, x: 0, filter: FX.blur(0), duration: 2, stagger: 0.25, ease: "power4.out" })
     .from(heroChars, { opacity: 0, x: -60, filter: FX.blur(10), duration: 2.4, stagger: 0.035, ease: "power4.out" }, "<0.2");
@@ -84,7 +86,8 @@
       .to(burst, { scale: 0.1, opacity: 0, duration: 0.6, stagger: 0.02, ease: "power3.in" }, 0.9)
       .to(".ld-brace", { strokeDashoffset: 0, duration: 0.9, stagger: 0.1, ease: "power3.inOut" }, 1.05)
       .fromTo(".ld-rf", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 1.4)
-      .from(".ld-hud > *", { opacity: 0, y: 10, duration: 0.7, stagger: 0.08, ease: "expo.out" }, 0.3);
+      .from(".ld-hud > *", { opacity: 0, y: 10, duration: 0.7, stagger: 0.08, ease: "expo.out" }, 0.3)
+      .timeScale(2.4);
     var crawl = gsap.to(state, { p: 86, duration: PRELOADER_MIN_S + 0.8, ease: "power1.inOut", onUpdate: render });
     var started = performance.now();
     var finished = false;
@@ -95,13 +98,14 @@
       crawl.kill();
       // a contagem até 100 ocupa o tempo que falta do mínimo, nunca salta
       gsap.timeline({ onComplete: endPreloader })
-        .to(state, { p: 100, duration: Math.max(0.45, wait), ease: "power1.inOut", onUpdate: render })
+        .to(state, { p: 100, duration: Math.max(0.5, wait), ease: "power1.inOut", onUpdate: render })
         .to(".ld-logo, .ld-hud", { opacity: 0, filter: FX.blur(8), duration: 0.45, ease: "power2.in" }, "+=0.15")
         .to(".ld-core", { scale: 1.15, opacity: 0, duration: 0.5, ease: "power2.in" }, "<")
         .set(".ld-portal", { opacity: 1 })
         .fromTo(".ld-portal", { scale: 0.8 }, { scale: 9, borderWidth: 1, duration: 0.9, ease: "expo.in" }, "<0.2")
         .to(".ld-panel", { opacity: 0, duration: 0.55, ease: "power2.inOut" }, "-=0.5")
-        .add(done, "-=0.65");
+        .add(done, "-=0.65")
+        .timeScale(2.4);
     };
     // Não espera o "load" (vídeo da hero e imagens seguram ele por segundos no 4G): fontes prontas bastam
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(finish, finish);

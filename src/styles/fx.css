@@ -156,7 +156,7 @@ html.fx-loading .screen-loading{display:block;position:fixed;inset:0;z-index:999
 }
 
 /* ---------- Reveal genérico (páginas internas) ---------- */
-html.fx-js .fx-rv{opacity:0;transform:translateX(-40px);filter:blur(10px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease),filter 1.2s var(--ease)}
+html.fx-js .fx-rv{opacity:0;transform:translateX(-40px);filter:blur(10px);transition:opacity .5s var(--ease),transform .5s var(--ease),filter .5s var(--ease)}
 html.fx-js .fx-rv.fx-in{opacity:1;transform:none;filter:blur(0)}
 @media(max-width:960px){html.fx-js .fx-rv{transform:translateY(24px);filter:none}}
 

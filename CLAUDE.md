@@ -32,7 +32,7 @@ Libs via CDN (versões fixas): GSAP 3.13.0 + ScrollTrigger (cdnjs), Lenis 1.3.11
 - **Paridade desktop/mobile:** todo efeito existe nos dois, mudando só a intensidade. Mouse → lente/holofote/arrastar; toque → varredura de brilho automática, holofote ambiente, pílulas pulam ao tocar.
 - **Manifesto e "Sobre" não reagem ao mouse** (ficava ilegível). Só o título da hero tem a lente HUD.
 - **Lente HUD** (`fx.js`): letras sobem e acendem, nunca se deslocam para os lados. Parâmetros: `RADIUS`, `LIFT`, `GROW`.
-- **Tela de carregamento** aparece em **todo** carregamento da home. Mínimo 2,2s, teto 4,5s (`PRELOADER_MIN_S`/`PRELOADER_MAX_S`).
+- **Tela de carregamento** aparece em **todo** carregamento da home. Alvo <1s: mínimo 0,35s, teto 1,2s, timelines aceleradas por `timeScale` (`PRELOADER_MIN_S`/`PRELOADER_MAX_S`).
 - **Vídeos:** `hero.mp4` sem loop (congela no cubo). `areas.mp4` = trecho 5–10s do `hero.mp4` invertido (cubo → robô laranja), sem loop. Regerar com:
   `ffmpeg -ss 5 -i hero.mp4 -t 5.05 -vf reverse -an -c:v libx264 -crf 20 -preset slow -pix_fmt yuv420p -movflags +faststart areas.mp4`
 - **Pins na ordem do DOM:** o pin dos trabalhos usa `refreshPriority: -1` porque é criado antes do pin das faixas, que fica acima dele. Ao adicionar pins, mantenha essa ordem.
