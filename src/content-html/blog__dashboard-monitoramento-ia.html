@@ -1,0 +1,96 @@
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/blog/" class="article-back">← Blog</a>
+
+  <div class="article-tag">Observabilidade · IA</div>
+  <h1>O que você precisa medir quando coloca um agente de IA em produção</h1>
+  <div class="article-meta">Rhuan Freire · Abril 2025 · 11 min de leitura</div>
+
+  <p class="article-lead">Métricas de software tradicional não bastam para agentes de IA. Aprendi isso da forma mais cara possível — com um agente que "funcionava" e estava custando 40x mais do que eu calculei.</p>
+
+  <h2>O problema que não aparece no uptime</h2>
+  <p>O agente respondia. Sem erros. Uptime 99,8%. O cliente ficou feliz. Até o mês seguinte, quando chegou a fatura da API.</p>
+  <p>O que tinha acontecido: o agente estava usando o modelo mais caro para <strong>toda e qualquer</strong> solicitação, incluindo classificações simples de intenção que um modelo 10x mais barato resolveria igual. Além disso, havia um bug silencioso que causava retries desnecessários em certos tipos de resposta — o agente chamava a API 3 vezes para entregar 1 resposta.</p>
+  <p>Nenhuma dessas coisas aparecia nas métricas de sistema. Por isso criei um painel dedicado para monitoramento de agentes de IA — e esse artigo é o que aprendi construindo ele.</p>
+
+  <h2>As 5 métricas que importam</h2>
+
+  <p><strong>1. Custo por chamada de modelo</strong><br>
+  Não apenas o custo total — o custo por chamada, por tipo de chamada. Se você tem 3 tipos de operação (classificação, geração de resposta, resumo), precisa saber o custo de cada uma separadamente. Um pico no custo de classificação é um sinal completamente diferente de um pico no custo de geração.</p>
+
+  <p><strong>2. Taxa de fallback</strong><br>
+  Quantas vezes o agente não conseguiu resolver e foi para o fallback (humano, fila, mensagem genérica). Essa métrica mede a eficácia real do agente. Um fallback de 10% é esperado. Um fallback de 40% significa que o agente está falhando — mesmo que todas as chamadas retornem 200 OK.</p>
+
+  <p><strong>3. Latência por etapa</strong><br>
+  Não apenas a latência total de resposta — a latência de cada etapa do pipeline. Se o tempo total aumentou, você precisa saber se foi na transcrição, na chamada ao modelo, no banco de dados ou na geração de resposta. Métricas agregadas escondem o problema.</p>
+
+  <p><strong>4. Token usage por tipo de chamada</strong><br>
+  Prompts grandes custam mais. Se o uso de tokens de um tipo de chamada começa a crescer gradualmente, algo no contexto está sendo injetado onde não deveria — um bug de memória que enche o contexto, um log que está sendo incluído no prompt, um dado de usuário que não precisa estar ali.</p>
+
+  <p><strong>5. Retry rate</strong><br>
+  Quantas chamadas são retries de uma chamada que falhou ou demorou demais. Um retry rate alto indica que a API está instável, que seus timeouts estão calibrados errado, ou — o pior caso — que tem um loop de retry no código que você não colocou.</p>
+
+  <h2>A estrutura do painel</h2>
+  <p>O painel que construí usa três fontes de dados: logs de aplicação enviados para Postgres via um middleware que intercepta todas as chamadas ao LLM, a API de billing da OpenAI/Anthropic para custo real (não estimado), e as métricas de sistema do servidor.</p>
+  <p>A coleta é feita via um decorator em Python que envolve qualquer chamada ao modelo:</p>
+  <pre><code>def track_llm_call(operation_type: str):
+    def decorator(func):
+        async def wrapper(*args, **kwargs):
+            start = time.time()
+            try:
+                result = await func(*args, **kwargs)
+                duration_ms = (time.time() - start) * 1000
+                await log_llm_call(
+                    operation=operation_type,
+                    model=result.model,
+                    input_tokens=result.usage.input_tokens,
+                    output_tokens=result.usage.output_tokens,
+                    duration_ms=duration_ms,
+                    status="success"
+                )
+                return result
+            except Exception as e:
+                await log_llm_call(operation=operation_type, status="error", error=str(e))
+                raise
+        return wrapper
+    return decorator</code></pre>
+
+  <h2>Alertas que valem a pena configurar</h2>
+  <ul>
+    <li><strong>Custo por hora acima de X:</strong> alerta imediato se o custo por hora triplicar em relação à média das últimas 24h</li>
+    <li><strong>Taxa de fallback acima de 20%:</strong> indica degradação de qualidade do agente</li>
+    <li><strong>P95 de latência acima de 8s:</strong> usuário começa a perceber como lento</li>
+    <li><strong>Token médio por chamada crescendo &gt;20% em 1h:</strong> possível bug de contexto</li>
+    <li><strong>Retry rate acima de 5%:</strong> investiga o padrão antes de virar problema maior</li>
+  </ul>
+
+  <blockquote>
+    <p>Um agente sem observabilidade é uma caixa-preta que você vai pagar por surpresas.</p>
+  </blockquote>
+
+  <p style="margin-top:40px">Ver a estrutura técnica completa:</p>
+  <a href="/dashboard/" class="case-link">Ver case completo →</a>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">← Voltar ao blog</a>
+</footer>

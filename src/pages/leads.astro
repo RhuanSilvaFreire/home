@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import body from '../content-html/leads.html?raw';
+import '../styles/shared-541062.css';
+import '../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"CreativeWork\",\"name\":\"Automação de Qualificação de Leads com IA\",\"description\":\"Pipeline de captura, enriquecimento e roteamento automático de leads em 30 segundos.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"url\":\"https://dev.rhuanfreire.com.br/leads/\",\"dateCreated\":\"2023\",\"keywords\":\"qualificação de leads, automação, lead scoring, n8n, IA\"}";
+---
+<Base
+  title={"Automação de Qualificação de Leads com IA — Rhuan Freire"},
+  description={"Pipeline de automação que qualifica leads em 30 segundos: captura multicanal, enriquecimento por API e roteamento automático para o vendedor certo. Case por Rhuan Freire."},
+  canonical={"https://dev.rhuanfreire.com.br/leads/"},
+  preloadImage={"/images/case6-leads.jpg"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

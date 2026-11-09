@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/recursos__skills.html?raw';
+import '../../styles/shared-8cfc29.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\": \"https://schema.org\", \"@type\": \"TechArticle\", \"headline\": \"Skills no Claude Code: o que são, como criar e onde achar as oficiais\", \"description\": \"Estrutura de uma skill (SKILL.md), onde ela fica, boas práticas, categorias que valem a pena automatizar e os repositórios oficiais no GitHub.\", \"author\": {\"@type\": \"Person\", \"name\": \"Rhuan Freire\"}, \"mainEntityOfPage\": \"https://dev.rhuanfreire.com.br/recursos/skills/\", \"inLanguage\": \"pt-BR\"}";
+---
+<Base
+  title={"Skills no Claude Code: o que são, como criar e onde achar as oficiais — Rhuan Freire"},
+  description={"Estrutura de uma skill (SKILL.md), onde ela fica, boas práticas, categorias que valem a pena automatizar e os repositórios oficiais no GitHub."},
+  canonical={"https://dev.rhuanfreire.com.br/recursos/skills/"},
+  ogTitle={"Skills no Claude Code: o que são, como criar e onde achar as oficiais"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

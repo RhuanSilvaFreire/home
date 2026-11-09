@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import body from '../content-html/fiscal.html?raw';
+import '../styles/shared-541062.css';
+import '../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"CreativeWork\",\"name\":\"Busca Semântica em Base Fiscal com RAG\",\"description\":\"Indexação semântica de documentos fiscais com citação por trecho e resposta auditável.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"url\":\"https://dev.rhuanfreire.com.br/fiscal/\",\"dateCreated\":\"2025\",\"keywords\":\"RAG, busca semântica, base fiscal, documentos fiscais, IA\"}";
+---
+<Base
+  title={"Busca Semântica em Base Fiscal com RAG — Rhuan Freire"},
+  description={"Busca em linguagem natural sobre milhares de documentos fiscais usando RAG. Resposta auditável com citação por trecho. Case de IA aplicada à área fiscal por Rhuan Freire."},
+  canonical={"https://dev.rhuanfreire.com.br/fiscal/"},
+  preloadImage={"/images/case2-fiscal.jpg"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

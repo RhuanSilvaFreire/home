@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/recursos__maestri.html?raw';
+import '../../styles/shared-8cfc29.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\": \"https://schema.org\", \"@type\": \"TechArticle\", \"headline\": \"Maestri: um canvas para orquestrar agentes de IA, terminais e navegador\", \"description\": \"As peças do canvas, os comandos list, ask e check, como recrutar colegas com papel definido, portais de navegador e andares isolados.\", \"author\": {\"@type\": \"Person\", \"name\": \"Rhuan Freire\"}, \"mainEntityOfPage\": \"https://dev.rhuanfreire.com.br/recursos/maestri/\", \"inLanguage\": \"pt-BR\"}";
+---
+<Base
+  title={"Maestri: um canvas para orquestrar agentes de IA, terminais e navegador — Rhuan Freire"},
+  description={"As peças do canvas, os comandos list, ask e check, como recrutar colegas com papel definido, portais de navegador e andares isolados."},
+  canonical={"https://dev.rhuanfreire.com.br/recursos/maestri/"},
+  ogTitle={"Maestri: um canvas para orquestrar agentes de IA, terminais e navegador"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

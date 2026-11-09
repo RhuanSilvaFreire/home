@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import body from '../content-html/sync.html?raw';
+import '../styles/shared-541062.css';
+import '../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"CreativeWork\",\"name\":\"Pipeline de Sync entre Marketplaces em Tempo Real\",\"description\":\"Fluxo n8n que reconcilia estoque, preço e pedidos entre múltiplos marketplaces.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"url\":\"https://dev.rhuanfreire.com.br/sync/\",\"dateCreated\":\"2024\",\"keywords\":\"sync marketplaces, pipeline dados, n8n, automação e-commerce\"}";
+---
+<Base
+  title={"Pipeline de Sync entre Marketplaces em Tempo Real — Rhuan Freire"},
+  description={"Pipeline n8n que sincroniza estoque, preço e pedidos entre marketplaces em tempo quase real. Zero divergência, zero intervenção manual. Case por Rhuan Freire."},
+  canonical={"https://dev.rhuanfreire.com.br/sync/"},
+  preloadImage={"/images/case3-sync.jpg"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

@@ -1,0 +1,84 @@
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/blog/" class="article-back">← Blog</a>
+
+  <div class="article-tag">RAG · Documentos</div>
+  <h1>RAG em base fiscal: por que o chunking padrão não serve e como corrigi</h1>
+  <div class="article-meta">Rhuan Freire · Julho 2025 · 10 min de leitura</div>
+
+  <p class="article-lead">Documentos fiscais têm estrutura estranha — seções numeradas, remissões entre artigos, siglas sem contexto. O modelo padrão de RAG falha miseravelmente aqui. Essa é a história de como descobri isso e como resolvi.</p>
+
+  <h2>O contexto do projeto</h2>
+  <p>O cliente tinha uma base de ~12.000 documentos fiscais: instruções normativas, pareceres, regulamentos internos e respostas a consultas tributárias. O time jurídico-fiscal passava horas fazendo buscas manuais em PDF para responder perguntas que, no fundo, tinham resposta em algum lugar da base.</p>
+  <p>A proposta era direta: sistema de busca em linguagem natural que encontre o trecho relevante, cite a fonte e explique com contexto suficiente para quem vai usar na prática. Nada de chatbot genérico — a resposta precisa ser auditável.</p>
+
+  <h2>O problema com chunking fixo</h2>
+  <p>A abordagem padrão de RAG divide o documento em chunks de tamanho fixo — digamos, 512 tokens com overlap de 50 tokens — e indexa cada chunk separadamente. Em textos narrativos como artigos de blog ou documentação técnica, isso funciona bem.</p>
+  <p>Em documentos fiscais, não funciona. O motivo principal é a remissão entre artigos:</p>
+  <pre><code>Art. 23. Para fins do disposto no art. 14, §2º, inciso III, da
+Instrução Normativa RFB nº 1.700/2017, considera-se...</code></pre>
+  <p>Se você chunkar esse parágrafo isolado, ele não faz sentido sem o Art. 14 da IN 1.700/2017. O modelo vai gerar uma resposta tecnicamente fundamentada, porém <strong>errada por falta de contexto</strong>.</p>
+
+  <h2>Chunking estrutural</h2>
+  <p>A solução foi usar a própria estrutura do documento como guia de chunking. Documentos fiscais têm hierarquia bem definida: Capítulo → Seção → Artigo → Parágrafo → Inciso. Em vez de dividir por tamanho, dividi por unidade semântica natural.</p>
+  <p>Cada chunk virou um artigo completo (mesmo que longo), com metadados que incluem:</p>
+  <ul>
+    <li>Identificador do documento fonte</li>
+    <li>Numeração do artigo dentro do documento</li>
+    <li>Lista de artigos referenciados no texto</li>
+    <li>Data de vigência do documento</li>
+    <li>Tipo do documento (IN, Parecer, Resolução)</li>
+  </ul>
+  <p>A indexação das referências foi o ponto mais importante. Quando um artigo cita "art. 14, §2º da IN 1.700", essa referência fica explícita nos metadados. Na hora da busca, além do chunk mais relevante semanticamente, o sistema busca automaticamente os chunks referenciados e os inclui no contexto.</p>
+
+  <h2>A resposta auditável</h2>
+  <p>Num contexto fiscal, o usuário não pode confiar numa resposta que não cite a fonte exata. A solução foi estruturar o output do modelo com um campo obrigatório de citação:</p>
+  <pre><code>&#123;
+  "resposta": "Com base no art. 23 da IN RFB 1.234/2024...",
+  "citacoes": [
+    &#123;
+      "documento": "IN RFB 1.234/2024",
+      "artigo": "Art. 23",
+      "trecho": "considera-se receita bruta o produto da venda...",
+      "vigencia": "2024-01-01"
+    &#125;
+  ],
+  "confianca": 0.87,
+  "observacao": "Verificar se houve alteração posterior à data de publicação"
+&#125;</code></pre>
+  <p>O campo <code>confianca</code> não é gerado pelo modelo diretamente — é calculado com base no score de similaridade do chunk mais relevante encontrado. Se estiver abaixo de 0.7, o sistema avisa que a base pode não ter a informação necessária.</p>
+
+  <h2>O que melhoraria</h2>
+  <p>A extração da estrutura dos documentos dependeu de parsing manual com regex e heurísticas — funcionou para os documentos do cliente, mas não é generalizado. Hoje usaria um modelo de visão para extrair estrutura de PDFs mais complexos antes de indexar.</p>
+  <p>O outro ponto: a base fiscal muda. Documentos são revogados, artigos são alterados. O sistema atual não tem um mecanismo de invalidação automática — precisa de atualização manual quando há mudanças na legislação.</p>
+
+  <blockquote>
+    <p>Em RAG para documentos críticos, a citação não é um diferencial. É o mínimo.</p>
+  </blockquote>
+
+  <p style="margin-top:40px">Ver a estrutura técnica completa desse projeto:</p>
+  <a href="/fiscal/" class="case-link">Ver case completo →</a>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">← Voltar ao blog</a>
+</footer>

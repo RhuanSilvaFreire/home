@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/recursos__swarm.html?raw';
+import '../../styles/shared-8cfc29.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\": \"https://schema.org\", \"@type\": \"TechArticle\", \"headline\": \"Docker Swarm em produção: deploy sem downtime e rollback\", \"description\": \"Stack com atualização gradual, healthcheck e rollback automático no Docker Swarm, comandos de update e rollback e o checklist antes de publicar, a partir da documentação oficial do Docker.\", \"author\": {\"@type\": \"Person\", \"name\": \"Rhuan Freire\"}, \"mainEntityOfPage\": \"https://dev.rhuanfreire.com.br/recursos/swarm/\", \"inLanguage\": \"pt-BR\"}";
+---
+<Base
+  title={"Docker Swarm em produção: deploy sem downtime e rollback — Rhuan Freire"},
+  description={"Stack com atualização gradual, healthcheck e rollback automático no Docker Swarm, comandos de update e rollback e o checklist antes de publicar, a partir da documentação oficial do Docker."},
+  canonical={"https://dev.rhuanfreire.com.br/recursos/swarm/"},
+  ogTitle={"Docker Swarm em produção: deploy sem downtime e rollback"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

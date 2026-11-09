@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/recursos__n8n-mcp.html?raw';
+import '../../styles/shared-8cfc29.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\": \"https://schema.org\", \"@type\": \"TechArticle\", \"headline\": \"n8n com MCP nativo: ligue na instância e conecte no Claude Code\", \"description\": \"Passo a passo para ativar o MCP nativo do n8n (Instance-level MCP), escolher os workflows expostos, copiar o Server URL e conectar no Claude Code, com os cuidados de segurança antes de liberar.\", \"author\": {\"@type\": \"Person\", \"name\": \"Rhuan Freire\"}, \"mainEntityOfPage\": \"https://dev.rhuanfreire.com.br/recursos/n8n-mcp/\", \"inLanguage\": \"pt-BR\"}";
+---
+<Base
+  title={"n8n com MCP nativo: ligue na instância e conecte no Claude Code — Rhuan Freire"},
+  description={"Passo a passo para ativar o MCP nativo do n8n (Instance-level MCP), escolher os workflows expostos, copiar o Server URL e conectar no Claude Code, com os cuidados de segurança antes de liberar."},
+  canonical={"https://dev.rhuanfreire.com.br/recursos/n8n-mcp/"},
+  ogTitle={"n8n com MCP nativo: ligue na instância e conecte no Claude Code"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

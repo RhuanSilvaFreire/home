@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import body from '../content-html/privacidade.html?raw';
+import '../styles/shared-a36b30.css';
+import '../styles/fx.css';
+---
+<Base
+  title={"Política de Privacidade — Rhuan Freire"},
+  description={"Política de Privacidade do site rhuanfreire.com — como coletamos e usamos seus dados."},
+  canonical={"https://dev.rhuanfreire.com.br/privacidade/"},
+  robots={"noindex"}>
+  <Fragment set:html={body} />
+</Base>

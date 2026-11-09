@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/blog__dashboard-monitoramento-ia.html?raw';
+import '../../styles/shared-a36a5b.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"O que você precisa medir quando coloca um agente de IA em produção\",\"description\":\"Métricas essenciais para monitorar agentes de IA em produção: vazão, custo por chamada, taxa de fallback e latência.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"datePublished\":\"2025-04-01\",\"url\":\"https://dev.rhuanfreire.com.br/blog/dashboard-monitoramento-ia/\",\"keywords\":\"observabilidade IA, monitoramento agentes, custo LLM, métricas IA produção\"}";
+---
+<Base
+  title={"O que você precisa medir quando coloca um agente de IA em produção — Rhuan Freire"},
+  description={"Métricas de software tradicional não bastam para agentes de IA. Aprendi isso com um agente que funcionava e estava custando 40x mais do esperado. O que medir de verdade."},
+  canonical={"https://dev.rhuanfreire.com.br/blog/dashboard-monitoramento-ia/"},
+  ogTitle={"O que você precisa medir quando coloca um agente de IA em produção"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

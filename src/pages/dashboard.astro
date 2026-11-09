@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import body from '../content-html/dashboard.html?raw';
+import '../styles/shared-541062.css';
+import '../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"CreativeWork\",\"name\":\"Painel de Monitoramento de IA em Produção\",\"description\":\"Dashboard com vazão, falhas e custo por chamada de modelo de IA em tempo real.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"url\":\"https://dev.rhuanfreire.com.br/dashboard/\",\"dateCreated\":\"2023\",\"keywords\":\"monitoramento IA, dashboard agentes, custo LLM, observabilidade\"}";
+---
+<Base
+  title={"Painel de Monitoramento de IA em Produção — Rhuan Freire"},
+  description={"Dashboard para monitorar agentes de IA em produção: vazão, taxa de falha, custo por chamada e latência em tempo real. Visibilidade total em uma tela. Case por Rhuan Freire."},
+  canonical={"https://dev.rhuanfreire.com.br/dashboard/"},
+  preloadImage={"/images/case5-dashboard.jpg"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

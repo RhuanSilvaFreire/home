@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/recursos__docker-cheatsheet.html?raw';
+import '../../styles/shared-8cfc29.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\": \"https://schema.org\", \"@type\": \"TechArticle\", \"headline\": \"Docker essencial: cheatsheet de comandos e Dockerfile com cache de camadas\", \"description\": \"Os comandos de Docker que mais se usam no dia a dia, um Dockerfile que aproveita o cache de camadas, o .dockerignore e a diferença entre reiniciar e remover um container.\", \"author\": {\"@type\": \"Person\", \"name\": \"Rhuan Freire\"}, \"mainEntityOfPage\": \"https://dev.rhuanfreire.com.br/recursos/docker-cheatsheet/\", \"inLanguage\": \"pt-BR\"}";
+---
+<Base
+  title={"Docker essencial: cheatsheet de comandos e Dockerfile com cache de camadas — Rhuan Freire"},
+  description={"Os comandos de Docker que mais se usam no dia a dia, um Dockerfile que aproveita o cache de camadas, o .dockerignore e a diferença entre reiniciar e remover um container."},
+  canonical={"https://dev.rhuanfreire.com.br/recursos/docker-cheatsheet/"},
+  ogTitle={"Docker essencial: cheatsheet de comandos e Dockerfile com cache de camadas"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

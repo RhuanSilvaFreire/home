@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/blog__pipeline-qualificacao-leads.html?raw';
+import '../../styles/shared-a36a5b.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"Qualificação de leads em 30 segundos: a arquitetura que usei e o que não escala\",\"description\":\"Como construí um pipeline de qualificação de leads com captura multicanal, enriquecimento via API e roteamento automático.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"datePublished\":\"2025-03-01\",\"url\":\"https://dev.rhuanfreire.com.br/blog/pipeline-qualificacao-leads/\",\"keywords\":\"qualificação de leads, automação CRM, lead scoring, n8n, pipeline leads\"}";
+---
+<Base
+  title={"Qualificação de leads em 30 segundos: a arquitetura que usei e o que não escala — Rhuan Freire"},
+  description={"Captura multicanal, enriquecimento via API e roteamento automático em 30 segundos. Funcionou. Mas tem dois pontos que se você escalar para 10x o volume, vão quebrar."},
+  canonical={"https://dev.rhuanfreire.com.br/blog/pipeline-qualificacao-leads/"},
+  ogTitle={"Qualificação de leads em 30 segundos: a arquitetura e o que não escala"},
+  ogType={"article"}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

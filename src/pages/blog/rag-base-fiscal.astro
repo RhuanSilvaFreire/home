@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import body from '../../content-html/blog__rag-base-fiscal.html?raw';
+import '../../styles/shared-a36a5b.css';
+import '../../styles/fx.css';
+const ld0 = "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"RAG em base fiscal: por que o chunking padrão não serve\",\"description\":\"Como construí um sistema de busca semântica em documentos fiscais com chunking estrutural e resposta auditável.\",\"author\":{\"@type\":\"Person\",\"name\":\"Rhuan Freire\",\"url\":\"https://dev.rhuanfreire.com.br\"},\"datePublished\":\"2025-07-01\",\"url\":\"https://dev.rhuanfreire.com.br/blog/rag-base-fiscal/\",\"keywords\":\"RAG, documentos fiscais, chunking, busca semântica, embeddings, IA\"}";
+---
+<Base
+  title={"RAG em base fiscal: por que o chunking padrão não serve — Rhuan Freire"},
+  description={"Documentos fiscais têm estrutura estranha — seções numeradas, remissões entre artigos, siglas sem contexto. O modelo padrão de RAG falha aqui e como corrigi isso."},
+  canonical={"https://dev.rhuanfreire.com.br/blog/rag-base-fiscal/"},
+  ogTitle={"RAG em base fiscal: por que o chunking padrão não serve"},
+  ogType={"article"},
+  ogDescription={"Como construí um sistema de busca semântica em documentos fiscais com chunking estrutural e citação auditável."}
+  jsonLd={[ld0]}>
+  <Fragment set:html={body} />
+</Base>

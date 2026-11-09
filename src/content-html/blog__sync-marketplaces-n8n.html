@@ -1,0 +1,82 @@
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="44" height="22" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M 96 28 C 76 28, 76 54, 76 70 C 76 78, 70 80, 60 80 C 70 80, 76 82, 76 90 C 76 106, 76 132, 96 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 224 28 C 244 28, 244 54, 244 70 C 244 78, 250 80, 260 80 C 250 80, 244 82, 244 90 C 244 106, 244 132, 224 132" fill="none" stroke="rgba(245,243,238,.85)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="160" y="108" text-anchor="middle" font-family="'Inter Tight',sans-serif" font-weight="600" font-size="72" letter-spacing="-3" fill="#C45E3A">rf</text>
+    </svg>
+    <span class="nav-brand-name">Rhuan Freire</span>
+  </a>
+  <nav class="nav-links">
+    <a href="/#trabalhos" class="nav-link">Trabalhos</a>
+    <a href="/#sobre" class="nav-link">Sobre</a>
+    <a href="/blog/" class="nav-link">Blog</a>
+    <a href="/#contato" class="nav-link">Contato</a>
+  </nav>
+</nav>
+
+<article class="article-wrap">
+
+  <a href="/blog/" class="article-back">← Blog</a>
+
+  <div class="article-tag">Pipeline · n8n</div>
+  <h1>Sincronizando 3 marketplaces com n8n: o que aprendi sobre idempotência</h1>
+  <div class="article-meta">Rhuan Freire · Junho 2025 · 7 min de leitura</div>
+
+  <p class="article-lead">Construir o fluxo de sync foi fácil. O que quase me matou foi descobrir que o mesmo pedido pode chegar 3 vezes em 200ms — e você não pode processar duas delas.</p>
+
+  <h2>O problema de sincronização multi-canal</h2>
+  <p>O cliente vendia no Mercado Livre, Shopee e seu próprio e-commerce. Cada venda numa plataforma precisava atualizar o estoque nas outras duas e registrar o pedido no ERP interno. Com volume baixo, ninguém percebe o problema. Com 200 pedidos por hora no pico, o problema aparece rápido: estoque negativo, pedidos duplicados, divergências que só aparecem no fechamento do dia.</p>
+  <p>O n8n foi escolhido porque o cliente já tinha familiaridade com a ferramenta e eu precisava de algo que o time de operações conseguisse acompanhar e modificar sem envolver engenharia a cada mudança.</p>
+
+  <h2>O evento duplicado que quase virou pesadelo</h2>
+  <p>Marketplaces enviam webhooks com retry automático. Se seu endpoint demorar mais de 5 segundos para responder, a plataforma reenvisa o mesmo evento. Se cair dentro de uma janela de retry, você pode receber o mesmo pedido 3, 4, 5 vezes.</p>
+  <p>O fluxo ingênuo processa cada evento que chega. O resultado em produção: pedidos duplicados no ERP, estoque que baixava duas vezes pelo mesmo pedido, alertas de estoque negativo que assustaram o time de operações.</p>
+  <p>A solução foi implementar uma tabela de idempotência simples no Postgres:</p>
+  <pre><code>CREATE TABLE processed_events (
+  event_id TEXT PRIMARY KEY,
+  source TEXT NOT NULL,          -- 'mercadolivre' | 'shopee' | 'site'
+  processed_at TIMESTAMPTZ DEFAULT NOW(),
+  payload JSONB
+);
+</code></pre>
+  <p>Antes de processar qualquer evento, o fluxo n8n faz um <code>INSERT ... ON CONFLICT DO NOTHING</code> e verifica o resultado. Se a linha não foi inserida, o evento já foi processado antes — encerra o fluxo sem fazer nada.</p>
+
+  <h2>O problema de ordem dos eventos</h2>
+  <p>Idempotência resolve duplicatas, mas não resolve ordem. Num pico de tráfego, você pode receber:</p>
+  <ol>
+    <li>Evento: "pedido 123 confirmado" (às 14:32:00.100)</li>
+    <li>Evento: "pedido 123 cancelado" (às 14:32:00.150)</li>
+    <li>Evento: "pedido 123 confirmado" novamente por retry (às 14:32:00.200)</li>
+  </ol>
+  <p>Com idempotência simples, o retry do evento confirmado seria ignorado — certo. Mas se o cancelamento chegar antes do primeiro evento confirmado, você confirma um pedido que deveria estar cancelado.</p>
+  <p>A solução foi adicionar <code>event_timestamp</code> ao payload de cada evento (o timestamp do evento na plataforma de origem, não o momento de recebimento) e só aplicar a mudança se o timestamp for mais recente que o último estado registrado para aquele pedido.</p>
+
+  <h2>Monitoramento: o que o n8n não te dá</h2>
+  <p>O n8n tem logs de execução, mas não tem uma visão consolidada de "quantos eventos processados nas últimas 2 horas" ou "qual o tempo médio de processamento por tipo de evento". Para isso, adicionei uma etapa de registro no Postgres ao final de cada fluxo bem-sucedido:</p>
+  <pre><code>&#123;
+  "flow": "marketplace_sync",
+  "source": "mercadolivre",
+  "event_type": "order_created",
+  "duration_ms": 342,
+  "status": "success",
+  "timestamp": "2025-06-15T14:32:00Z"
+&#125;</code></pre>
+  <p>Com isso, um dashboard simples no Metabase deu ao time de operações visibilidade em tempo real — sem precisar abrir o n8n.</p>
+
+  <h2>O que não escala nessa arquitetura</h2>
+  <p>O Redis como lock distribuído para evitar race conditions funcionou no volume atual. Com 10x o volume, a fila de webhooks esperando o lock vai criar latência visível. A solução para esse caso seria migrar para uma fila de mensagens dedicada (SQS, Pub/Sub) e processar os eventos em paralelo com deduplicação por event_id.</p>
+
+  <blockquote>
+    <p>Idempotência não é uma feature. É o que separa um sistema que funciona de um que às vezes funciona.</p>
+  </blockquote>
+
+  <p style="margin-top:40px">Ver a estrutura técnica completa:</p>
+  <a href="/sync/" class="case-link">Ver case completo →</a>
+
+</article>
+
+<footer>
+  <span>© 2026 Rhuan Freire</span>
+  <a href="/blog/">← Voltar ao blog</a>
+</footer>
