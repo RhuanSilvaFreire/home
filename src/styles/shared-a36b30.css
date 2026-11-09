@@ -12,7 +12,7 @@ a:hover{opacity:.75}
 .container{max-width:720px;margin:0 auto;padding:80px 32px 120px}
 
 h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:48px;letter-spacing:-.025em;line-height:1;margin-bottom:12px}
-.updated{font-size:13px;color:rgba(245,243,238,.5);margin-bottom:56px}
+.updated{font-size:13px;color:rgba(245,243,238,.62);margin-bottom:56px}
 h2{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:22px;letter-spacing:-.015em;margin:48px 0 14px;padding-top:48px;border-top:1px solid rgba(245,243,238,.1)}
 h2:first-of-type{border-top:none;padding-top:0}
 p{font-size:16px;color:rgba(245,243,238,.75);margin-bottom:16px}
@@ -21,7 +21,7 @@ ul li{margin-bottom:8px}
 .highlight{background:rgba(196,94,58,.1);border-left:3px solid var(--terracotta);padding:16px 20px;border-radius:0 6px 6px 0;margin:24px 0}
 .highlight p{margin:0;color:rgba(245,243,238,.85)}
 
-footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
+footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.62)}
 footer a{color:var(--bone);border:none;opacity:.7}
 footer a:hover{opacity:1}
 .footer-links{display:flex;gap:24px;align-items:center;flex-wrap:wrap}

@@ -13,12 +13,12 @@ a:hover{border-color:var(--terracotta)}
 
 .article-wrap{max-width:720px;margin:0 auto;padding:72px 32px 120px}
 
-.article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,243,238,.45);border:none;margin-bottom:48px;transition:color .2s}
+.article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,243,238,.62);border:none;margin-bottom:48px;transition:color .2s}
 .article-back:hover{color:rgba(245,243,238,.75)}
 
 .article-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px}
 h1{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(32px,5vw,52px);letter-spacing:-.025em;line-height:1.08;margin-bottom:20px}
-.article-meta{font-size:13px;color:rgba(245,243,238,.4);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(245,243,238,.1)}
+.article-meta{font-size:13px;color:rgba(245,243,238,.62);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(245,243,238,.1)}
 .article-lead{font-size:20px;color:rgba(245,243,238,.7);line-height:1.6;margin-bottom:48px}
 
 h2{font-family:"Inter Tight",sans-serif;font-weight:500;font-size:26px;letter-spacing:-.02em;margin:56px 0 16px}
@@ -35,7 +35,7 @@ blockquote p{margin:0;color:rgba(245,243,238,.8);font-style:italic}
 .case-link{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;padding:10px 18px;border:1px solid rgba(196,94,58,.4);border-radius:6px;color:var(--terracotta);transition:background .2s,border-color .2s}
 .case-link:hover{background:rgba(196,94,58,.08);border-color:var(--terracotta)}
 
-footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.4)}
+footer{padding:48px 96px;border-top:1px solid rgba(245,243,238,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:13px;color:rgba(245,243,238,.62)}
 footer a{color:rgba(245,243,238,.6);border:none}
 
 @media(max-width:768px){
