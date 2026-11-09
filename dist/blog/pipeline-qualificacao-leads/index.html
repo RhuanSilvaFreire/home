@@ -8,7 +8,7 @@
   }
 })(document.documentElement);
 </script><script>
-// Google Tag Manager — carrega só na primeira interação (scroll, toque, clique, tecla ou mouse)
+// Google Tag Manager — carrega após interação ou 3s
 (function(){
   var loaded=false;
   function loadGTM(){
@@ -19,6 +19,7 @@
     j.src='https://www.googletagmanager.com/gtm.js?id=GTM-P2M3SV2R';
     document.head.appendChild(j);
   }
+  setTimeout(loadGTM,3000);
   ['click','scroll','keydown','touchstart','mousemove'].forEach(function(e){
     document.addEventListener(e,loadGTM,{once:true,passive:true});
   });
