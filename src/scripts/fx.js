@@ -258,7 +258,7 @@
       var chars = FX.split(h1, "words");
       FX.repel(chars);
       if (hasGsap) {
-        gsap.from(chars, { opacity: 0, x: -60, filter: FX.blur(10), duration: 1.6, stagger: 0.06, ease: "power4.out" });
+        gsap.from(chars, { opacity: 0, x: -60, filter: FX.blur(10), duration: 0.6, stagger: 0.025, ease: "power4.out" });
       }
     }
     FX.autoReveal([
