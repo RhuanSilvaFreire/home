@@ -1,12 +1,12 @@
 # CLAUDE.md — home-rhuan
 
-Site pessoal de Rhuan Freire em https://dev.rhuanfreire.com.br. Astro (saída estática) em `src/`, build para `dist/`.
+Site pessoal de Rhuan Freire em https://dev.rhuanfreire.com.br. HTML/CSS/JS estático, sem build.
 
 ## Deploy
 
 - Cloudflare Workers (`rhuansite-home`) ligado ao GitHub `RhuanSilvaFreire/home`.
 - **Push na `main` = deploy de produção** (`npx wrangler deploy --no-bundle`, ~1 min). Outras branches geram só versão de prévia.
-- O Worker publica a pasta **`dist/`** (ver `wrangler.toml`), gerada por `npm run build` e **commitada**. Edite em `src/` e `public/` (imagens, vídeos, ícones, `_headers`), rode `npm run build` e commite o `dist/` junto.
+- O Worker publica a pasta **`dist/`** (ver `wrangler.toml`). Ela é uma cópia manual da raiz: **toda alteração na raiz precisa ser copiada para `dist/`** no mesmo caminho, inclusive `assets/`, `images/` e vídeos.
 - Só faça push/commit quando o usuário pedir explicitamente.
 
 ## Paleta e tipografia (fonte da verdade: commit 36f4c6e e `PALETA.md`)
@@ -19,10 +19,10 @@ Site pessoal de Rhuan Freire em https://dev.rhuanfreire.com.br. Astro (saída es
 
 | Arquivo | Escopo |
 |---|---|
-| `src/styles/fx.css` | Camada visual de **todas** as páginas: tokens, header, botões glass (`.btn`, `.btn-white`), cards, lente HUD (`--heat`), tela de carregamento editorial, barra de progresso, cortina de âncora, correções anti scroll lateral. Carregado depois do `<style>` inline de cada página. |
-| `src/scripts/fx.js` | Base de **todas** as páginas: Lenis + GSAP ScrollTrigger (iniciados uma vez), header que aparece após 120px (`data-header-auto`), âncoras (salto com fade quando longe), `FX.split` (texto em letras/palavras com `aria-label`), `FX.repel` (lente HUD no mouse), `FX.autoReveal` (páginas internas), `FX.lazyVideos`, `FX.ensurePlay` (autoplay bloqueado no celular). |
-| `src/scripts/home.js` | Só a home (`<html data-fx-home>`): preloader editorial (logo desenhado, contagem, saída em cortina), entrada da hero, reveals com scrub, parallax, manifesto acendendo palavra a palavra, faixas com zoom fixado, trabalhos em faixa horizontal fixada, pílulas com física (Matter.js carregado sob demanda). |
-| `src/pages/index.astro` | Home. CSS inline específico + script inline no `<head>` que liga `fx-js`, `fx-header-hide` e `fx-loading` e tem fallback de 7s. |
+| `assets/fx.css` | Camada visual de **todas** as páginas: tokens, header, botões glass (`.btn`, `.btn-white`), cards, lente HUD (`--heat`), tela de carregamento editorial, barra de progresso, cortina de âncora, correções anti scroll lateral. Carregado depois do `<style>` inline de cada página. |
+| `assets/fx.js` | Base de **todas** as páginas: Lenis + GSAP ScrollTrigger (iniciados uma vez), header que aparece após 120px (`data-header-auto`), âncoras (salto com fade quando longe), `FX.split` (texto em letras/palavras com `aria-label`), `FX.repel` (lente HUD no mouse), `FX.autoReveal` (páginas internas), `FX.lazyVideos`, `FX.ensurePlay` (autoplay bloqueado no celular). |
+| `assets/home.js` | Só a home (`<html data-fx-home>`): preloader editorial (logo desenhado, contagem, saída em cortina), entrada da hero, reveals com scrub, parallax, manifesto acendendo palavra a palavra, faixas com zoom fixado, trabalhos em faixa horizontal fixada, pílulas com física (Matter.js carregado sob demanda). |
+| `index.html` | Home. CSS inline específico + script inline no `<head>` que liga `fx-js`, `fx-header-hide` e `fx-loading` e tem fallback de 7s. |
 
 Libs via CDN (versões fixas): GSAP 3.13.0 + ScrollTrigger (cdnjs), Lenis 1.3.11 (jsdelivr), Matter.js 0.19.0 (cdnjs, sob demanda).
 
@@ -32,7 +32,7 @@ Libs via CDN (versões fixas): GSAP 3.13.0 + ScrollTrigger (cdnjs), Lenis 1.3.11
 - **Paridade desktop/mobile:** todo efeito existe nos dois, mudando só a intensidade. Mouse → lente/holofote/arrastar; toque → varredura de brilho automática, holofote ambiente, pílulas pulam ao tocar.
 - **Manifesto e "Sobre" não reagem ao mouse** (ficava ilegível). Só o título da hero tem a lente HUD.
 - **Lente HUD** (`fx.js`): letras sobem e acendem, nunca se deslocam para os lados. Parâmetros: `RADIUS`, `LIFT`, `GROW`.
-- **Tela de carregamento** aparece em **todo** carregamento da home. Alvo <1s: mínimo 0,35s, teto 1,2s, timelines aceleradas por `timeScale` (`PRELOADER_MIN_S`/`PRELOADER_MAX_S`).
+- **Tela de carregamento** aparece em **todo** carregamento da home. Mínimo 2,2s, teto 4,5s (`PRELOADER_MIN_S`/`PRELOADER_MAX_S`).
 - **Vídeos:** `hero.mp4` sem loop (congela no cubo). `areas.mp4` = trecho 5–10s do `hero.mp4` invertido (cubo → robô laranja), sem loop. Regerar com:
   `ffmpeg -ss 5 -i hero.mp4 -t 5.05 -vf reverse -an -c:v libx264 -crf 20 -preset slow -pix_fmt yuv420p -movflags +faststart areas.mp4`
 - **Pins na ordem do DOM:** o pin dos trabalhos usa `refreshPriority: -1` porque é criado antes do pin das faixas, que fica acima dele. Ao adicionar pins, mantenha essa ordem.
