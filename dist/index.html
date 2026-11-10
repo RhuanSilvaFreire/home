@@ -76,9 +76,9 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 .nav-brand-name{font-family:"Inter Tight",sans-serif;font-weight:400;font-size:17px;letter-spacing:.01em}
 .nav-links{display:flex;gap:36px;margin-left:auto}
 .nav-link{position:relative;font-size:14px;padding-bottom:4px;color:rgba(245,243,238,.75);transition:color .5s ease}
-.nav-link::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:linear-gradient(90deg,rgba(245,243,238,0),#F5F3EE,rgba(245,243,238,0));transition:width .7s var(--ease)}
+.nav-link::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,rgba(245,243,238,0),#F5F3EE,rgba(245,243,238,0));transition:transform .7s var(--ease)}
 .nav-link:hover,.nav-link.active{color:var(--bone)}
-.nav-link:hover::after,.nav-link.active::after{width:100%}
+.nav-link:hover::after,.nav-link.active::after{transform:scaleX(1)}
 
 /* Hero */
 .hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:120px 24px 140px;overflow:hidden;text-align:center}
@@ -251,8 +251,8 @@ html.fx-js:not(.fx-fallback) .hero .hb{opacity:0}
 @media(hover:hover){.footer-social-link:hover::after{opacity:1;transform:translate(-50%,0)}}
 .footer-col-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,243,238,.55);margin-bottom:20px}
 .footer-nav-list{display:flex;flex-direction:column;gap:10px}
-.footer-nav-link{font-size:14px;color:var(--muted);transition:color .5s ease,padding .5s ease}
-.footer-nav-link:hover{color:var(--bone);padding-left:6px}
+.footer-nav-link{font-size:14px;color:var(--muted);transition:color .5s var(--ease),transform .5s var(--ease)}
+.footer-nav-link:hover{color:var(--bone);transform:translateX(6px)}
 .footer-contact-item{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
 .footer-contact-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,243,238,.5)}
 .footer-contact-value{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
